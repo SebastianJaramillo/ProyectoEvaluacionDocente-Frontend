@@ -4,3 +4,7 @@ Diseño e Implementación de una Plataforma Innovadora de Evaluación Docente Ba
 # Integrantes
 - Roberson Constante
 - Sebastián Jaramillo
+
+#Arquitectura del proyecto
+
+#Arquitectura interna microservicio
