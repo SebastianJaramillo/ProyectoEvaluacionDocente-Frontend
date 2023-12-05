@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  db:
+    image: oracle/database:21.3.0-ee # image_name:tag
+    container_name: db_proyecto_docente
+    hostname: system
+    domainname: evaluacion-docente.com
+    environment:
+      ORACLE_SID: DBDOC # Container database name
+      ORACLE_PDB: DBPDOC # Pluggable database name
+      ORACLE_PWD: Espe.2023
+      ORACLE_CHARACTERSET: AL32UTF8
+      ORA_SDTZ: Ecuador
+    ports:
+      - "1521:1521"
+      - "5500:5500"
+    tty: true
+    privileged: true
+  microservicio:
+    image: microservicio-curso-estudiante:1.0 # image_name:tag
+    container_name: microservicio_curso_estudiante
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: jdbc:oracle:thin:@db:1521/DBDOC
+      DATABASE_USER: system
+      DATABASE_PASSWORD: Espe.2023
+    depends_on:
+      - db
