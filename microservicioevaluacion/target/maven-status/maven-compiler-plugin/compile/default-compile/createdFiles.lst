@@ -1,0 +1,6 @@
+ec\edu\espe\microservicioevaluacion\microservicioevaluacion\controller\evaluacionController.class
+ec\edu\espe\microservicioevaluacion\microservicioevaluacion\model\periodo.class
+ec\edu\espe\microservicioevaluacion\microservicioevaluacion\service\evaluacionService.class
+ec\edu\espe\microservicioevaluacion\microservicioevaluacion\repository\evaluacionRepository.class
+ec\edu\espe\microservicioevaluacion\microservicioevaluacion\model\evaluacion.class
+ec\edu\espe\microservicioevaluacion\microservicioevaluacion\service\evaluacionServiceImpl.class
