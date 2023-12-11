@@ -2,7 +2,7 @@ package ec.edu.espe.microserviciocursoestudiante.service;
 
 import java.util.List;
 
-import ec.edu.espe.microserviciocursoestudiante.model.Curso;
+import ec.edu.espe.microserviciocursoestudiante.domain.Curso;
 
 public interface CursoService {
 

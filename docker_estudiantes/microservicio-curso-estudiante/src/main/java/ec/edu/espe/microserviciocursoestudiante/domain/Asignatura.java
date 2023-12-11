@@ -1,4 +1,4 @@
-package ec.edu.espe.microserviciocursoestudiante.model;
+package ec.edu.espe.microserviciocursoestudiante.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,16 +12,25 @@ import jakarta.persistence.Table;
 public class Asignatura {
 	@Id		
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "asig_id")
-	private long id;
-	@Column(name = "asig_nombre")
-	private String nombre;	
+	@Column(name = "asig_id", nullable = false, length = 5)
+	private Long id;
+	
+	@Column(name = "asig_nombre", nullable = false, length = 100)
+	private String nombre;
+	
+	public Asignatura() {
+	}
 
-	public long getId() {
+	public Asignatura(Long id, String nombre) {
+		this.id = id;
+		this.nombre = nombre;
+	}
+
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

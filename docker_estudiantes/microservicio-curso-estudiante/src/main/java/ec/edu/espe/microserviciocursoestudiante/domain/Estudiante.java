@@ -1,22 +1,45 @@
-package ec.edu.espe.microserviciocursoestudiante.model;
+package ec.edu.espe.microserviciocursoestudiante.domain;
+
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "estudiante")
 public class Estudiante {
 	@Id
-	@Column(name = "est_id")
+	@Column(name = "est_id", nullable = false, length = 15)
 	private String id;
 
-	@Column(name = "est_nombres")
+	@Column(name = "est_nombres", nullable = false, length = 50)
 	private String nombres;
 
-	@Column(name = "est_apellidos")
+	@Column(name = "est_apellidos", nullable = false, length = 50)
 	private String apellidos;
+
+	@ManyToMany
+    @JoinTable (
+        name = "curso_estudiante",
+        joinColumns = @JoinColumn(name = "est_id"),
+        inverseJoinColumns = @JoinColumn(name = "cur_nrc")
+    )
+	private List<Curso> cursos;
+
+	public Estudiante() {
+	}
+
+	public Estudiante(String id, String nombres, String apellidos) {
+		this.id = id;
+		this.nombres = nombres;
+		this.apellidos = apellidos;
+	}
 
 	public String getId() {
 		return id;
@@ -40,6 +63,14 @@ public class Estudiante {
 
 	public void setApellidos(String apellidos) {
 		this.apellidos = apellidos;
+	}
+
+	public List<Curso> getCursos() {
+		return cursos;
+	}
+
+	public void setCursos(List<Curso> cursos) {
+		this.cursos = cursos;
 	}
 
 	@Override

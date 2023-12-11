@@ -1,10 +1,13 @@
-package ec.edu.espe.microserviciocursoestudiante.model;
+package ec.edu.espe.microserviciocursoestudiante.domain;
 
 import java.time.LocalTime;
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -14,11 +17,11 @@ import jakarta.persistence.TemporalType;
 @Table(name = "curso")
 public class Curso {
     @Id
-    @Column(name = "cur_nrc")
-    private long nrc;
+    @Column(name = "cur_nrc", nullable = false, length = 8)
+    private Long nrc;
 
-    @Column(name = "asig_id")
-    private long asigId;
+    @Column(name = "asig_id", nullable = false, length = 5)
+    private Long asigId;
 
     @OneToOne
     @JoinColumn(name = "asig_id", referencedColumnName = "asig_id", insertable = false, updatable = false)
@@ -30,6 +33,20 @@ public class Curso {
     @Temporal(TemporalType.TIME)
     @Column(name = "cur_hora")
     private LocalTime hora;
+
+    @ManyToMany(mappedBy = "cursos")
+    private List<Estudiante> estudiantes;
+
+    public Curso() {
+    }
+
+    public Curso(Long nrc, Long asigId, Asignatura asignatura, String dias, LocalTime hora) {
+        this.nrc = nrc;
+        this.asigId = asigId;
+        this.asignatura = asignatura;
+        this.dias = dias;
+        this.hora = hora;
+    }
 
     public long getNrc() {
         return nrc;
@@ -69,6 +86,14 @@ public class Curso {
 
     public void setHora(LocalTime hora) {
         this.hora = hora;
+    }
+
+    public List<Estudiante> getEstudiantes() {
+        return estudiantes;
+    }
+
+    public void setEstudiantes(List<Estudiante> estudiantes) {
+        this.estudiantes = estudiantes;
     }
 
     @Override

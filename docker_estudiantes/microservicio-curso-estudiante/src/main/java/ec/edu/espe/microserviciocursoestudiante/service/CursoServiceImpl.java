@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ec.edu.espe.microserviciocursoestudiante.model.Curso;
+import ec.edu.espe.microserviciocursoestudiante.domain.Curso;
 import ec.edu.espe.microserviciocursoestudiante.repository.CursoRepository;
 
 @Service
