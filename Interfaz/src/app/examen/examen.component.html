@@ -1,0 +1,39 @@
+
+<div class="container">
+    <h1>Listado de Examenes</h1>
+  
+    <!-- Botón para obtener todos los examens -->
+    <button class="btn btn-primary" (click)="getAllExamenes()">Obtener Examenes</button>
+  
+    <!-- Tabla para mostrar los examens con estilos de Bootstrap -->
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let examen of examenes">
+          <td>{{ examen.id }}</td>
+          <td>{{ examen.nombre }}</td>
+          <td>
+            <button class="btn btn-secondary" (click)="verExamen(examen.id)">Ver</button>
+          </td>4
+        </tr>
+      </tbody>
+    </table>
+  
+    <!-- Formulario para crear o editar un examen 
+    <form #examenForm="ngForm" (ngSubmit)="guardarExamen()">
+      <div class="form-group">
+        <label for="nombre">Nombre:</label>
+        <input class="form-control" type="text" name="nombre" [(ngModel)]="examen.nombre" required>
+      </div>
+  
+      <button class="btn btn-primary" type="submit" [disabled]="examenForm.invalid">Guardar</button>
+    </form>
+-->
+  </div>
+  

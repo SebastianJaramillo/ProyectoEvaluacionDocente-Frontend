@@ -1,0 +1,11 @@
+<div class="container">
+  <h2>Período</h2>
+
+  <select>
+    <option *ngFor="let periodo of periodos" [value]="periodo.id">
+      {{ periodo.descripcion }}
+    </option>
+  </select>
+
+  <button (click)="selectPeriodo()">Seleccionar</button>
+</div>

@@ -1,0 +1,20 @@
+<div class="container">
+  <h2>Listado de Cursos</h2>
+
+  <!-- Tabla para mostrar los cursos con estilos de Bootstrap -->
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>      
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let curso of cursos">
+        <td>{{ curso.nrc }}</td>
+        <td>{{ curso.asignatura.nombre}}</td>        
+      </tr>
+    </tbody>
+  </table>
+  <button (click)="salir()" class="btn btn-danger">Salir</button>
+</div>
