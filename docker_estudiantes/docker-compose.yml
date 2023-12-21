@@ -31,3 +31,31 @@ services:
       ORA_SDTZ: Ecuador
     depends_on:
       - db
+
+  autenticacion:
+    image: microservicio-autenticacion:1.1 # image_name:tag
+    container_name: microservicio_autenticacion
+    ports:
+      - "8081:8081"
+    environment:
+      ORACLE_SID: DBDOC # Container database name
+      ORACLE_PDB: DBPDOC # Pluggable database name
+      ORACLE_PWD: Espe.2023
+      ORACLE_CHARACTERSET: AL32UTF8
+      ORA_SDTZ: Ecuador
+    depends_on:
+      - db
+  
+  evaluacion:
+    image: microservicio-evaluacion:1.1 # image_name:tag
+    container_name: microservicio_evaluacion
+    ports:
+      - "8082:8082"
+    environment:
+      ORACLE_SID: DBDOC # Container database name
+      ORACLE_PDB: DBPDOC # Pluggable database name
+      ORACLE_PWD: Espe.2023
+      ORACLE_CHARACTERSET: AL32UTF8
+      ORA_SDTZ: Ecuador
+    depends_on:
+      - db

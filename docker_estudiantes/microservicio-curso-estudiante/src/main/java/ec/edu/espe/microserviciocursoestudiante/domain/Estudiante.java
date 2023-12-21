@@ -1,10 +1,8 @@
 package ec.edu.espe.microserviciocursoestudiante.domain;
 
 import java.util.List;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -25,11 +23,9 @@ public class Estudiante {
 	private String apellidos;
 
 	@ManyToMany
-    @JoinTable (
-        name = "curso_estudiante",
-        joinColumns = @JoinColumn(name = "est_id"),
-        inverseJoinColumns = @JoinColumn(name = "cur_nrc")
-    )
+	@JoinTable(
+		name = "curso_estudiante", joinColumns = @JoinColumn(name = "est_id", referencedColumnName = "est_id"), 
+		inverseJoinColumns = @JoinColumn(name = "cur_nrc", referencedColumnName = "cur_nrc") )
 	private List<Curso> cursos;
 
 	public Estudiante() {

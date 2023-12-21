@@ -2,6 +2,7 @@ package ec.edu.espe.microserviciocursoestudiante.domain;
 
 import java.time.LocalTime;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,13 +30,14 @@ public class Curso {
 
     @Column(name = "cur_dias")
     private String dias;
-    
+
     @Temporal(TemporalType.TIME)
     @Column(name = "cur_hora")
     private LocalTime hora;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "cursos")
-    private List<Estudiante> estudiantes;
+    private List<Estudiante> estudiantes;    
 
     public Curso() {
     }
@@ -79,7 +81,7 @@ public class Curso {
     public void setDias(String dias) {
         this.dias = dias;
     }
-    
+
     public LocalTime getHora() {
         return hora;
     }
