@@ -6,6 +6,7 @@ import { ExamenComponent } from './examen/examen.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { LoginComponent } from './auth/login/login.component';
 import { EvaluacionComponent } from './evaluacion/evaluacion.component';
+import { PreguntasComponent } from './preguntas/preguntas.component';
 const routes: Routes = [
   { path: 'alumnos', component: AlumnoComponent },
   { path: 'cursos/:alumnoId', component: CursoComponent },
@@ -13,7 +14,8 @@ const routes: Routes = [
   { path: 'examenes', component: ExamenComponent },  
   {path:'',redirectTo:'/iniciar-sesion', pathMatch:'full'},
   {path:'inicio',component:DashboardComponent},
-  {path:'iniciar-sesion',component:LoginComponent}
+  {path:'iniciar-sesion',component:LoginComponent},
+  {path: 'preguntas',component: PreguntasComponent}
 ];
 
 @NgModule({

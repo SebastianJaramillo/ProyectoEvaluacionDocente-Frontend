@@ -33,6 +33,7 @@ import {
 } from 'igniteui-angular';
 import { NavbarComponent } from './navbar/navbar.component';
 import { EvaluacionComponent } from './evaluacion/evaluacion.component';
+import { RespuestasComponent } from './respuestas/respuestas.component';
 const routes: Routes = [
   { path: 'alumnos', component: AlumnoComponent },
   { path: 'cursos', component: CursoComponent },
@@ -54,6 +55,7 @@ const routes: Routes = [
     LoginComponent,
     NavComponent,
     PersonalDetailsComponent,
+    RespuestasComponent,
   ],
   imports: [
     BrowserModule,

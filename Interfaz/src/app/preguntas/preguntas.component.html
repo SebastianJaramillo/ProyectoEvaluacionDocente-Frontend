@@ -1,1 +1,16 @@
-<p>preguntas works!</p>
+<!-- HTML para mostrar la pregunta actual y las opciones de respuesta -->
+<h2>Evaluacion Docente</h2> 
+<div *ngIf="preguntaActual">
+  <h2>{{ preguntaActual.enunciado }}</h2>
+
+  <input
+    type="radio"
+    [id]="preguntaActual.respuesta.id"
+    [value]="preguntaActual.respuesta.id"
+    [(ngModel)]="respuestaSeleccionada"
+  />
+  <label [for]="preguntaActual.respuesta.id">{{ preguntaActual.respuesta.texto }}</label>
+
+  <button (click)="seleccionarRespuesta()">Seleccionar Respuesta</button>
+  <button (click)="siguientePregunta()">Siguiente Pregunta</button>
+</div>
