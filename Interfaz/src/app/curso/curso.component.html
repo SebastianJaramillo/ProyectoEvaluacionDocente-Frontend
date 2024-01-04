@@ -1,8 +1,8 @@
 <div class="container">
-  <h2>Listado de Cursos</h2>
+  <h3>Listado de Cursos</h3>
 
   <!-- Tabla para mostrar los cursos con estilos de Bootstrap -->
-  <table class="table table-bordered table-striped">
+  <table style="width: 50%;" class="table table-bordered table-striped">
     <thead>
       <tr>
         <th>ID</th>
@@ -12,7 +12,8 @@
     <tbody>
       <tr *ngFor="let curso of cursos">
         <td>{{ curso.nrc }}</td>
-        <td>{{ curso.asignatura.nombre}}</td>        
+        <td>{{ curso.asignatura.nombre}}</td>
+        <td style="width: 50px;"><button class="btn btn-secondary" (click)="evaluacion(alumnoId, curso.nrc)">Evaluacion</button></td>
       </tr>
     </tbody>
   </table>

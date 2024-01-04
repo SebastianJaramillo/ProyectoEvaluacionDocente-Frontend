@@ -13,7 +13,7 @@ export class AlumnoService {
     return this.http.get<any[]>(`${this.apiUrl}/listar`);
   }
   getAlumnoById(id: number) {
-    return this.http.get<any>(`${this.apiUrl}/${id}`);
+    return this.http.get<any>(`${this.apiUrl}/buscar/${id}`);
   }
   createAlumno(alumnoData: any) {
     return this.http.post<any>(this.apiUrl, alumnoData);

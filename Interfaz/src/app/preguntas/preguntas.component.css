@@ -1,0 +1,9 @@
+.radio-buttons {
+    display: flex;
+    justify-content: space-around; /* Puedes ajustar según tus necesidades de diseño */
+  }
+  
+  .radio-label {
+    display: inline-block;
+  }
+  

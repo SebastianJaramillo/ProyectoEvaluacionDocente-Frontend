@@ -17,6 +17,11 @@ export class CursosService {
   getCursos(): Observable<Cursos[]> {
     return this.http.get<Cursos[]>(this.apiUrl);
   }
+
+  getCursoById(id: number): Observable<Cursos> {
+    return this.http.get<any>(`http://localhost:8080/curso/buscar/${id}`);
+  }
+
   asignarAlumnos(cursoId: number, alumnos: any[]): Observable<any> {
     const url = `${this.apiUrl}/${cursoId}/asignar-alumnos`;
     return this.http.put<any>(url, alumnos);
@@ -30,10 +35,6 @@ export class CursosService {
   
   getAllCursos(): Observable<Cursos[]> {
     return this.http.get<Cursos[]>(this.apiUrl);
-  }
-
-  getCursosById(id: number): Observable<Cursos> {
-    return this.http.get<Cursos>(`${this.apiUrl}/${id}`);
   }
 
   createCurso(cursoData: Cursos): Observable<Cursos> {

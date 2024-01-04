@@ -11,6 +11,7 @@ export class CursoComponent implements OnInit {
   cursos: any[] = [];
   curso: any = {};
   alumnoId: any;
+  cursoId: any;
 
   constructor(
     private cursosService: CursosService,
@@ -45,28 +46,6 @@ export class CursoComponent implements OnInit {
     this.cursosService.obtenerCursosPorAlumnos(id).subscribe(
       (data) => {
         this.cursos = data;
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-  }
-
-  verCurso(id: number) {
-    this.cursosService.getCursosById(id).subscribe(
-      (data) => {
-        this.curso = data;
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-  }
-
-  editarCurso(id: number) {
-    this.cursosService.getCursosById(id).subscribe(
-      (data) => {
-        this.curso = data;
       },
       (error) => {
         console.error(error);
@@ -114,6 +93,10 @@ export class CursoComponent implements OnInit {
         console.error(error);
       }
     );
+  }
+
+  evaluacion(alumnoId: any, cursoId: any) {    
+    this.router.navigate(['preguntas', alumnoId, cursoId]);
   }
 
   private resetForm() {

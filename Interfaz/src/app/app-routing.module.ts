@@ -15,7 +15,7 @@ const routes: Routes = [
   {path:'',redirectTo:'/iniciar-sesion', pathMatch:'full'},
   {path:'inicio',component:DashboardComponent},
   {path:'iniciar-sesion',component:LoginComponent},
-  {path: 'preguntas',component: PreguntasComponent}
+  {path: 'preguntas/:alumnoId/:cursoId',component: PreguntasComponent}
 ];
 
 @NgModule({

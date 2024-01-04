@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ExamenService } from '../examen.service';
 import { Examen } from '../examen/examen.model';
-import { Respuesta } from '../respuestas/respuesta.model';
-import { Pregunta } from '../preguntas/preguntas.model';
+import { CursosService } from '../cursos.service';
+import { AlumnoService } from '../alumno.service';
 
 @Component({
   selector: 'app-preguntas',
@@ -14,59 +14,86 @@ export class PreguntasComponent implements OnInit {
   examenId: any;
   examen!: Examen;
   preguntas: any[] = [];
-  preguntaActual!: Pregunta | undefined;
+  preguntaActual: number = 0;
   respuestaSeleccionada: any;
   respuestas: any[] = [];
+  alumnoId: any;
+  alumno: any = {};  
+  cursoId: any;
+  curso: any = {};
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private examenService: ExamenService
+    private examenService: ExamenService,
+    private cursoService: CursosService,
+    private alumnoService: AlumnoService
   ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
-      //this.examenId = +params['examenId'];
-      this.examenId = 22;
-      this.cargarPreguntas();
-    });
+      this.alumnoId = params['alumnoId'];
+      console.log(params['alumnoId']);
+      this.cursoId = params['cursoId'];
+      this.findEstudiante(this.alumnoId);
+      this.findCurso(this.cursoId);
+      this.cargarPreguntas(1);
+    });    
   }
 
-  cargarPreguntas() {
-    this.examenService.getPreguntasPorExamen(this.examenId).subscribe(
-      (preguntas: Pregunta[]) => {
-        this.preguntas = preguntas;
-        this.mostrarSiguientePregunta();
+  cargarPreguntas(id: number) {
+    this.examenService.getPreguntaFormulario(id).subscribe(
+      (data) => {
+        this.preguntas = data;
       },
       (error) => {
-        console.error('Error al cargar preguntas', error);
+        console.error(error);
       }
     );
   }
 
-  mostrarSiguientePregunta() {
-    this.respuestaSeleccionada = null;
-    if (this.preguntas.length > 0) {
-      const pregunta = this.preguntas.shift();
-      if (pregunta) {
-        this.preguntaActual = pregunta;
+  findEstudiante(id: number) {
+    this.alumnoService.getAlumnoById(id).subscribe(
+      (data) => {
+        this.alumno = data;
+      },
+      (error) => {
+        console.error(error);
       }
+    );
+  }
+
+  findCurso(id: number) {
+    this.cursoService.getCursoById(id).subscribe(
+      (data) => {
+        this.curso = data;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+  
+  seleccionarRespuesta(event: any) {
+    const respuestaSeleccionada = event.target.value;
+    const pregunta = this.preguntas[this.preguntaActual];
+  
+    if (pregunta.respuestaSeleccionada === respuestaSeleccionada) {
+      pregunta.respuestaSeleccionada = undefined;
     } else {
-      // Todas las preguntas han sido mostradas
-      this.preguntaActual = undefined;
+      pregunta.respuestaSeleccionada = respuestaSeleccionada;
+    }
+  
+    for (let i = this.preguntaActual + 1; i < this.preguntas.length; i++) {
+      this.preguntas[i].respuestaSeleccionada = undefined;
+    }
+  
+    if (this.preguntaActual < this.preguntas.length - 1) {
+      this.preguntaActual++;
+    } else {
+      alert("Respuestas guardadas");
+      this.router.navigate(['cursos', this.alumnoId]);
     }
   }
   
-
-  seleccionarRespuesta(): void {
-    // Asumo que la propiedad `respuestaSeleccionada` contiene el ID de la respuesta seleccionada
-    // Aquí deberías implementar la lógica para manejar la respuesta seleccionada
-    console.log('Respuesta seleccionada:', this.respuestaSeleccionada);
-  }
-
-  siguientePregunta(): void {
-    // Asumo que la propiedad `preguntaActual` se ha asignado correctamente
-    // Aquí deberías implementar la lógica para cargar la siguiente pregunta
-    this.mostrarSiguientePregunta();
-  }
 }
