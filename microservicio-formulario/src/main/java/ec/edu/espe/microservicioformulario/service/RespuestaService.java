@@ -1,4 +1,5 @@
 package ec.edu.espe.microservicioformulario.service;
+
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import ec.edu.espe.microservicioformulario.model.Respuesta;
@@ -13,8 +14,8 @@ public class RespuestaService {
         this.respuestaRepository = respuestaRepository;
     }
 
-    public Respuesta save(Respuesta respuesta) {
-        return this.respuestaRepository.save(respuesta);
+    public Iterable<Respuesta> save(Iterable<Respuesta> respuestas) {
+        return this.respuestaRepository.saveAll(respuestas);
     }
 
     public Iterable<Respuesta> listAll() {
@@ -24,10 +25,10 @@ public class RespuestaService {
     public Respuesta findById(long id) {
         Optional<Respuesta> optionalrespuesta = this.respuestaRepository.findById(id);
 
-        if(optionalrespuesta.isPresent()) {
+        if (optionalrespuesta.isPresent()) {
             return optionalrespuesta.get();
         }
 
-        throw new RuntimeException("respuesta con ID: " + id + " no se encuentra.");
+        throw new RuntimeException("Respuesta con ID: " + id + " no se encuentra.");
     }
 }

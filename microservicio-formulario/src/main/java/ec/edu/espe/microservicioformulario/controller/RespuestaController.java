@@ -33,7 +33,7 @@ public class RespuestaController {
     }
 
     @PostMapping("/registro")
-    public ResponseEntity<Respuesta> save(@RequestBody Respuesta respuesta) {
-        return ResponseEntity.ok().body(this.respuestaService.save(respuesta));
+    public ResponseEntity<Iterable<Respuesta>> save(@RequestBody Iterable<Respuesta> respuestas) {
+        return ResponseEntity.ok().body(this.respuestaService.save(respuestas));
     }
 }

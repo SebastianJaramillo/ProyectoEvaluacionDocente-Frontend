@@ -1,8 +1,5 @@
 package ec.edu.espe.microservicioevaluacion.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,11 +15,14 @@ import ec.edu.espe.microservicioevaluacion.service.EvaluacionService;
 @RequestMapping("/evaluacion")
 public class EvaluacionController {
     
-    @Autowired
-    private EvaluacionService evaluacionService;
+    private final EvaluacionService evaluacionService;
+
+    public EvaluacionController(EvaluacionService evaluacionService) {
+        this.evaluacionService = evaluacionService;
+    }
 
     @GetMapping("/listar")
-    public ResponseEntity<List<Evaluacion>> listAll() {
+    public ResponseEntity<Iterable<Evaluacion>> listAll() {
         return ResponseEntity.ok().body(evaluacionService.listAll());
     }
 

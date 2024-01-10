@@ -1,14 +1,36 @@
 package ec.edu.espe.microserviciocursoestudiante.service;
 
-import java.util.List;
+import java.util.Optional;
 
-import ec.edu.espe.microserviciocursoestudiante.domain.Curso;
+import org.springframework.stereotype.Service;
 
-public interface CursoService {
+import ec.edu.espe.microserviciocursoestudiante.model.Curso;
+import ec.edu.espe.microserviciocursoestudiante.repository.CursoRepository;
 
-    public Curso save(Curso curso);
+@Service
+public class CursoService {
 
-    public List<Curso> listAll();
+    private final CursoRepository cursoRepository;
 
-    public Curso findByNrc(long nrc);
+    public CursoService(CursoRepository cursoRepository) {
+        this.cursoRepository = cursoRepository;
+    }
+
+    public Curso save(Curso curso) {
+        return this.cursoRepository.save(curso);
+    }
+
+    public Iterable<Curso> listAll() {
+        return this.cursoRepository.findAll();
+    }
+
+    public Curso findByNrc(long nrc) {
+        Optional<Curso> optionalCurso = this.cursoRepository.findById(nrc);
+
+        if(optionalCurso.isPresent()) {
+            return optionalCurso.get();
+        }
+
+        throw new RuntimeException("Curso con NRC: " + nrc + " no se encuentra.");
+    }
 }

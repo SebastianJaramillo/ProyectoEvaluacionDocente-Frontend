@@ -14,6 +14,7 @@ public class Periodo {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "per_id")
 	private Long id;
+
 	@Column(name = "descripcion")
 	private String descripcion;
 
@@ -37,6 +38,22 @@ public class Periodo {
 		this.id = id;
 	}
 
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -58,21 +75,4 @@ public class Periodo {
 			return false;
 		return true;
 	}
-
-	public String getDescripcion() {
-		return descripcion;
-	}
-
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
-
-	public String getEstado() {
-		return estado;
-	}
-
-	public void setEstado(String estado) {
-		this.estado = estado;
-	}
-
 }

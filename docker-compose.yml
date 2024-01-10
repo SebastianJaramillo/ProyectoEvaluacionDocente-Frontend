@@ -70,6 +70,7 @@ services:
       - db
     networks:
       - proyecto-docente-network
+      
   formulario:
     image: microservicio-formulario:1.1
     container_name: microservicio-formulario

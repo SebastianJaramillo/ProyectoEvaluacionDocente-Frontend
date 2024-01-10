@@ -1,9 +1,9 @@
 package ec.edu.espe.microserviciocursoestudiante.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
 
-import ec.edu.espe.microserviciocursoestudiante.domain.Estudiante;
+import ec.edu.espe.microserviciocursoestudiante.model.Estudiante;
 
-public interface EstudianteRepository extends JpaRepository<Estudiante, String> {
+public interface EstudianteRepository extends CrudRepository<Estudiante, String> {
 
 }

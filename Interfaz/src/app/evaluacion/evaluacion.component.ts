@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { EvaluacionService } from '../evaluacion.service';
+
 import { ActivatedRoute, Router } from '@angular/router';
+import { EvaluacionService } from '../services/evaluacion/evaluacion.service';
 
 @Component({
   selector: 'app-evaluacion',

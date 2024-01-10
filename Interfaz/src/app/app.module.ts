@@ -4,11 +4,10 @@ import { FormsModule } from '@angular/forms'; // Asegúrate de agregar esta lín
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AlumnoComponent } from './alumno/alumno.component';
-import { AlumnoService } from './alumno.service';
+import { AlumnoService } from './services/alumno/alumno.service';
 import { CursoComponent } from './curso/curso.component';
 import { RouterModule, Routes } from '@angular/router';
 import { PreguntasComponent } from './preguntas/preguntas.component';
-import { ExamenComponent } from './examen/examen.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderComponent } from './shared/header/header.component';
 import { FooterComponent } from './shared/footer/footer.component';
@@ -33,11 +32,9 @@ import {
 } from 'igniteui-angular';
 import { NavbarComponent } from './navbar/navbar.component';
 import { EvaluacionComponent } from './evaluacion/evaluacion.component';
-import { RespuestasComponent } from './respuestas/respuestas.component';
 const routes: Routes = [
   { path: 'alumnos', component: AlumnoComponent },
-  { path: 'cursos', component: CursoComponent },
-  { path: 'examenes', component: ExamenComponent },
+  { path: 'cursos', component: CursoComponent },  
   { path: '', redirectTo: '/inicio', pathMatch: 'full' }, // Redireccionar a 'alumnos' por defecto
 ];
 @NgModule({
@@ -55,7 +52,6 @@ const routes: Routes = [
     LoginComponent,
     NavComponent,
     PersonalDetailsComponent,
-    RespuestasComponent,
   ],
   imports: [
     BrowserModule,

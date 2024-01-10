@@ -1,8 +1,5 @@
 package ec.edu.espe.microserviciocursoestudiante.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,18 +8,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ec.edu.espe.microserviciocursoestudiante.domain.Asignatura;
+import ec.edu.espe.microserviciocursoestudiante.model.Asignatura;
 import ec.edu.espe.microserviciocursoestudiante.service.AsignaturaService;
 
 @RestController
 @RequestMapping("/asignatura")
 public class AsignaturaController {
+    
+    private final AsignaturaService asignaturaService;
 
-    @Autowired
-    private AsignaturaService asignaturaService;
+    public AsignaturaController(AsignaturaService asignaturaService) {
+        this.asignaturaService = asignaturaService;
+    }
 
     @GetMapping("/listar")
-    public ResponseEntity<List<Asignatura>> listAll() {
+    public ResponseEntity<Iterable<Asignatura>> listAll() {
         return ResponseEntity.ok().body(asignaturaService.listAll());
     }
     

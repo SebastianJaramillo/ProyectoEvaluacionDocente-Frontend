@@ -2,7 +2,6 @@ package ec.edu.espe.microserviciocursoestudiante.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ec.edu.espe.microserviciocursoestudiante.domain.Curso;
+import ec.edu.espe.microserviciocursoestudiante.model.Curso;
+import ec.edu.espe.microserviciocursoestudiante.model.CursoEstudiante;
+import ec.edu.espe.microserviciocursoestudiante.service.CursoEstudianteService;
 import ec.edu.espe.microserviciocursoestudiante.service.CursoService;
 
 @CrossOrigin
@@ -20,11 +21,16 @@ import ec.edu.espe.microserviciocursoestudiante.service.CursoService;
 @RequestMapping("/curso")
 public class CursoController {
 
-    @Autowired
-    private CursoService cursoService;
+    private final CursoService cursoService;
+    private final CursoEstudianteService cursoEstudianteService;
+
+    public CursoController(CursoService cursoService, CursoEstudianteService cursoEstudianteService) {
+        this.cursoService = cursoService;
+        this.cursoEstudianteService = cursoEstudianteService;
+    }
 
     @GetMapping("/listar")
-    public ResponseEntity<List<Curso>> listAll() {
+    public ResponseEntity<Iterable<Curso>> listAll() {
         return ResponseEntity.ok().body(cursoService.listAll());
     }
     
@@ -36,5 +42,10 @@ public class CursoController {
     @PostMapping("/registro")
     public ResponseEntity<Curso> save(@RequestBody Curso curso) {
         return ResponseEntity.ok().body(cursoService.save(curso));
+    }
+
+    @GetMapping("/estudiante/{nrc}")
+    public ResponseEntity<List<CursoEstudiante>> save(@PathVariable Long nrc) {
+        return ResponseEntity.ok().body(this.cursoEstudianteService.findByCurso(nrc));
     }
 }

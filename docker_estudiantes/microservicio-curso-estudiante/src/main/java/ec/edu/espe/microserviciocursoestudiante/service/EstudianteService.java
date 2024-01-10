@@ -1,18 +1,35 @@
 package ec.edu.espe.microserviciocursoestudiante.service;
 
-import java.util.List;
-import ec.edu.espe.microserviciocursoestudiante.domain.Curso;
-import ec.edu.espe.microserviciocursoestudiante.domain.Estudiante;
+import java.util.Optional;
+import org.springframework.stereotype.Service;
 
-public interface EstudianteService {
+import ec.edu.espe.microserviciocursoestudiante.model.Estudiante;
+import ec.edu.espe.microserviciocursoestudiante.repository.EstudianteRepository;
 
-    public Estudiante save(Estudiante estudiante);
+@Service
+public class EstudianteService {
 
-    public List<Estudiante> listAll();
+    private final EstudianteRepository estudianteRepository;
 
-    public Estudiante findById(String id);
+    public EstudianteService(EstudianteRepository estudianteRepository) {
+        this.estudianteRepository = estudianteRepository;
+    }
 
-    public Estudiante addCursosEstudiante(String id, Long nrc);
+    public Estudiante save(Estudiante estudiante) {
+        return this.estudianteRepository.save(estudiante);
+    }
 
-    public List<Curso> findCursosByEstudiante(String id);
+    public Iterable<Estudiante> listAll() {
+        return this.estudianteRepository.findAll();
+    }
+
+    public Estudiante findById(String id) {
+        Optional<Estudiante> optionalEstudiante = this.estudianteRepository.findById(id);
+
+        if (optionalEstudiante.isPresent()) {
+            return optionalEstudiante.get();
+        }
+
+        throw new RuntimeException("Estudiante con ID: " + id + " no se encuentra.");
+    }
 }

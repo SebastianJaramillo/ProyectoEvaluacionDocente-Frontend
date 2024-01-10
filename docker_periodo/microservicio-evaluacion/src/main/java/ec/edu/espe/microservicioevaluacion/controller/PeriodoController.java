@@ -1,8 +1,5 @@
 package ec.edu.espe.microservicioevaluacion.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,21 +17,24 @@ import ec.edu.espe.microservicioevaluacion.service.PeriodoService;
 @RequestMapping("/periodo")
 public class PeriodoController {
     
-    @Autowired
-    private PeriodoService periodoService;
+    private final PeriodoService periodoService;
+
+    public PeriodoController(PeriodoService periodoService) {
+        this.periodoService = periodoService;
+    }
 
     @GetMapping("/listar")
-    public ResponseEntity<List<Periodo>> listAll() {
-        return ResponseEntity.ok().body(periodoService.listAll());
+    public ResponseEntity<Iterable<Periodo>> listAll() {
+        return ResponseEntity.ok().body(this.periodoService.findByEstado("ACTIVO"));
     }
 
     @GetMapping("/buscar/{id}")
     public ResponseEntity<Periodo> findById(@PathVariable Long id) {
-        return ResponseEntity.ok().body(periodoService.findById(id));
+        return ResponseEntity.ok().body(this.periodoService.findById(id));
     }
 
     @PostMapping("/registro")
     public ResponseEntity<Periodo> save(@RequestBody Periodo periodo) {
-        return ResponseEntity.ok().body(periodoService.save(periodo));
+        return ResponseEntity.ok().body(this.periodoService.save(periodo));
     }
 }

@@ -1,5 +1,5 @@
 <!-- HTML para mostrar la pregunta actual y las opciones de respuesta -->
-<p><b style="font-size: 18px;">HETEROEVALUACIÓN</b><br><br>
+<p><b style="font-size: 18px;">{{ formulario.nombre.toUpperCase() }}</b><br><br>
 <b>Estudiante: </b>{{ alumno.nombres + " " + alumno.apellidos }}<br>
 <b>Asignatura: </b>{{ curso.asignatura.nombre }} <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NRC: </b>{{ curso.nrc }}</p>
 <div *ngIf="preguntas && preguntas.length > 0">
@@ -11,11 +11,16 @@
           type="radio"
           name="respuesta{{ preguntaActual }}"
           [value]="opcion"
+          (change)="seleccionarRespuesta(opcion)"
           [checked]="preguntas[preguntaActual].respuestaSeleccionada === opcion"
-          (change)="seleccionarRespuesta($event)"
         />
         {{ opcion }}
       </label>
     </div>
+    <br>
+    <div style="text-align: center;">
+      <button *ngIf="preguntaActual < 4" class="btn btn-secondary" (click)="siguiente()" [disabled]="!isSelectAnswer()">Siguiente</button>
+      <button *ngIf="preguntaActual == 4" class="btn btn-secondary" (click)="guardar()" [disabled]="!isSelectAnswer()">Guardar</button>
+    </div>    
   </div>   
 </div>

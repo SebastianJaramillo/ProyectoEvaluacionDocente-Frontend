@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { CursosService } from '../cursos.service';
+import { CursosService } from '../services/curso/cursos.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AlumnoService } from '../services/alumno/alumno.service';
 
 @Component({
   selector: 'app-curso',
@@ -8,13 +9,13 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./curso.component.css'],
 })
 export class CursoComponent implements OnInit {
-  cursos: any[] = [];
+    cursos: any[] = [];
   curso: any = {};
   alumnoId: any;
-  cursoId: any;
 
   constructor(
     private cursosService: CursosService,
+    private alumnoService: AlumnoService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -38,12 +39,8 @@ export class CursoComponent implements OnInit {
     );
   }
 
-  salir() {
-    this.router.navigate(['iniciar-sesion']);
-  }
-
   cargarCursosEstudiante(id: string) {
-    this.cursosService.obtenerCursosPorAlumnos(id).subscribe(
+    this.alumnoService.findByAlumno(id).subscribe(
       (data) => {
         this.cursos = data;
       },
@@ -53,53 +50,11 @@ export class CursoComponent implements OnInit {
     );
   }
 
-  guardarCurso() {
-    if (this.curso && this.curso.id) {
-      // Editar curso existente
-      this.cursosService.updateCurso(this.curso.id, this.curso).subscribe(
-        (data) => {
-          console.log('Curso actualizado:', data);
-          this.resetForm();
-          this.getAllCursos();
-        },
-        (error) => {
-          console.error(error);
-        }
-      );
-    } else {
-      // Crear nuevo curso
-      if (this.curso) {
-        this.cursosService.createCurso(this.curso).subscribe(
-          (data) => {
-            console.log('Curso creado:', data);
-            this.resetForm();
-            this.getAllCursos();
-          },
-          (error) => {
-            console.error(error);
-          }
-        );
-      }
-    }
+  evaluacion(alumnoId: any, cursoId: any, id: any) {    
+    this.router.navigate(['preguntas', alumnoId, cursoId, 1, id]);
   }
 
-  eliminarCurso(id: number) {
-    this.cursosService.deleteCurso(id).subscribe(
-      () => {
-        console.log('Curso eliminado');
-        this.getAllCursos();
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-  }
-
-  evaluacion(alumnoId: any, cursoId: any) {    
-    this.router.navigate(['preguntas', alumnoId, cursoId]);
-  }
-
-  private resetForm() {
-    this.curso = {};
+  salir() {
+    this.router.navigate(['iniciar-sesion']);
   }
 }
