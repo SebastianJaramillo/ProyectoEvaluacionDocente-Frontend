@@ -1,20 +1,27 @@
 <!-- HTML para mostrar la pregunta actual y las opciones de respuesta -->
-<p><b style="font-size: 18px;">{{ formulario.nombre.toUpperCase() }}</b><br><br>
+<p style="font-size: 18px; text-align: center;"><b style="font-size: 18px;">{{ formulario.nombre.toUpperCase() }}</b><br><br></p>
+<p>
 <b>Estudiante: </b>{{ alumno.nombres + " " + alumno.apellidos }}<br>
 <b>Asignatura: </b>{{ curso.asignatura.nombre }} <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NRC: </b>{{ curso.nrc }}</p>
+
 <div *ngIf="preguntas && preguntas.length > 0">
   <div *ngIf="preguntas && preguntas.length > 0">
+    <p style="font-size: 18px; text-align: center;">Pregunta <strong>{{ preguntaActual + 1 }}</strong> de {{preguntas.length}}</p>
+    <div class="progressBar">
+      <div class="innerBar" [style.width]="(preguntaActual + 1) / preguntas.length * 100 + '%'"></div>
+    </div>
+  
     <p style="font-size: 18px; text-align: center;"><b>{{ preguntaActual + 1 }}. {{ preguntas[preguntaActual].texto }}</b></p>
     <div class="radio-buttons">
-      <label *ngFor="let opcion of [1, 2, 3, 4, 5]" class="radio-label">
+      <label *ngFor="let opcion of opciones" class="radio-label">
         <input
           type="radio"
           name="respuesta{{ preguntaActual }}"
-          [value]="opcion"
-          (change)="seleccionarRespuesta(opcion)"
+          [value]="opcion.valor"
+          (change)="seleccionarRespuesta(opcion.valor)"
           [checked]="preguntas[preguntaActual].respuestaSeleccionada === opcion"
         />
-        {{ opcion }}
+        <span>{{ opcion.texto }} </span>
       </label>
     </div>
     <br>

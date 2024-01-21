@@ -1,29 +1,47 @@
-<!--navbar.component.html-->
 
-<div class="sample-column">
-    <igx-navbar class="igx-navbar--default">
-        <igx-navbar-action>
-        <!--    <button igxButton="icon" (click)="toggleDrawer()">
-                <igx-icon>menu</igx-icon>
-            </button>-->
-        </igx-navbar-action>
-
-        <div igxNavbarTitle style="display: flex; justify-content: center;">
-            <a href="https://www.infragistics.com/products/ignite-ui-angular" target="_blank">
-                <img src="../assets/img/logo.png"
-                      width="480px" height="20px" alt style="margin-top: 7px;" >
-            </a>
+<div class="d-flex">
+  <div id="sidebar">
+    <div class="p-2">
+      <img
+        src="https://www.espe.edu.ec/wp-content/uploads/2023/03/espe.png"
+        width="100%"
+        class="mt-3 mb-3"
+        alt="Logo ESPE"
+      />
+    </div>
+    <div id="sidebar-accordion" class="accordion">
+      <div class="list-group">
+        <ul>
+          <li>Estudiantes</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="content w-100">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+      <div class="container-xl">
+        <div class="collapse navbar-collapse">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <button class="btn btn-primary">Perfil</button>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ alumno.nombres + " " + alumno.apellidos }}
+              </a>
+            </li>
+          </ul>
         </div>
-        
-        <button igxButton="icon">
-            <img _ngcontent-axr-c35="" width="100"  height="40px" class="img rounded-circle zoom" style="vertical-align: middle;" src="https://image-api.espe.edu.ec/imagen/L00051746">
-        
-        </button>
-        <span _ngcontent-axr-c35="" class="image-text" style="color:white;font-size: 15px; padding-left: 5px;">L00051746</span>
-
-        <button igxButton="icon">
-            <igx-icon>more_vert</igx-icon>
-        </button>
-        
-    </igx-navbar>
+      </div>
+    </nav>
+    <section class="p-3">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <router-outlet></router-outlet>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 </div>

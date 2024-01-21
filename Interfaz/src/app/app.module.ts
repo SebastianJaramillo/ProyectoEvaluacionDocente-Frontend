@@ -11,17 +11,18 @@ import { PreguntasComponent } from './preguntas/preguntas.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderComponent } from './shared/header/header.component';
 import { FooterComponent } from './shared/footer/footer.component';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { LoginComponent } from './auth/login/login.component';
 import { NavComponent } from './shared/nav/nav.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { PersonalDetailsComponent } from './components/personal-details/personal-details.component';
 import { UserService } from './services/user/user.service';
 import { LoginService } from './services/auth/login.service';
 import { JwtInterceptorService } from './services/auth/jwt-interceptor.service';
 import { ErrorInterceptorService } from './services/auth/error-interceptor.service';
 
+import { NavbarComponent } from './navbar/navbar.component';
+import { EvaluacionComponent } from './evaluacion/evaluacion.component';
+import { DocenteComponent } from './docente/docente.component';
 import {
   IgxIconModule,
   IgxNavbarModule,
@@ -30,8 +31,7 @@ import {
   IgxRippleModule,
   IgxToggleModule,
 } from 'igniteui-angular';
-import { NavbarComponent } from './navbar/navbar.component';
-import { EvaluacionComponent } from './evaluacion/evaluacion.component';
+import { ReporteComponent } from './reporte/reporte.component';
 const routes: Routes = [
   { path: 'alumnos', component: AlumnoComponent },
   { path: 'cursos', component: CursoComponent },  
@@ -48,10 +48,10 @@ const routes: Routes = [
     PreguntasComponent,
     HeaderComponent,
     FooterComponent,
-    DashboardComponent,
     LoginComponent,
     NavComponent,
-    PersonalDetailsComponent,
+    DocenteComponent,
+    ReporteComponent
   ],
   imports: [
     BrowserModule,

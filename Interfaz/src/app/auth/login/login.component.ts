@@ -11,6 +11,17 @@ import { UserService } from 'src/app/services/user/user.service';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
+
+  currentImageIndex = 0;
+
+  carouselImages = [
+    '../../../assets/img/1.jpg',
+    '../../../assets/img/2.jpg',
+    '../../../assets/img/3.jpg',
+    '../../../assets/img/4.jpg',
+    '../../../assets/img/5.jpg'
+  ];
+ 
   loginError: string = '';
   loginForm = this.formBuilder.group({
     username: ['', [Validators.required]],
@@ -23,8 +34,16 @@ export class LoginComponent implements OnInit {
     private userService: UserService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    setInterval(() => {
+      this.showNextImage();
+    }, 3000);
+  }
 
+  showNextImage() {
+    this.currentImageIndex = (this.currentImageIndex + 1) % this.carouselImages.length;
+  }
+  
   get email() {
     return this.loginForm.controls.username;
   }
