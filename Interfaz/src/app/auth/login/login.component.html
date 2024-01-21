@@ -1,19 +1,39 @@
 <form [formGroup]="loginForm">
-    <p class="text-danger">{{loginError}}</p>
-    <div class="mb-3">
-      <label for="exampleInputEmail1" class="form-label">Usuario</label>
-      <input formControlName="username" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">  
-       
-    </div>
-    <div class="mb-3">
-      <label for="exampleInputPassword1" class="form-label">Password</label>
-      <input formControlName="password" type="password" class="form-control" id="exampleInputPassword1">
-        <div *ngIf="password.invalid && (password.dirty || password.touched)"
-            class="text-danger">
-            <div *ngIf="password.errors?.['required']">
+  <div class="login-container">
+    <div class="background-image"></div>
+    <div class="overlay"></div>
+    <div class="login-box">
+      <div class="content-wrapper">
+        <div class="logo">
+          <img src="../../../assets/img/ESPEtransparente.png" alt="Logo">
+        </div>
+        <div class="input-section">
+          <p class="text-danger">{{ loginError }}</p>
+          <label for="usuario">Usuario</label>
+          <br>
+          <div class="input-wrapper">
+            <img src="../../../assets/img/usuario.png" alt="usuario">
+            <input formControlName="username" type="text" class="form-control" id="exampleInputEmail1"
+              aria-describedby="emailHelp" id="usuario" placeholder="Ingrese su usuario">
+          </div>
+          <label for="contrasena">Contraseña</label>
+          <br>
+          <div class="input-wrapper">
+            <img src="../../../assets/img/bloquear.png" alt="Icono Contraseña">
+            <input formControlName="password" class="form-control" id="exampleInputPassword1" type="password"
+              id="contrasena" placeholder="Ingrese su contraseña">
+            <div *ngIf="password.invalid && (password.dirty || password.touched)" class="text-danger">
+              <div *ngIf="password.errors?.['required']">
                 El Password es requerido.
+              </div>
             </div>
-        </div> 
+          </div>
+          <button type="submit" (click)="login()">Iniciar Sesión</button>
+        </div>
+      </div>
+      <div class="carousel-container">
+        <img [src]="carouselImages[currentImageIndex]" alt="Carrusel">
+      </div>
     </div>
-    <button type="submit" (click)="login()" class="btn btn-primary">Iniciar Sesión</button>
+  </div>
 </form>

@@ -23,6 +23,13 @@ export class PreguntasComponent implements OnInit {
   cursoEstudianteId: any;
   docId: any;
 
+  opciones = [
+    { valor: 1, texto: 'Totalmente en desacuerdo' },
+    { valor: 2, texto: 'Medianamente en desacuerdo' },
+    { valor: 3, texto: 'Ni de acuerdo ni en desacuerdo' },
+    { valor: 4, texto: 'Medianamente de acuerdo' },
+    { valor: 5, texto: 'Totalmente de acuerdo' }
+  ];
   constructor(
     private route: ActivatedRoute,
     private router: Router,

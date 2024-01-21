@@ -1,23 +1,29 @@
-<div class="container">
-  <h2>Listado de Cursos</h2>
 
+<div class="container">
+  <h2 class="mb-5">Listado de Cursos</h2>
+  <div class="table-responsive custom-table-responsive">
   <!-- Tabla para mostrar los cursos con estilos de Bootstrap -->
-  <table class="table table-bordered table-striped" style="width: 50%;">
+  <table class="table custom-table" style="width: 50%;">
     <thead>
       <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Estado</th> 
+        <th scope="col">ID</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Estado</th> 
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let cursoEstudiante of cursos">        
+      <tr scope="row" *ngFor="let cursoEstudiante of cursos">        
         <td>{{ cursoEstudiante.curNrc }}</td>
         <td>{{ cursoEstudiante.curso.asignatura.nombre}}</td>
         <td *ngIf="cursoEstudiante.eval_estado != 'TERMINADA'" style="width: 50px;"><button class="btn btn-secondary" (click)="evaluacion(alumnoId, cursoEstudiante.curso.nrc, cursoEstudiante.id)">Evaluar</button></td>
         <td *ngIf="cursoEstudiante.eval_estado == 'TERMINADA'">{{ cursoEstudiante.eval_estado}}</td>
+      
       </tr>
+      <tr class="spacer"><td colspan="100"></td></tr>
     </tbody>
   </table>
+  </div>
+  <br>
   <button (click)="salir()" class="btn btn-danger">Salir</button>
 </div>
+
