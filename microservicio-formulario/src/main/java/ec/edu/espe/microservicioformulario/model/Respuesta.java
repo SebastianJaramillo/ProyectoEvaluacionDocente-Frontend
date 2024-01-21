@@ -21,7 +21,10 @@ public class Respuesta {
 	private String texto;
 
 	@Column(name = "pre_id")
-	private long preId;
+	private String preId;
+
+	@Column(name = "doc_evaluado")
+	private String docEvaluado;
 
 	@OneToOne
 	@JoinColumn(name = "pre_id", referencedColumnName = "pre_id", insertable = false, updatable = false)
@@ -30,10 +33,11 @@ public class Respuesta {
 	public Respuesta() {
 	}
 
-	public Respuesta(long id, String texto, long preId, Pregunta pregunta) {
+	public Respuesta(long id, String texto, String preId, String docEvaluado, Pregunta pregunta) {
 		this.id = id;
 		this.texto = texto;
 		this.preId = preId;
+		this.docEvaluado = docEvaluado;
 		this.pregunta = pregunta;
 	}
 
@@ -53,11 +57,11 @@ public class Respuesta {
 		this.texto = texto;
 	}
 
-	public long getPreId() {
+	public String getPreId() {
 		return preId;
 	}
 
-	public void setPreId(long preId) {
+	public void setPreId(String preId) {
 		this.preId = preId;
 	}
 
@@ -67,6 +71,14 @@ public class Respuesta {
 
 	public void setPregunta(Pregunta pregunta) {
 		this.pregunta = pregunta;
+	}
+
+	public String getDocEvaluado() {
+		return docEvaluado;
+	}
+
+	public void setDocEvaluado(String docEvaluado) {
+		this.docEvaluado = docEvaluado;
 	}
 
 	@Override

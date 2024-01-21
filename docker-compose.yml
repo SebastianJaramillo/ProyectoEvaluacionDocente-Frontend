@@ -87,6 +87,23 @@ services:
       - db
     networks:
       - proyecto-docente-network
+  
+  docente:
+    image: microservicio-docente:1.1
+    container_name: microservicio-docente
+    ports:
+      - "8084:8084"
+    environment:
+      # Configuración del microservicio
+      ORACLE_SID: DBDOC # Container database name
+      ORACLE_PDB: DBPDOC # Pluggable database name
+      ORACLE_PWD: Espe.2023
+      ORACLE_CHARACTERSET: AL32UTF8
+      ORA_SDTZ: Ecuador
+    depends_on:
+      - db
+    networks:
+      - proyecto-docente-network
 
 networks:
   proyecto-docente-network:

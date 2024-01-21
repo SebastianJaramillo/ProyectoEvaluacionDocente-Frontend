@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlumnoService } from '../services/alumno/alumno.service';
 import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable'
 
 
 @Component({

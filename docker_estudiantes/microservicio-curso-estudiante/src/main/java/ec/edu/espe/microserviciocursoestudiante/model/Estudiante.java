@@ -1,12 +1,8 @@
 package ec.edu.espe.microserviciocursoestudiante.model;
 
-import java.util.List;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -21,12 +17,6 @@ public class Estudiante {
 
 	@Column(name = "est_apellidos", nullable = false, length = 50)
 	private String apellidos;
-
-	@ManyToMany
-	@JoinTable(
-		name = "curso_estudiante", joinColumns = @JoinColumn(name = "est_id", referencedColumnName = "est_id"), 
-		inverseJoinColumns = @JoinColumn(name = "cur_nrc", referencedColumnName = "cur_nrc") )
-	private List<Curso> cursos;
 
 	public Estudiante() {
 	}
@@ -59,14 +49,6 @@ public class Estudiante {
 
 	public void setApellidos(String apellidos) {
 		this.apellidos = apellidos;
-	}
-
-	public List<Curso> getCursos() {
-		return cursos;
-	}
-
-	public void setCursos(List<Curso> cursos) {
-		this.cursos = cursos;
 	}
 
 	@Override

@@ -1,43 +1,35 @@
-package ec.edu.espe.microserviciodocente.domain;
-
-import java.util.List;
+package ec.edu.espe.microserviciodocente.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "docente")
 public class Docente {
     @Id
-    @Column(name = "doc_id")
+    @Column(name = "doc_id", nullable = false, length = 15)
     private String id;
 
-    @Column(name = "doc_nombres")
-	private String nombres;
+    @Column(name = "doc_cedula", nullable = false, length = 10)
+    private String cedula;
 
-	@Column(name = "doc_apellidos")
-	private String apellidos;
+    @Column(name = "doc_nombres", nullable = false, length = 50)
+    private String nombres;
 
-    @Column(name = "func_id")
-    private long funcId;
-    
-    @ManyToMany
-    @JoinTable(
-        name = "docente_funcion",
-        joinColumns = @JoinColumn(name = "doc_id"),
-        inverseJoinColumns = @JoinColumn(name = "func_id")
-    )
-    private List<Funcion> funciones;
+    @Column(name = "doc_apellidos", nullable = false, length = 50)
+    private String apellidos;
 
-    @OneToOne
-    @JoinColumn(name = "doc_id", referencedColumnName = "doc_id", insertable = false, updatable = false)
-    private Docente jefe;
+    public Docente() {
+    }
+
+    public Docente(String id, String cedula, String nombres, String apellidos) {
+        this.id = id;
+        this.cedula = cedula;
+        this.nombres = nombres;
+        this.apellidos = apellidos;
+    }
 
     public String getId() {
         return id;
@@ -45,6 +37,14 @@ public class Docente {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getCedula() {
+        return cedula;
+    }
+
+    public void setCedula(String cedula) {
+        this.cedula = cedula;
     }
 
     public String getNombres() {
@@ -61,30 +61,6 @@ public class Docente {
 
     public void setApellidos(String apellidos) {
         this.apellidos = apellidos;
-    }
-
-    public long getFuncId() {
-        return funcId;
-    }
-
-    public void setFuncId(long funcId) {
-        this.funcId = funcId;
-    }
-
-    public List<Funcion> getFunciones() {
-        return funciones;
-    }
-
-    public void setFunciones(List<Funcion> funciones) {
-        this.funciones = funciones;
-    }
-
-    public Docente getJefe() {
-        return jefe;
-    }
-
-    public void setJefe(Docente jefe) {
-        this.jefe = jefe;
     }
 
     @Override
@@ -110,5 +86,5 @@ public class Docente {
         } else if (!id.equals(other.id))
             return false;
         return true;
-    }    
+    }
 }

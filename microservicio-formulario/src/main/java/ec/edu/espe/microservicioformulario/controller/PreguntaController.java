@@ -32,7 +32,7 @@ public class PreguntaController {
 
     @GetMapping("/buscar/{id}")
     public ResponseEntity<Pregunta> findById(@PathVariable String id) {
-        return ResponseEntity.ok().body(this.preguntaService.findById(Long.parseLong(id)));
+        return ResponseEntity.ok().body(this.preguntaService.findById(id));
     }
 
     @PostMapping("/registro")

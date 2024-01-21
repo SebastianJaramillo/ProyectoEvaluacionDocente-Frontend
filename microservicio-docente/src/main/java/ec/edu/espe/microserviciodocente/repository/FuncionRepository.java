@@ -1,9 +1,9 @@
 package ec.edu.espe.microserviciodocente.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
 
-import ec.edu.espe.microserviciodocente.domain.Funcion;
+import ec.edu.espe.microserviciodocente.model.Funcion;
 
-public interface FuncionRepository extends JpaRepository<Funcion, Long> {
+public interface FuncionRepository extends CrudRepository<Funcion, String> {
 
 }

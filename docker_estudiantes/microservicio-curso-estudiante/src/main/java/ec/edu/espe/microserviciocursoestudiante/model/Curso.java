@@ -32,30 +32,34 @@ public class Curso {
     @Column(name = "cur_hora")
     private LocalTime hora;
 
+    @Column(name = "doc_id", nullable = false, length = 15)
+    private String docId;
+
     public Curso() {
     }
 
-    public Curso(Long nrc, Long asigId, Asignatura asignatura, String dias, LocalTime hora) {
+    public Curso(Long nrc, Long asigId, Asignatura asignatura, String dias, LocalTime hora, String docId) {
         this.nrc = nrc;
         this.asigId = asigId;
         this.asignatura = asignatura;
         this.dias = dias;
         this.hora = hora;
+        this.docId = docId;
     }
 
-    public long getNrc() {
+    public Long getNrc() {
         return nrc;
     }
 
-    public void setNrc(long nrc) {
+    public void setNrc(Long nrc) {
         this.nrc = nrc;
     }
 
-    public long getAsigId() {
+    public Long getAsigId() {
         return asigId;
     }
 
-    public void setAsigId(long asigId) {
+    public void setAsigId(Long asigId) {
         this.asigId = asigId;
     }
 
@@ -83,11 +87,19 @@ public class Curso {
         this.hora = hora;
     }
 
+    public String getDocId() {
+        return docId;
+    }
+
+    public void setDocId(String docId) {
+        this.docId = docId;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (int) (nrc ^ (nrc >>> 32));
+        result = prime * result + ((nrc == null) ? 0 : nrc.hashCode());
         return result;
     }
 
@@ -100,7 +112,10 @@ public class Curso {
         if (getClass() != obj.getClass())
             return false;
         Curso other = (Curso) obj;
-        if (nrc != other.nrc)
+        if (nrc == null) {
+            if (other.nrc != null)
+                return false;
+        } else if (!nrc.equals(other.nrc))
             return false;
         return true;
     }

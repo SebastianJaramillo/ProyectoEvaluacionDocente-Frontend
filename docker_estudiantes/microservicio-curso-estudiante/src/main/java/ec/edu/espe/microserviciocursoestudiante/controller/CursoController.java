@@ -45,7 +45,7 @@ public class CursoController {
     }
 
     @GetMapping("/estudiante/{nrc}")
-    public ResponseEntity<List<CursoEstudiante>> save(@PathVariable Long nrc) {
+    public ResponseEntity<List<CursoEstudiante>> findByCurso(@PathVariable Long nrc) {
         return ResponseEntity.ok().body(this.cursoEstudianteService.findByCurso(nrc));
     }
 }

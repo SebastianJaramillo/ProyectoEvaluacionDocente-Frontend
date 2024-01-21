@@ -1,43 +1,49 @@
-package ec.edu.espe.microserviciodocente.domain;
-
-import java.util.List;
+package ec.edu.espe.microserviciodocente.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "funcion")
 public class Funcion {
     @Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "func_id")
-	private long id;
+	@Column(name = "func_id", nullable = false, length = 3)
+	private String id;
 
     @Column(name = "func_descripcion")
 	private String descripcion;
-    
-   @ManyToMany(mappedBy = "docentes")
-    private List<Docente> docentes;
 
     public Funcion() {
     }
 
-    public Funcion(long id, String descripcion, List<Docente> docentes) {
+    public Funcion(String id, String descripcion) {
         this.id = id;
         this.descripcion = descripcion;
-        this.docentes = docentes;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (int) (id ^ (id >>> 32));
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
 
@@ -50,7 +56,10 @@ public class Funcion {
         if (getClass() != obj.getClass())
             return false;
         Funcion other = (Funcion) obj;
-        if (id != other.id)
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
             return false;
         return true;
     }

@@ -56,7 +56,7 @@ public class EstudianteController {
     }
 
     @PutMapping("/curso/evaluacion")
-    public ResponseEntity<CursoEstudiante> updatePersona(@RequestBody Long id) {
+    public ResponseEntity<CursoEstudiante> updateEvaluacion(@RequestBody Long id) {
         return ResponseEntity.ok().body(this.cursoEstudianteService.updateEstadoEval(id));
     }
 }

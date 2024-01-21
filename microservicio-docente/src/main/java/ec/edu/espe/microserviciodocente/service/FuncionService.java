@@ -1,14 +1,36 @@
 package ec.edu.espe.microserviciodocente.service;
 
-import java.util.List;
+import java.util.Optional;
 
-import ec.edu.espe.microserviciodocente.domain.Funcion;
+import org.springframework.stereotype.Service;
 
-public interface FuncionService {
+import ec.edu.espe.microserviciodocente.model.Funcion;
+import ec.edu.espe.microserviciodocente.repository.FuncionRepository;
 
-    public Funcion save(Funcion funcion);
+@Service
+public class FuncionService {
+    
+    private final FuncionRepository funcionRepository;
 
-    public List<Funcion> listAll();
+    public FuncionService(FuncionRepository funcionRepository) {
+        this.funcionRepository = funcionRepository;
+    }
 
-    public Funcion findById(long id);
+    public Funcion save(Funcion funcion) {
+        return funcionRepository.save(funcion);
+    }
+
+    public Iterable<Funcion> listAll() {
+        return funcionRepository.findAll();
+    }
+
+    public Funcion findById(String id) {
+        Optional<Funcion> optionalFuncion = funcionRepository.findById(id);
+
+        if (optionalFuncion.isPresent()) {
+            return optionalFuncion.get();
+        }
+
+        throw new RuntimeException("Función con id: " + id + " no se encuentra.");
+    }
 }

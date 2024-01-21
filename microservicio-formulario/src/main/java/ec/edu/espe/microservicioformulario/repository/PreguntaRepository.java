@@ -6,6 +6,6 @@ import ec.edu.espe.microservicioformulario.model.Pregunta;
 import java.util.List;
 
 
-public interface PreguntaRepository extends CrudRepository<Pregunta, Long> {
+public interface PreguntaRepository extends CrudRepository<Pregunta, String> {
     List<Pregunta> findByFormId(long formId);
 }

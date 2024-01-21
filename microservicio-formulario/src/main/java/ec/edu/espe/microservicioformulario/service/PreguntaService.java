@@ -24,7 +24,7 @@ public class PreguntaService {
         return this.preguntaRepository.findAll();
     }
     
-    public Pregunta findById(long id) {
+    public Pregunta findById(String id) {
         Optional<Pregunta> optionalpregunta = this.preguntaRepository.findById(id);
 
         if (optionalpregunta.isPresent()) {

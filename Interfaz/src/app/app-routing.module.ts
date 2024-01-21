@@ -19,7 +19,7 @@ const routes: Routes = [
     { path: 'periodo/:alumnoId', component: EvaluacionComponent },
     { path: 'Reporte', component:ReporteComponent },
     {path: 'preguntas/:alumnoId/:cursoId/:formId/:id',component: PreguntasComponent},
-    { path: 'Docentes', component: DocenteComponent}
+    { path: 'docentes', component: DocenteComponent}
     ],
   }
   
