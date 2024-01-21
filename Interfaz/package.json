@@ -23,6 +23,8 @@
     "fflate": "^0.7.3",
     "hammerjs": "^2.0.8",
     "igniteui-angular": "^16.1.10",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.1",
     "minireset.css": "~0.0.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
