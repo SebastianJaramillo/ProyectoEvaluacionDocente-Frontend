@@ -21,6 +21,7 @@ export class PreguntasComponent implements OnInit {
   formularioId: any;
   formulario: any = {};
   cursoEstudianteId: any;
+  docId: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -81,6 +82,7 @@ export class PreguntasComponent implements OnInit {
     this.cursoService.findById(id).subscribe(
       (data) => {
         this.curso = data;
+        this.docId = data.docId;
       },
       (error) => {
         console.error(error);
@@ -111,6 +113,7 @@ export class PreguntasComponent implements OnInit {
       this.respuestas.push({
         preId: this.preguntaActual,
         texto: pregunta.respuestaSeleccionada,
+        docEvaluado: this.docId
       });
     }
   }
@@ -121,6 +124,7 @@ export class PreguntasComponent implements OnInit {
     this.respuestas.push({
       preId: this.preguntaActual,
       texto: pregunta.respuestaSeleccionada,
+      docEvaluado: this.docId
     });
     this.formularioService.saveRespuestas(this.respuestas).subscribe(
       (data) => {
