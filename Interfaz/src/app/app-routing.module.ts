@@ -15,10 +15,10 @@ const routes: Routes = [
     component: NavbarComponent,
     children: [
     { path: 'alumnos', component: AlumnoComponent },
-    { path: 'cursos/:alumnoId', component: CursoComponent },
-    { path: 'periodo/:alumnoId', component: EvaluacionComponent },
+    { path: 'cursos/:id', component: CursoComponent },
+    { path: 'periodo/:id', component: EvaluacionComponent },
     { path: 'Reporte', component:ReporteComponent },
-    {path: 'preguntas/:alumnoId/:cursoId/:formId/:id',component: PreguntasComponent},
+    {path: 'preguntas/:id/:cursoId/:formId/:idCurEst',component: PreguntasComponent},
     { path: 'docentes', component: DocenteComponent}
     ],
   }

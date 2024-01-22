@@ -14,7 +14,7 @@ export class PreguntasComponent implements OnInit {
   preguntaActual: number = 0;
   respuestaSeleccionada: any;
   respuestas: any[] = [];
-  alumnoId: any;
+  id: any;
   alumno: any = {};
   cursoId: any;
   curso: any = {};
@@ -22,13 +22,14 @@ export class PreguntasComponent implements OnInit {
   formulario: any = {};
   cursoEstudianteId: any;
   docId: any;
+  asignatura: any;
 
   opciones = [
     { valor: 1, texto: 'Totalmente en desacuerdo' },
     { valor: 2, texto: 'Medianamente en desacuerdo' },
     { valor: 3, texto: 'Ni de acuerdo ni en desacuerdo' },
     { valor: 4, texto: 'Medianamente de acuerdo' },
-    { valor: 5, texto: 'Totalmente de acuerdo' }
+    { valor: 5, texto: 'Totalmente de acuerdo' },
   ];
   constructor(
     private route: ActivatedRoute,
@@ -40,14 +41,13 @@ export class PreguntasComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
-      this.alumnoId = params['alumnoId'];
+      this.id = params['id'];
       this.cursoId = params['cursoId'];
       this.formularioId = params['formId'];
-      this.formularioId = params['formId'];
-      this.cursoEstudianteId = params['id'];
+      this.cursoEstudianteId = params['idCurEst'];
       this.findFormulario(this.formularioId);
-      this.findEstudiante(this.alumnoId);
-      this.findCurso(this.cursoId);
+      this.findEstudiante(atob(this.id));
+      this.findCurso(Number(atob(this.cursoId)));
       this.cargarPreguntas(this.formularioId);
     });
   }
@@ -67,6 +67,7 @@ export class PreguntasComponent implements OnInit {
     this.formularioService.findById(id).subscribe(
       (data) => {
         this.formulario = data;
+        this.formulario.nombre = this.formulario.nombre.toUpperCase();
       },
       (error) => {
         console.error(error);
@@ -74,7 +75,7 @@ export class PreguntasComponent implements OnInit {
     );
   }
 
-  findEstudiante(id: number) {
+  findEstudiante(id: string) {
     this.alumnoService.getAlumnoById(id).subscribe(
       (data) => {
         this.alumno = data;
@@ -89,6 +90,7 @@ export class PreguntasComponent implements OnInit {
     this.cursoService.findById(id).subscribe(
       (data) => {
         this.curso = data;
+        this.asignatura = this.curso.asignatura.nombre;
         this.docId = data.docId;
       },
       (error) => {
@@ -118,27 +120,28 @@ export class PreguntasComponent implements OnInit {
     if (this.preguntaActual < this.preguntas.length) {
       this.preguntaActual++;
       this.respuestas.push({
-        preId: this.preguntaActual,
+        preId: pregunta.id,
         texto: pregunta.respuestaSeleccionada,
-        docEvaluado: this.docId
+        docEvaluado: this.docId,
       });
     }
   }
 
   guardar() {
     const pregunta = this.preguntas[this.preguntaActual];
-    
+
     this.respuestas.push({
-      preId: this.preguntaActual,
+      preId: pregunta.id,
       texto: pregunta.respuestaSeleccionada,
-      docEvaluado: this.docId
-    });
+      docEvaluado: this.docId,
+    });    
+
     this.formularioService.saveRespuestas(this.respuestas).subscribe(
       (data) => {
-        this.alumnoService.updateEstadoEval(this.cursoEstudianteId).subscribe(
+        this.alumnoService.updateEstadoEval(this.cursoEstudianteId).subscribe(          
           (data) => {
             alert('Respuestas guardadas');
-            this.router.navigate(['cursos', this.alumnoId]);
+            this.router.navigate(['cursos', this.id]);
           },
           (error) => {
             console.error(error);
@@ -149,5 +152,9 @@ export class PreguntasComponent implements OnInit {
         console.error(error);
       }
     );
+  }
+
+  volver() {
+    this.router.navigate(['cursos', this.id]);
   }
 }

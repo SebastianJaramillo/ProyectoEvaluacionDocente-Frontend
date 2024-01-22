@@ -11,7 +11,7 @@ export class AlumnoService {
   getAllAlumnos() {
     return this.http.get<any[]>(`${this.apiUrl}/listar`);
   }
-  getAlumnoById(id: number) {
+  getAlumnoById(id: string) {
     return this.http.get<any>(`${this.apiUrl}/buscar/${id}`);
   }
   findByAlumno(id: string) {

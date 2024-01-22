@@ -9,9 +9,9 @@ import { AlumnoService } from '../services/alumno/alumno.service';
   styleUrls: ['./curso.component.css'],
 })
 export class CursoComponent implements OnInit {
-    cursos: any[] = [];
+  cursos: any[] = [];
   curso: any = {};
-  alumnoId: any;
+  id: any;
 
   constructor(
     private cursosService: CursosService,
@@ -22,9 +22,9 @@ export class CursoComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
-      this.alumnoId = params['alumnoId'];
-      console.log(params['alumnoId']);
-      this.cargarCursosEstudiante(this.alumnoId);
+      this.id = params['id'];
+      console.log(params['id']);
+      this.cargarCursosEstudiante(atob(this.id));
     });
   }
 
@@ -50,11 +50,7 @@ export class CursoComponent implements OnInit {
     );
   }
 
-  evaluacion(alumnoId: any, cursoId: any, id: any) {    
-    this.router.navigate(['preguntas', alumnoId, cursoId, 1, id]);
-  }
-
-  salir() {
-    this.router.navigate(['iniciar-sesion']);
+  evaluacion(alumnoId: any, cursoId: any, id: any) {  
+    this.router.navigate(['preguntas', alumnoId, btoa(cursoId), 1, id]);
   }
 }

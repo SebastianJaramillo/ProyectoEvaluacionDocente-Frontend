@@ -68,8 +68,8 @@ export class LoginComponent implements OnInit {
             next: (user) => {
               console.log('User by name:', user);
               
-              if (user && user.id) {                
-                this.router.navigate(['periodo', user.id]);
+              if (user && user.id) {
+                this.router.navigate(['periodo', btoa(user.id.toString())]);
               } else {
                 console.error(
                   'No se encontró un usuario con el nombre proporcionado.'

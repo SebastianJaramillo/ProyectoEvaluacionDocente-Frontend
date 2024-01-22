@@ -89,7 +89,7 @@ export class ReporteComponent implements OnInit {
     pdf.save('informe.pdf');
   }
 
-  findEstudiante(id: number) {
+  findEstudiante(id: string) {
     this.alumnoService.getAlumnoById(id).subscribe(
       (data) => {
         this.alumno = data;

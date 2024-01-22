@@ -8,7 +8,7 @@ import java.util.Optional;
 
 
 public interface CursoEstudianteRepository extends CrudRepository<CursoEstudiante, Long> {
-    List<CursoEstudiante> findByEstId(String estId);
+    List<CursoEstudiante> findByEstIdOrderByCurNrc(String estId);
 
     List<CursoEstudiante> findByCurNrc(Long curNrc);
 

@@ -10,11 +10,9 @@
       />
     </div>
     <div id="sidebar-accordion" class="accordion">
-      <div class="list-group">
-        <ul>
-          <li>Estudiantes</li>
-        </ul>
-      </div>
+      <ul>
+        <li><button style="width: 85%;" onclick="regresar()">Estudiantes</button></li>
+      </ul>
     </div>
   </div>
   <div class="content w-100">
@@ -22,13 +20,13 @@
       <div class="container-xl">
         <div class="collapse navbar-collapse">
           <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <button class="btn btn-primary">Perfil</button>
-            </li>
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a class="nav-link" aria-haspopup="true" aria-expanded="false">
                 {{ alumno.nombres + " " + alumno.apellidos }}
               </a>
+            </li>
+            <li>
+              <button (click)="salir()" class="btn btn-danger">Salir</button>
             </li>
           </ul>
         </div>

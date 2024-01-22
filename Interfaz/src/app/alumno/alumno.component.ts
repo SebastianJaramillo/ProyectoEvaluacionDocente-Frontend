@@ -23,7 +23,7 @@ export class AlumnoComponent {
     );
   }
 
-  verAlumno(id: number) {
+  verAlumno(id: string) {
     this.alumnoService.getAlumnoById(id).subscribe(
       (data) => {
         this.alumno = data;

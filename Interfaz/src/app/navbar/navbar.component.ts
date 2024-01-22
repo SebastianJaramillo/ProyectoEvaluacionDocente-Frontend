@@ -13,7 +13,7 @@ export class NavbarComponent implements OnInit{
   toggleDrawer() {
     this.drawer.toggle();
   }
-  alumnoId: number = 1;
+  id: any;
   alumno: any = {};
 
   constructor(
@@ -21,13 +21,15 @@ export class NavbarComponent implements OnInit{
     private router: Router,
     private alumnoService: AlumnoService
   ) {}
+
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
-      this.alumnoId = params['alumnoId'];
-      this.findEstudiante(this.alumnoId);
+      this.id = params['id'];
+      //this.findEstudiante(this.id);
     });
   }
-  findEstudiante(id: number) {
+  
+  findEstudiante(id: string) {
     this.alumnoService.getAlumnoById(id).subscribe(
       (data) => {
         this.alumno = data;
@@ -36,5 +38,9 @@ export class NavbarComponent implements OnInit{
         console.error(error);
       }
     );
+  }
+
+  salir() {
+    this.router.navigate(['iniciar-sesion']);
   }
 }

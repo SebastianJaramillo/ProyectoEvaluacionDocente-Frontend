@@ -11,7 +11,7 @@ import { EvaluacionService } from '../services/evaluacion/evaluacion.service';
 export class EvaluacionComponent implements OnInit {
   periodos: any[] = [];
   periodo: any = {};
-  alumnoId: any;
+  id: any;
 
   constructor(
     private evaluacionService: EvaluacionService,
@@ -36,9 +36,9 @@ export class EvaluacionComponent implements OnInit {
 
   selectPeriodo() {
     this.route.params.subscribe((params) => {
-      this.alumnoId = params['alumnoId'];   
-      console.log(params['alumnoId']);
+      this.id = params['id'];   
+      console.log(params['id']);
     });
-    this.router.navigate(['cursos', this.alumnoId]);
+    this.router.navigate(['cursos', this.id]);
   }
 }
