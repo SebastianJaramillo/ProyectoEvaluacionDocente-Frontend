@@ -23,7 +23,6 @@ export class CursoComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.id = params['id'];
-      console.log(params['id']);
       this.cargarCursosEstudiante(atob(this.id));
     });
   }

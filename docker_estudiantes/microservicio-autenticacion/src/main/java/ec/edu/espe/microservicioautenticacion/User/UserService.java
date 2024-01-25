@@ -15,11 +15,10 @@ private final UserRepository userRepository;
         .id(userRequest.id)
         .firstname(userRequest.getFirstname())
         .lastname(userRequest.lastname)
-        .country(userRequest.getCountry())
-        .role(Role.USER)
+        .role(userRequest.getRole())
         .build();
         
-        userRepository.updateUser(user.id, user.firstname, user.lastname, user.country);
+        userRepository.updateUser(user.id, user.firstname, user.lastname);
 
         return new UserResponse("El usuario se registró satisfactoriamente");
     }
@@ -34,7 +33,7 @@ private final UserRepository userRepository;
             .username(user.username)
             .firstname(user.firstname)
             .lastname(user.lastname)
-            .country(user.country)
+            .role(user.role)
             .build();
             return userDTO;
         }
@@ -51,7 +50,7 @@ private final UserRepository userRepository;
             .username(user.username)
             .firstname(user.firstname)
             .lastname(user.lastname)
-            .country(user.country)
+            .role(user.role)
             .build();
             return userDTO;
         }

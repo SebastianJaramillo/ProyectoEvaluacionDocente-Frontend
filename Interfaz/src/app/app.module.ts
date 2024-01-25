@@ -15,8 +15,6 @@ import { LoginComponent } from './auth/login/login.component';
 import { NavComponent } from './shared/nav/nav.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { UserService } from './services/user/user.service';
-import { LoginService } from './services/auth/login.service';
 import { JwtInterceptorService } from './services/auth/jwt-interceptor.service';
 import { ErrorInterceptorService } from './services/auth/error-interceptor.service';
 
@@ -32,6 +30,7 @@ import {
   IgxToggleModule,
 } from 'igniteui-angular';
 import { ReporteComponent } from './reporte/reporte.component';
+import { PreguntasDocenteComponent } from './preguntas-docente/preguntas-docente.component';
 const routes: Routes = [
   { path: 'alumnos', component: AlumnoComponent },
   { path: 'cursos', component: CursoComponent },  
@@ -51,7 +50,8 @@ const routes: Routes = [
     LoginComponent,
     NavComponent,
     DocenteComponent,
-    ReporteComponent
+    ReporteComponent,
+    PreguntasDocenteComponent
   ],
   imports: [
     BrowserModule,

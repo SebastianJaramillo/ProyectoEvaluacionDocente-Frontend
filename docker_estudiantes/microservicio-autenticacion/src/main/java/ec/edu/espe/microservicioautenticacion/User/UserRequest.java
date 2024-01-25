@@ -13,5 +13,5 @@ public class UserRequest {
     String username;
     String firstname;
     String lastname;
-    String country;
+    Role role;
 }

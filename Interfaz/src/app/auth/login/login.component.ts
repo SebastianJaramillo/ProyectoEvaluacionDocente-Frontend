@@ -66,8 +66,6 @@ export class LoginComponent implements OnInit {
         complete: () => {
           this.userService.getUser(this.loginForm.value.username).subscribe({
             next: (user) => {
-              console.log('User by name:', user);
-              
               if (user && user.id) {
                 this.router.navigate(['periodo', btoa(user.id.toString())]);
               } else {

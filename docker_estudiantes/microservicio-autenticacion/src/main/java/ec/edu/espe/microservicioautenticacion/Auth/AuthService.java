@@ -7,7 +7,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import ec.edu.espe.microservicioautenticacion.Jwt.JwtService;
-import ec.edu.espe.microservicioautenticacion.User.Role;
 import ec.edu.espe.microservicioautenticacion.User.User;
 import ec.edu.espe.microservicioautenticacion.User.UserRepository;
 
@@ -40,8 +39,7 @@ public class AuthService {
                                 .password(passwordEncoder.encode(request.getPassword()))
                                 .firstname(request.getFirstname())
                                 .lastname(request.lastname)
-                                .country(request.getCountry())
-                                .role(Role.USER)
+                                .role(request.getRole())
                                 .build();
 
                 userRepository.save(user);

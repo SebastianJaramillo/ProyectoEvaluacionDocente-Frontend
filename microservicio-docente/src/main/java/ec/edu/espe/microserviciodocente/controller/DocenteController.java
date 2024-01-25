@@ -3,6 +3,7 @@ package ec.edu.espe.microserviciodocente.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import ec.edu.espe.microserviciodocente.service.DocenteService;
 
 @RestController
 @RequestMapping("/docente")
+@CrossOrigin
 public class DocenteController {
 
     private final DocenteService docenteService;

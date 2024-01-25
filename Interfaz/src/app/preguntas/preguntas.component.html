@@ -3,7 +3,8 @@
 <p style="font-size: 18px; text-align: center;"><b style="font-size: 18px;">{{ formulario.nombre }}</b><br><br></p>
 <p>
 <b>Estudiante: </b>{{ alumno.nombres + " " + alumno.apellidos }}<br>
-<b>Asignatura: </b>{{ asignatura }} <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NRC: </b>{{ curso.nrc }}</p>
+<b>Asignatura: </b>{{ asignatura }} <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NRC: </b>{{ curso.nrc }}<br>
+<b>Docente: </b>{{ docente.nombres + " " + docente.apellidos}} </p>
 
 <div *ngIf="preguntas && preguntas.length > 0">
   <p style="font-size: 18px; text-align: center;">Pregunta <strong>{{ preguntaActual + 1 }}</strong> de {{preguntas.length}}</p>

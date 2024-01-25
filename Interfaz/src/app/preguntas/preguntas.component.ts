@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CursosService } from '../services/curso/cursos.service';
 import { AlumnoService } from '../services/alumno/alumno.service';
 import { FormularioService } from '../services/formulario/formulario.service';
+import { DocenteService } from '../services/Docente/docente.service';
 
 @Component({
   selector: 'app-preguntas',
@@ -23,6 +24,7 @@ export class PreguntasComponent implements OnInit {
   cursoEstudianteId: any;
   docId: any;
   asignatura: any;
+  docente: any = {};
 
   opciones = [
     { valor: 1, texto: 'Totalmente en desacuerdo' },
@@ -36,7 +38,8 @@ export class PreguntasComponent implements OnInit {
     private router: Router,
     private cursoService: CursosService,
     private alumnoService: AlumnoService,
-    private formularioService: FormularioService
+    private formularioService: FormularioService,
+    private docenteService: DocenteService,
   ) {}
 
   ngOnInit(): void {
@@ -92,6 +95,18 @@ export class PreguntasComponent implements OnInit {
         this.curso = data;
         this.asignatura = this.curso.asignatura.nombre;
         this.docId = data.docId;
+        this.findDocente(this.docId);
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  findDocente(id: string) {
+    this.docenteService.findById(id).subscribe(
+      (data) => {
+        this.docente = data        
       },
       (error) => {
         console.error(error);

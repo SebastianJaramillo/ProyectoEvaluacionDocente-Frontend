@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
 import { EvaluacionService } from '../services/evaluacion/evaluacion.service';
+import { UserService } from '../services/user/user.service';
 
 @Component({
   selector: 'app-evaluacion',
@@ -15,6 +16,7 @@ export class EvaluacionComponent implements OnInit {
 
   constructor(
     private evaluacionService: EvaluacionService,
+    private userService: UserService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -36,9 +38,26 @@ export class EvaluacionComponent implements OnInit {
 
   selectPeriodo() {
     this.route.params.subscribe((params) => {
-      this.id = params['id'];   
-      console.log(params['id']);
+      this.id = params['id'];
     });
-    this.router.navigate(['cursos', this.id]);
+
+    this.userService.findById(atob(this.id)).subscribe({
+      next: (user) => {
+        if (user && user.id) {
+          if (user.role == 'ESTUDIANTE') {
+            this.router.navigate(['cursos', this.id]);
+          } else {
+            this.router.navigate(['docentes', this.id]);
+          }
+        } else {
+          console.error(
+            'No se encontró usuario'
+          );
+        }
+      },
+      error: (user) => {
+        console.error('Error al obtener usuario:', user);
+      },
+    });
   }
 }

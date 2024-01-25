@@ -1,24 +1,35 @@
 <div class="container">
-    <h2>Opciones de Evaluación Docente</h2>
-    <div class="row">
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Autoevaluación</h5>
-            <p class="card-text">es tu momento para reflexionar sobre tu práctica pedagógica, identificar fortalezas y áreas de mejora, y tomar medidas para tu desarrollo profesional. 
-                ¡Aprovecha esta oportunidad para crecer y destacar en tu trayectoria educativa!</p>
-            <a href="#" class="btn btn-primary">Seleccionar</a>
-          </div>
+  <h2>Lista evaluaciones docente</h2>
+  <div class="row" *ngFor="let f of funciones">
+    <div class="col-md-12">
+      <div
+        class="card"
+        *ngIf="f.funcId == 'DOC' || f.funcId == 'INV' || f.funcId == 'GES'"
+      >
+        <div class="card-body">
+          <h5 class="card-title">Autoevaluación {{ f.funcion.descripcion }} <button class="btn btn-primary" (click)="evaluacion(id, 21, f.funcId)">Evaluar</button></h5>
+          <p class="card-text">
+            Es tu momento para reflexionar sobre tu práctica pedagógica,
+            identificar fortalezas y áreas de mejora, y tomar medidas para tu
+            desarrollo profesional. ¡Aprovecha esta oportunidad para crecer y
+            destacar en tu trayectoria educativa!
+          </p>          
         </div>
       </div>
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Evaluación en Pares</h5>
-            <p class="card-text">es una emocionante oportunidad para recibir retroalimentación externa valiosa y avanzar en tu crecimiento profesional. 
-                ¡Aprovecha esta experiencia para destacar tus fortalezas y recibir orientación constructiva!.</p>
-            <a href="#" class="btn btn-primary">Seleccionar</a>
-          </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card" *ngIf="f.funcId == 'COR'">
+        <div class="card-body">
+          <h5 class="card-title">Evaluación en Pares</h5>
+          <p class="card-text">
+            Es una emocionante oportunidad para recibir retroalimentación
+            externa valiosa y avanzar en tu crecimiento profesional. ¡Aprovecha
+            esta experiencia para destacar tus fortalezas y recibir orientación
+            constructiva!.
+          </p>
+          <a href="#" class="btn btn-primary">Seleccionar</a>
         </div>
       </div>
+    </div>
+  </div>
 </div>

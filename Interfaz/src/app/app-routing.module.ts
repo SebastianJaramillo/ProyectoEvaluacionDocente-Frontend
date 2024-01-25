@@ -8,6 +8,7 @@ import { PreguntasComponent } from './preguntas/preguntas.component';
 import { NavbarComponent } from './navbar/navbar.component'; 
 import { DocenteComponent } from './docente/docente.component';
 import { ReporteComponent } from './reporte/reporte.component';
+import { PreguntasDocenteComponent } from './preguntas-docente/preguntas-docente.component';
 const routes: Routes = [
   {path:'iniciar-sesion',component:LoginComponent},
   {
@@ -19,7 +20,8 @@ const routes: Routes = [
     { path: 'periodo/:id', component: EvaluacionComponent },
     { path: 'Reporte', component:ReporteComponent },
     {path: 'preguntas/:id/:cursoId/:formId/:idCurEst',component: PreguntasComponent},
-    { path: 'docentes', component: DocenteComponent}
+    { path: 'docentes/:id', component: DocenteComponent},
+    {path: 'docentes-preguntas/:id/:formId/:funcId',component: PreguntasDocenteComponent},
     ],
   }
   

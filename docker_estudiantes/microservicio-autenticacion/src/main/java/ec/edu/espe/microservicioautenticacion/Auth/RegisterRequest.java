@@ -1,5 +1,6 @@
 package ec.edu.espe.microservicioautenticacion.Auth;
 
+import ec.edu.espe.microservicioautenticacion.User.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,6 @@ public class RegisterRequest {
     String password;
     String firstname;
     String lastname;
-    String country;
-    String id; 
+    String id;
+    Role role;
 }
