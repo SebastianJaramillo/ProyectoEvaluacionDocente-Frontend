@@ -17,4 +17,8 @@ export class DocenteService {
   findById(id: string) {
     return this.http.get<any>(`${this.apiUrl}/buscar/${id}`);
   }
+
+  findByJefe(id: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/relacion/jefe/${id}`);
+  }
 }

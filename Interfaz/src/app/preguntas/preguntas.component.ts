@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CursosService } from '../services/curso/cursos.service';
 import { AlumnoService } from '../services/alumno/alumno.service';
 import { FormularioService } from '../services/formulario/formulario.service';
-import { DocenteService } from '../services/Docente/docente.service';
+import { DocenteService } from '../services/docente/docente.service';
 
 @Component({
   selector: 'app-preguntas',

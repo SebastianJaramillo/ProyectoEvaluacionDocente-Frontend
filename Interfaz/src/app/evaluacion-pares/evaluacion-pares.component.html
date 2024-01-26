@@ -1,0 +1,24 @@
+<div class="container">
+  <button class="btn btn-danger" (click)="volver()">Volver</button>
+  <h2 class="mb-5">Listado de docentes</h2>
+  <div class="table-responsive custom-table-responsive">
+    <table class="table custom-table" style="text-align: center">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">DOCENTE</th>
+          <th scope="col">ESTADO</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr scope="row" *ngFor="let doc of docentes">
+          <td>{{ doc.docIdDocente }}</td>
+          <td>{{ doc.docente.nombres + " " + doc.docente.apellidos }}</td>
+          <td><button class="btn btn-secondary" (click)="evaluacion(doc.docIdDocente, 41, 'COR')">Evaluar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <br />
+</div>

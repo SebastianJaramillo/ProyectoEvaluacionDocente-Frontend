@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormularioService } from '../services/formulario/formulario.service';
-import { DocenteService } from '../services/Docente/docente.service';
+import { DocenteService } from '../services/docente/docente.service';
 
 @Component({
   selector: 'app-preguntas-docente',
@@ -14,6 +14,7 @@ export class PreguntasDocenteComponent implements OnInit {
   respuestaSeleccionada: any;
   respuestas: any[] = [];
   id: any;
+  idJefe: any;
   formularioId: any;
   formulario: any = {};
   docId: any;
@@ -36,7 +37,8 @@ export class PreguntasDocenteComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
-      this.id = params['id'];
+      this.idJefe = params['idJefe'];
+      this.id = params['idDoc'];      
       this.formularioId = params['formId'];
       this.funcId = atob(params['funcId']);
       this.findFormulario(this.formularioId);
@@ -52,6 +54,9 @@ export class PreguntasDocenteComponent implements OnInit {
           break;
         case "GES":
           this.funcId = "GESTIÓN";
+          break;
+        case "COR":
+          this.funcId = "";
           break;
         default:
           console.log("No se encontró función");
@@ -133,7 +138,11 @@ export class PreguntasDocenteComponent implements OnInit {
     this.formularioService.saveRespuestas(this.respuestas).subscribe(
       (data) => {
         alert('Respuestas guardadas');
-        this.router.navigate(['docentes', this.id]);
+        if(this.funcId == "") {
+          this.router.navigate(['evaluacion-pares', this.idJefe]);
+        } else {
+          this.router.navigate(['docentes', this.idJefe]);
+        }        
       },
       (error) => {
         console.error(error);
@@ -142,6 +151,10 @@ export class PreguntasDocenteComponent implements OnInit {
   }
 
   volver() {
-    this.router.navigate(['docentes', this.id]);
+    if(this.funcId == "") {
+      this.router.navigate(['evaluacion-pares', this.idJefe]);
+    } else {
+      this.router.navigate(['docentes', this.idJefe]);
+    }
   }
 }

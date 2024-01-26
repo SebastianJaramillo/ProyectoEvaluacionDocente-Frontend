@@ -17,17 +17,18 @@
         </div>
       </div>
     </div>
-    <div class="col-md-6">
+  </div>
+  <div class="row" *ngFor="let f of funciones">
+    <div class="col-md-12">
       <div class="card" *ngIf="f.funcId == 'COR'">
         <div class="card-body">
-          <h5 class="card-title">Evaluación en Pares</h5>
+          <h5 class="card-title">Coevaluación por pares <button class="btn btn-primary" (click)="evaluacionPares()" >Seleccionar</button></h5>
           <p class="card-text">
             Es una emocionante oportunidad para recibir retroalimentación
             externa valiosa y avanzar en tu crecimiento profesional. ¡Aprovecha
             esta experiencia para destacar tus fortalezas y recibir orientación
             constructiva!.
           </p>
-          <a href="#" class="btn btn-primary">Seleccionar</a>
         </div>
       </div>
     </div>

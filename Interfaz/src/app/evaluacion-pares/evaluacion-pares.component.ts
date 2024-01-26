@@ -3,16 +3,15 @@ import { DocenteService } from '../services/docente/docente.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  selector: 'app-docente',
-  templateUrl: './docente.component.html',
-  styleUrls: ['./docente.component.css']
+  selector: 'app-evaluacion-pares',
+  templateUrl: './evaluacion-pares.component.html',
+  styleUrls: ['./evaluacion-pares.component.css']
 })
-export class DocenteComponent implements OnInit {
+export class EvaluacionParesComponent implements OnInit {
   docentes: any[] = [];
   docente: any = {};
-  funciones: any[] = [];
-  funcion: any = {};
   id: any;
+  idJefe: any
 
   constructor(
     private docenteService: DocenteService,
@@ -23,14 +22,14 @@ export class DocenteComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.id = params['id'];
-      this.findFunciones(atob(this.id));
+      this.findByJefe(atob(this.id));
     });
   }
 
-  findFunciones(id: string) {
-    this.docenteService.findFunciones(id).subscribe(
+  findByJefe(id: string) {
+    this.docenteService.findByJefe(id).subscribe(
       (data) => {
-        this.funciones = data;
+        this.docentes = data;
       },
       (error) => {
         console.error(error);
@@ -38,11 +37,11 @@ export class DocenteComponent implements OnInit {
     );
   }
 
-  evaluacion(id: any, formId: any, funcId: any) {  
-    this.router.navigate(['docentes-preguntas', id, id, formId, btoa(funcId)]);
+  evaluacion(id: any, formId: any, funcId: any) {
+    this.router.navigate(['docentes-preguntas', this.id, btoa(id), formId, btoa(funcId)]);
   }
 
-  evaluacionPares() {  
-    this.router.navigate(['evaluacion-pares', this.id]);
+  volver() {
+    this.router.navigate(['docentes', this.id]);
   }
 }
