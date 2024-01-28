@@ -1,28 +1,17 @@
 
 <div class="d-flex">
-  <div id="sidebar">
-    <div class="p-2">
-      <img
-        src="https://www.espe.edu.ec/wp-content/uploads/2023/03/espe.png"
-        width="100%"
-        class="mt-3 mb-3"
-        alt="Logo ESPE"
-      />
-    </div>
-    <div id="sidebar-accordion" class="accordion">
-      <ul>
-        <li><button style="width: 85%;" onclick="regresar()">Estudiantes</button></li>
-      </ul>
-    </div>
-  </div>
   <div class="content w-100">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+    <nav class="navbar navbar-expand-lg  ">
       <div class="container-xl">
+        <a class="navbar-brand" href="#">
+          <img src="../../assets/img/logoBlanco.png" class="navbar-logo" alt="Logo ESPE">
+        </a>
+        
         <div class="collapse navbar-collapse">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item dropdown">
               <a class="nav-link" aria-haspopup="true" aria-expanded="false">
-                {{ alumno.nombres + " " + alumno.apellidos }}
+                {{ user.firstname + " " + user.lastname }}
               </a>
             </li>
             <li>
@@ -41,5 +30,14 @@
         </div>
       </div>
     </section>
+  </div>
+  <div id="sidebar">
+    <div id="sidebar-accordion" class="accordion">
+      <ul>
+        <li>
+          <button style="width: 85%; margin-top: 40px;" onclick="regresar()">Estudiantes</button>
+        </li>
+      </ul>
+    </div>
   </div>
 </div>

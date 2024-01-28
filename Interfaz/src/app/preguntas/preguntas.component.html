@@ -27,7 +27,8 @@
   </div>
   <br>
   <div style="text-align: center;">
-    <button *ngIf="preguntaActual < preguntas.length - 1 " class="btn btn-secondary" (click)="siguiente()" [disabled]="!isSelectAnswer()">Siguiente</button>
+    <button id="btnsiguiente" *ngIf="preguntaActual < preguntas.length - 1 " class="btn btn-secondary" (click)="siguiente()" [disabled]="botonDesactivado">Siguiente</button>
+    <button  *ngIf="preguntaActual < preguntas.length - 1 " class="btn btn-secondary" (click)="siguiente()" [disabled]="!isSelectAnswer()">Siguiente</button>
     <button *ngIf="preguntaActual == preguntas.length - 1 " class="btn btn-secondary" (click)="guardar()" [disabled]="!isSelectAnswer()">Guardar</button>
   </div>    
 </div>

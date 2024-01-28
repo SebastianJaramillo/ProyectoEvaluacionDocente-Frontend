@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DocenteService } from '../services/docente/docente.service';
+import { DocenteService } from '../services/Docente/docente.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -39,10 +39,6 @@ export class DocenteComponent implements OnInit {
   }
 
   evaluacion(id: any, formId: any, funcId: any) {  
-    this.router.navigate(['docentes-preguntas', id, id, formId, btoa(funcId)]);
-  }
-
-  evaluacionPares() {  
-    this.router.navigate(['evaluacion-pares', this.id]);
+    this.router.navigate(['docentes-preguntas', id, formId, btoa(funcId)]);
   }
 }

@@ -19,7 +19,7 @@ import { JwtInterceptorService } from './services/auth/jwt-interceptor.service';
 import { ErrorInterceptorService } from './services/auth/error-interceptor.service';
 
 import { NavbarComponent } from './navbar/navbar.component';
-import { EvaluacionComponent } from './periodo/evaluacion.component';
+import { EvaluacionComponent } from './evaluacion/evaluacion.component';
 import { DocenteComponent } from './docente/docente.component';
 import {
   IgxIconModule,
@@ -31,7 +31,6 @@ import {
 } from 'igniteui-angular';
 import { ReporteComponent } from './reporte/reporte.component';
 import { PreguntasDocenteComponent } from './preguntas-docente/preguntas-docente.component';
-import { EvaluacionParesComponent } from './evaluacion-pares/evaluacion-pares.component';
 const routes: Routes = [
   { path: 'alumnos', component: AlumnoComponent },
   { path: 'cursos', component: CursoComponent },  
@@ -52,8 +51,7 @@ const routes: Routes = [
     NavComponent,
     DocenteComponent,
     ReporteComponent,
-    PreguntasDocenteComponent,
-    EvaluacionParesComponent
+    PreguntasDocenteComponent
   ],
   imports: [
     BrowserModule,
