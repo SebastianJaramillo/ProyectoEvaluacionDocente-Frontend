@@ -8,7 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 import ec.edu.espe.microserviciodocente.model.DocenteFuncion;
 
 public interface DocenteFuncionRepository extends CrudRepository<DocenteFuncion, Long> {
-    List<DocenteFuncion> findByDocId(String docId);
+    List<DocenteFuncion> findByDocIdAndEstado(String docId, String estado);
 
     List<DocenteFuncion> findByFuncId(String funcId);
 

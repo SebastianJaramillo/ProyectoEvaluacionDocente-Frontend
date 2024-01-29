@@ -1,6 +1,7 @@
 package ec.edu.espe.microservicioevaluacion.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ec.edu.espe.microservicioevaluacion.domain.Evaluacion;
 import ec.edu.espe.microservicioevaluacion.service.EvaluacionService;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/evaluacion")
 public class EvaluacionController {
@@ -34,5 +36,10 @@ public class EvaluacionController {
     @PostMapping("/registro")
     public ResponseEntity<Evaluacion> save(@RequestBody Evaluacion evaluacion) {
         return ResponseEntity.ok().body(evaluacionService.save(evaluacion));
+    }
+
+    @GetMapping("/buscar/fechas")
+    public ResponseEntity<Evaluacion> findByFecha() {
+        return ResponseEntity.ok().body(evaluacionService.findByFecha());
     }
 }

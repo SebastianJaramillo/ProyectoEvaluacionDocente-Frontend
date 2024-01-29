@@ -14,8 +14,8 @@ export class AlumnoService {
   getAlumnoById(id: string) {
     return this.http.get<any>(`${this.apiUrl}/buscar/${id}`);
   }
-  findByAlumno(id: string) {
-    return this.http.get<any>(`${this.apiUrl}/cursos/${id}`);
+  findByAlumno(id: string, evalId: any) {
+    return this.http.get<any>(`${this.apiUrl}/cursos/${id}/${evalId}`);
   }
   updateEstadoEval(cursoEstudiante: any) {
     return this.http.put<any>(`${this.apiUrl}/curso/evaluacion`, cursoEstudiante);

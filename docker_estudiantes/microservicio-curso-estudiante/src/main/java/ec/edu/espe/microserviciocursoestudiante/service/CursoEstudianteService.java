@@ -25,8 +25,8 @@ public class CursoEstudianteService {
         this.cursoRepository = cursoRepository;
     }
 
-    public List<CursoEstudiante> findByEstudiante(String estId) {
-        return cursoEstudianteRepository.findByEstIdOrderByCurNrc(estId);
+    public List<CursoEstudiante> findByEstudiante(String estId, Long evalId) {
+        return cursoEstudianteRepository.findByEstIdAndEvalIdOrderByCurNrc(estId, evalId);
     }
 
     public List<CursoEstudiante> findByCurso(Long curNrc) {

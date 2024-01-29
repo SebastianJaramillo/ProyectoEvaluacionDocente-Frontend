@@ -20,27 +20,32 @@ public class Evaluacion {
 	@Column(name = "eval_id")
 	private Long id;
 
-	@Column(name = "per_id")
+	@Column(name = "per_id", nullable = false)
 	private Long per_id;
 
-	@Column(name = "eval_fecha_Inicio")
-	private Date eval_fecha_Inicio;
+	@Column(name = "eval_fecha_Inicio", nullable = false)
+	private Date evalFechaInicio;
 
 	@Column(name = "eval_fecha_Fin")
-	private Date eval_fecha_Fin;
+	private Date evalFechaFin;
+
+	@Column(name = "eval_estado")
+	private String estado;
 
 	@ManyToOne
-	@JoinColumn(name = "per_id", referencedColumnName = "per_id", insertable = false, updatable = false)
+	@JoinColumn(name = "per_id", insertable = false, updatable = false)
 	private Periodo periodo;
 
 	public Evaluacion() {
 	}
 
-	public Evaluacion(Long id, Long per_id, Date eval_fecha_Inicio, Date eval_fecha_Fin, Periodo periodo) {
+	public Evaluacion(Long id, Long per_id, Date evalFechaInicio, Date evalFechaFin, String estado,
+			Periodo periodo) {
 		this.id = id;
 		this.per_id = per_id;
-		this.eval_fecha_Inicio = eval_fecha_Inicio;
-		this.eval_fecha_Fin = eval_fecha_Fin;
+		this.evalFechaInicio = evalFechaInicio;
+		this.evalFechaFin = evalFechaFin;
+		this.estado = estado;
 		this.periodo = periodo;
 	}
 
@@ -60,20 +65,28 @@ public class Evaluacion {
 		this.per_id = per_id;
 	}
 
-	public Date getEval_fecha_Inicio() {
-		return eval_fecha_Inicio;
+	public Date getEvalFechaInicio() {
+		return evalFechaInicio;
 	}
 
-	public void setEval_fecha_Inicio(Date eval_fecha_Inicio) {
-		this.eval_fecha_Inicio = eval_fecha_Inicio;
+	public void setEvalFechaInicio(Date evalFechaInicio) {
+		this.evalFechaInicio = evalFechaInicio;
 	}
 
-	public Date getEval_fecha_Fin() {
-		return eval_fecha_Fin;
+	public Date getEvalFechaFin() {
+		return evalFechaFin;
 	}
 
-	public void setEval_fecha_Fin(Date eval_fecha_Fin) {
-		this.eval_fecha_Fin = eval_fecha_Fin;
+	public void setEval_fecha_Fin(Date evalFechaFin) {
+		this.evalFechaFin = evalFechaFin;
+	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
 	}
 
 	public Periodo getPeriodo() {

@@ -8,9 +8,9 @@ import org.springframework.data.repository.CrudRepository;
 import ec.edu.espe.microserviciodocente.model.DocenteRelacion;
 
 public interface DocenteRelacionRepository extends CrudRepository<DocenteRelacion, Long> {
-    List<DocenteRelacion> findByDocIdJefe(String docIdJefe);
+    List<DocenteRelacion> findByDocIdJefeAndEstado(String docIdJefe, String estado);
 
-    List<DocenteRelacion> findByDocIdDocente(String docIdDocente);
+    List<DocenteRelacion> findByDocIdDocenteAndEstado(String docIdDocente, String estado);
 
     Optional<DocenteRelacion> findByDocIdJefeAndDocIdDocente(String docIdJefe, String docIdDocente);
 }

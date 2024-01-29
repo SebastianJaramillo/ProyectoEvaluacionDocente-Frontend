@@ -45,9 +45,9 @@ public class EstudianteController {
         return ResponseEntity.ok().body(this.estudianteService.save(estudiante));
     }
 
-    @GetMapping("/cursos/{id}")
-    public ResponseEntity<List<CursoEstudiante>> save(@PathVariable String id) {
-        return ResponseEntity.ok().body(this.cursoEstudianteService.findByEstudiante(id));
+    @GetMapping("/cursos/{id}/{evalId}")
+    public ResponseEntity<List<CursoEstudiante>> findByEstudiante(@PathVariable String id, @PathVariable Long evalId) {
+        return ResponseEntity.ok().body(this.cursoEstudianteService.findByEstudiante(id, evalId));
     }
 
     @PostMapping("/curso/registro")

@@ -5,17 +5,20 @@ import { HttpClient } from '@angular/common/http';
 })
 export class EvaluacionService {
 
-  private apiUrl = 'http://localhost:8082/periodo';
+  private apiUrl = 'http://localhost:8082';
 
   constructor(private http: HttpClient) { }
   
   getAllPeriodos() {
-    return this.http.get<any[]>(`${this.apiUrl}/listar`);
+    return this.http.get<any[]>(`${this.apiUrl}/periodo/listar`);
   }
   getPeriodoById(id: number) {
-    return this.http.get<any>(`${this.apiUrl}/buscar/${id}`);
+    return this.http.get<any>(`${this.apiUrl}/periodo/buscar/${id}`);
   }
   createPeriodo(periodoData: any) {
-    return this.http.post<any>(this.apiUrl, periodoData);
+    return this.http.post<any>(`${this.apiUrl}/periodo/registro`, periodoData);
+  }
+  findByFechas() {
+    return this.http.get<any>(`${this.apiUrl}/evaluacion/buscar/fechas`);
   }
 }

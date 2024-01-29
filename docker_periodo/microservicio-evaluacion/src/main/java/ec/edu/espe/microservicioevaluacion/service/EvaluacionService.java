@@ -1,5 +1,6 @@
 package ec.edu.espe.microservicioevaluacion.service;
 
+import java.util.Date;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
@@ -31,5 +32,15 @@ public class EvaluacionService {
         }
 
         throw new RuntimeException("evaluacion con ID: " + id + " no se encuentra.");
+    }
+
+    public Evaluacion findByFecha() {
+        Optional<Evaluacion> optionalevaluacion = this.evaluacionRepository.findByEvalFechaInicioLessThanEqualAndEvalFechaFinGreaterThanEqual(new Date(), new Date());
+
+        if(optionalevaluacion.isPresent()) {
+            return optionalevaluacion.get();
+        }
+
+        throw new RuntimeException("No se encontró evaluación en esta fecha actual");
     }
 }

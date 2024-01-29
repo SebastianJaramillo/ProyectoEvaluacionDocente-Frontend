@@ -22,11 +22,11 @@ public class DocenteRelacionService {
     }
 
     public List<DocenteRelacion> findByJefe(String docIdJefe) {
-        return docenteRelacionRepository.findByDocIdJefe(docIdJefe);
+        return docenteRelacionRepository.findByDocIdJefeAndEstado(docIdJefe, "ACTIVO");
     }
 
     public List<DocenteRelacion> findByDocente(String docIdDocente) {
-        return docenteRelacionRepository.findByDocIdDocente(docIdDocente);
+        return docenteRelacionRepository.findByDocIdDocenteAndEstado(docIdDocente, "ACTIVO");
     }
 
     public DocenteRelacion addDocenteRelacion(DocenteRelacion docenteRelacion) {

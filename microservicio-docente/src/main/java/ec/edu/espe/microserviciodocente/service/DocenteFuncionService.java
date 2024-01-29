@@ -26,7 +26,7 @@ public class DocenteFuncionService {
     }
 
     public List<DocenteFuncion> findByDocente(String docId) {
-        return docenteFuncionRepository.findByDocId(docId);
+        return docenteFuncionRepository.findByDocIdAndEstado(docId, "ACTIVO");
     }
 
     public List<DocenteFuncion> findByFuncion(String funcId) {

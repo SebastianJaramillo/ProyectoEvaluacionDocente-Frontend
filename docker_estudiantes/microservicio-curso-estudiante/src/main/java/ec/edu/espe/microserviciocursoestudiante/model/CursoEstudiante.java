@@ -24,6 +24,9 @@ public class CursoEstudiante {
     @Column(name = "cur_nrc", nullable = false)
     private Long curNrc;
 
+    @Column(name = "eval_id")
+    private Long evalId;
+
     @Column(name = "eval_estado", nullable = false, length = 20)
     private String eval_estado;
 
@@ -41,11 +44,12 @@ public class CursoEstudiante {
     public CursoEstudiante() {
     }
 
-    public CursoEstudiante(Long id, String estId, Long curNrc, String eval_estado, Estudiante estudiante, Curso curso,
-            Long version) {
+    public CursoEstudiante(Long id, String estId, Long curNrc, Long evalId, String eval_estado, Estudiante estudiante,
+            Curso curso, Long version) {
         this.id = id;
         this.estId = estId;
         this.curNrc = curNrc;
+        this.evalId = evalId;
         this.eval_estado = eval_estado;
         this.estudiante = estudiante;
         this.curso = curso;
@@ -90,6 +94,14 @@ public class CursoEstudiante {
 
     public void setCurso(Curso curso) {
         this.curso = curso;
+    }
+
+    public Long getEvalId() {
+        return evalId;
+    }
+
+    public void setEvalId(Long evalId) {
+        this.evalId = evalId;
     }
 
     public String getEval_estado() {
