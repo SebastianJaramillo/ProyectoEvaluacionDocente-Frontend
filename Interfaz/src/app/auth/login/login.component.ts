@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { LoginService } from 'src/app/services/auth/login.service';
 import { LoginRequest } from 'src/app/services/auth/loginRequest';
 import { UserService } from 'src/app/services/user/user.service';
+import { NavbarService } from 'src/app/services/navbar/navbar.service';
 
 @Component({
   selector: 'app-login',
@@ -31,7 +32,8 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private loginService: LoginService,
-    private userService: UserService
+    private userService: UserService,
+    private NavbarService: NavbarService
   ) {}
 
   ngOnInit(): void {
@@ -68,6 +70,8 @@ export class LoginComponent implements OnInit {
             next: (user) => {
               if (user && user.id) {
                 this.router.navigate(['periodo', btoa(user.id.toString())]);
+                const userId = btoa(user.id.toString());
+                this.NavbarService.setUserId(userId);
               } else {
                 console.error(
                   'No se encontró un usuario con el nombre proporcionado.'

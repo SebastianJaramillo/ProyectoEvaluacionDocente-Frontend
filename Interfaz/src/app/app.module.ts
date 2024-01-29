@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms'; // Asegúrate de agregar esta línea
+import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AlumnoComponent } from './alumno/alumno.component';
@@ -35,7 +35,7 @@ import { EvaluacionParesComponent } from './evaluacion-pares/evaluacion-pares.co
 const routes: Routes = [
   { path: 'alumnos', component: AlumnoComponent },
   { path: 'cursos', component: CursoComponent },  
-  { path: '', redirectTo: '/inicio', pathMatch: 'full' }, // Redireccionar a 'alumnos' por defecto
+  { path: '', redirectTo: '/inicio', pathMatch: 'full' },
 ];
 @NgModule({
   declarations: [
@@ -67,7 +67,7 @@ const routes: Routes = [
     IgxNavigationDrawerModule,
     IgxRippleModule,
     IgxToggleModule,
-    FormsModule, // Asegúrate de agregar FormsModule aquí
+    FormsModule,
     BrowserAnimationsModule,
     AppRoutingModule,
     ReactiveFormsModule,

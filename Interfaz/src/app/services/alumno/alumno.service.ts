@@ -21,3 +21,4 @@ export class AlumnoService {
     return this.http.put<any>(`${this.apiUrl}/curso/evaluacion`, cursoEstudiante);
   }
 }
+

@@ -8,6 +8,7 @@
           <img src="../../../assets/img/ESPEtransparente.png" alt="Logo">
         </div>
         <div class="input-section">
+          <p class="text-danger">{{ loginError }}</p>
           <label for="usuario">Usuario</label>
           <br>
           <div class="input-wrapper">
@@ -27,7 +28,6 @@
               </div>
             </div>
           </div>
-          <p class="text-danger">{{ loginError }}</p>
           <button type="submit" (click)="login()">Iniciar Sesión</button>
         </div>
       </div>

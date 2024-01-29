@@ -17,8 +17,16 @@ export class DocenteService {
   findById(id: string) {
     return this.http.get<any>(`${this.apiUrl}/buscar/${id}`);
   }
-
+  
   findByJefe(id: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/relacion/jefe/${id}`);
+  }
+
+  findByEvaluacion(docEvaluador: string, docEvaluado: string, evalId: number) {
+    return this.http.get<any>(`${this.apiUrl}/evaluacion/${docEvaluador}/${docEvaluado}/${evalId}`);
+  }
+
+  saveEvaluacion(evaluacion: any) {
+    return this.http.post<any>(`${this.apiUrl}/evaluacion/registro`, evaluacion);
   }
 }

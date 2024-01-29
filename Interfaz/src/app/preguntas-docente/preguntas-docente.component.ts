@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormularioService } from '../services/formulario/formulario.service';
 import { DocenteService } from '../services/docente/docente.service';
+import { DocenteEvaluacion } from './DocenteEvaluacion';
+import { EvaluacionService } from '../services/evaluacion/evaluacion.service';
 
 @Component({
   selector: 'app-preguntas-docente',
@@ -20,6 +22,9 @@ export class PreguntasDocenteComponent implements OnInit {
   docId: any;
   funcId: any;  
   docente: any = {};
+  eval: any = {};
+  evalId: any;
+  evaluacion: DocenteEvaluacion = {} as DocenteEvaluacion;
 
   opciones = [
     { valor: 1, texto: 'Totalmente en desacuerdo' },
@@ -32,15 +37,19 @@ export class PreguntasDocenteComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private formularioService: FormularioService,
-    private docenteService: DocenteService
+    private docenteService: DocenteService,
+    private evaluacionService: EvaluacionService
   ) {}
 
   ngOnInit(): void {
+    this.findByFechas();
+
     this.route.params.subscribe((params) => {
       this.idJefe = params['idJefe'];
       this.id = params['idDoc'];      
       this.formularioId = params['formId'];
       this.funcId = atob(params['funcId']);
+      this.evalId = params['evalId'];
       this.findFormulario(this.formularioId);
       this.findDocente(atob(this.id));
       this.cargarPreguntas(this.formularioId);
@@ -126,6 +135,19 @@ export class PreguntasDocenteComponent implements OnInit {
     }
   }
 
+  findByFechas() {
+    this.evaluacionService.findByFechas().subscribe(  
+      (data) => {
+        this.eval = data;
+        this.evalId = this.eval.id;
+      },
+      (error) => {
+        alert("Evaluación no se encuentra habilitada en estas fechas.")
+        this.router.navigate(['periodo', this.idJefe]);
+      }
+    );
+  }
+
   guardar() {
     const pregunta = this.preguntas[this.preguntaActual];
 
@@ -137,12 +159,23 @@ export class PreguntasDocenteComponent implements OnInit {
 
     this.formularioService.saveRespuestas(this.respuestas).subscribe(
       (data) => {
-        alert('Respuestas guardadas');
-        if(this.funcId == "") {
-          this.router.navigate(['evaluacion-pares', this.idJefe]);
-        } else {
-          this.router.navigate(['docentes', this.idJefe]);
-        }        
+        this.evaluacion.docEvaluador = atob(this.idJefe);
+        this.evaluacion.docEvaluado = atob(this.id);
+        this.evaluacion.evalId = this.evalId;
+        
+        this.docenteService.saveEvaluacion(this.evaluacion).subscribe(
+          (data) => {
+            alert('Respuestas guardadas');
+            if(this.funcId == "") {
+              this.router.navigate(['evaluacion-pares', this.idJefe, this.evalId]);
+            } else {
+              this.router.navigate(['docentes', this.idJefe, this.evalId]);
+            }   
+          },
+          (error) => {
+            console.error(error);
+          }
+        );     
       },
       (error) => {
         console.error(error);
@@ -152,9 +185,9 @@ export class PreguntasDocenteComponent implements OnInit {
 
   volver() {
     if(this.funcId == "") {
-      this.router.navigate(['evaluacion-pares', this.idJefe]);
+      this.router.navigate(['evaluacion-pares', this.idJefe, this.evalId]);
     } else {
-      this.router.navigate(['docentes', this.idJefe]);
+      this.router.navigate(['docentes', this.idJefe, this.evalId]);
     }
   }
 }

@@ -11,7 +11,9 @@ export class EvaluacionParesComponent implements OnInit {
   docentes: any[] = [];
   docente: any = {};
   id: any;
-  idJefe: any
+  idJefe: any;
+  evalId: any;
+  desactivado: any;
 
   constructor(
     private docenteService: DocenteService,
@@ -22,6 +24,7 @@ export class EvaluacionParesComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.id = params['id'];
+      this.evalId = params['evalId'];
       this.findByJefe(atob(this.id));
     });
   }
@@ -38,10 +41,10 @@ export class EvaluacionParesComponent implements OnInit {
   }
 
   evaluacion(id: any, formId: any, funcId: any) {
-    this.router.navigate(['docentes-preguntas', this.id, btoa(id), formId, btoa(funcId)]);
+    this.router.navigate(['docentes-preguntas', this.id, btoa(id), formId, btoa(funcId), this.evalId]);
   }
 
   volver() {
-    this.router.navigate(['docentes', this.id]);
+    this.router.navigate(['docentes', this.id, this.evalId]);
   }
 }

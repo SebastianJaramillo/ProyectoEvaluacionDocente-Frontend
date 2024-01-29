@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ec.edu.espe.microserviciodocente.model.Docente;
+import ec.edu.espe.microserviciodocente.model.DocenteEvaluacion;
 import ec.edu.espe.microserviciodocente.model.DocenteFuncion;
 import ec.edu.espe.microserviciodocente.model.DocenteRelacion;
+import ec.edu.espe.microserviciodocente.service.DocenteEvaluacionService;
 import ec.edu.espe.microserviciodocente.service.DocenteFuncionService;
 import ec.edu.espe.microserviciodocente.service.DocenteRelacionService;
 import ec.edu.espe.microserviciodocente.service.DocenteService;
@@ -27,12 +29,14 @@ public class DocenteController {
     private final DocenteService docenteService;
     private final DocenteFuncionService docenteFuncionService;
     private final DocenteRelacionService docenteRelacionService;
+    private final DocenteEvaluacionService docenteEvaluacionService;
 
     public DocenteController(DocenteService docenteService, DocenteFuncionService docenteFuncionService,
-            DocenteRelacionService docenteRelacionService) {
+            DocenteRelacionService docenteRelacionService, DocenteEvaluacionService docenteEvaluacionService) {
         this.docenteService = docenteService;
         this.docenteFuncionService = docenteFuncionService;
         this.docenteRelacionService = docenteRelacionService;
+        this.docenteEvaluacionService = docenteEvaluacionService;
     }
 
     // DOCENTE
@@ -81,5 +85,26 @@ public class DocenteController {
     @PostMapping("/relacion/registro")
     public ResponseEntity<DocenteRelacion> addDocenteRelacion(@RequestBody DocenteRelacion docenteRelacion) {
         return ResponseEntity.ok().body(this.docenteRelacionService.addDocenteRelacion(docenteRelacion));
+    }
+
+    // EVALUACION ESTADO
+    @GetMapping("/evaluacion/evaluador/{id}")
+    public ResponseEntity<List<DocenteEvaluacion>> findByDocEvaluador(@PathVariable String id) {
+        return ResponseEntity.ok().body(this.docenteEvaluacionService.findByDocEvaluador(id));
+    }
+
+    @GetMapping("/evaluacion/evaluado/{id}")
+    public ResponseEntity<List<DocenteEvaluacion>> findByDocEvaluado(@PathVariable String id) {
+        return ResponseEntity.ok().body(this.docenteEvaluacionService.findByDocEvaluado(id));
+    }
+
+    @GetMapping("/evaluacion/{docEvaluador}/{docEvaluado}/{evalId}")
+    public ResponseEntity<DocenteEvaluacion> findByEvaluacion(@PathVariable String docEvaluador, @PathVariable String docEvaluado, @PathVariable Long evalId) {
+        return ResponseEntity.ok().body(this.docenteEvaluacionService.findByEvaluacion(docEvaluador, docEvaluado, evalId));
+    }
+
+    @PostMapping("/evaluacion/registro")
+    public ResponseEntity<DocenteEvaluacion> saveEvaluacion(@RequestBody DocenteEvaluacion docenteEvaluacion) {
+        return ResponseEntity.ok().body(this.docenteEvaluacionService.save(docenteEvaluacion));
     }
 }

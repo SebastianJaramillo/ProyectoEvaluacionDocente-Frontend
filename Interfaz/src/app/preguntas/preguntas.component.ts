@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Renderer2 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CursosService } from '../services/curso/cursos.service';
 import { AlumnoService } from '../services/alumno/alumno.service';
@@ -25,6 +25,7 @@ export class PreguntasComponent implements OnInit {
   docId: any;
   asignatura: any;
   docente: any = {};
+  botonDesactivado = true;
 
   opciones = [
     { valor: 1, texto: 'Totalmente en desacuerdo' },
@@ -36,6 +37,7 @@ export class PreguntasComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private renderer: Renderer2,
     private cursoService: CursosService,
     private alumnoService: AlumnoService,
     private formularioService: FormularioService,
@@ -53,6 +55,10 @@ export class PreguntasComponent implements OnInit {
       this.findCurso(Number(atob(this.cursoId)));
       this.cargarPreguntas(this.formularioId);
     });
+    setTimeout(() => {
+      this.renderer.setProperty(document.getElementById('btnsiguiente'), 'disabled', false);
+      this.botonDesactivado = false;
+    }, 5000);
   }
 
   cargarPreguntas(id: number) {

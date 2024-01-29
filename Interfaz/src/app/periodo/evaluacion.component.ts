@@ -13,6 +13,8 @@ export class EvaluacionComponent implements OnInit {
   periodos: any[] = [];
   periodo: any = {};
   id: any;
+  eval: any = {};
+  evalId: any;
 
   constructor(
     private evaluacionService: EvaluacionService,
@@ -23,6 +25,19 @@ export class EvaluacionComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAllPeriodos();
+    this.findByFechas();
+  }
+
+  findByFechas() {
+    this.evaluacionService.findByFechas().subscribe(  
+      (data) => {
+        this.eval = data;
+        this.evalId = this.eval.id;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
   }
 
   getAllPeriodos() {
@@ -47,7 +62,7 @@ export class EvaluacionComponent implements OnInit {
           if (user.role == 'ESTUDIANTE') {
             this.router.navigate(['cursos', this.id]);
           } else {
-            this.router.navigate(['docentes', this.id]);
+            this.router.navigate(['docentes', this.id, this.evalId]);
           }
         } else {
           console.error(

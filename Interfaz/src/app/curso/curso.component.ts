@@ -46,7 +46,6 @@ export class CursoComponent implements OnInit {
     );
   }
 
-
   getAllCursos() {
     this.cursosService.getAllCursos().subscribe(
       (data) => {

@@ -10,6 +10,7 @@ import { DocenteComponent } from './docente/docente.component';
 import { ReporteComponent } from './reporte/reporte.component';
 import { PreguntasDocenteComponent } from './preguntas-docente/preguntas-docente.component';
 import { EvaluacionParesComponent } from './evaluacion-pares/evaluacion-pares.component';
+
 const routes: Routes = [
   {path:'iniciar-sesion',component:LoginComponent},
   {
@@ -21,12 +22,11 @@ const routes: Routes = [
     { path: 'periodo/:id', component: EvaluacionComponent },
     { path: 'Reporte', component:ReporteComponent },
     { path: 'preguntas/:id/:cursoId/:formId/:idCurEst',component: PreguntasComponent},
-    { path: 'docentes/:id', component: DocenteComponent},
-    { path: 'docentes-preguntas/:idJefe/:idDoc/:formId/:funcId',component: PreguntasDocenteComponent},
-    { path: 'evaluacion-pares/:id', component: EvaluacionParesComponent },
+    { path: 'docentes/:id/:evalId', component: DocenteComponent},
+    { path: 'docentes-preguntas/:idJefe/:idDoc/:formId/:funcId/:evalId',component: PreguntasDocenteComponent},
+    { path: 'evaluacion-pares/:id/:evalId', component: EvaluacionParesComponent },
     ],
   }
-  
 ];
 
 @NgModule({
