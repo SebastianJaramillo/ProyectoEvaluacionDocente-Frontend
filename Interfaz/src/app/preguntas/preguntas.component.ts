@@ -4,6 +4,8 @@ import { CursosService } from '../services/curso/cursos.service';
 import { AlumnoService } from '../services/alumno/alumno.service';
 import { FormularioService } from '../services/formulario/formulario.service';
 import { DocenteService } from '../services/docente/docente.service';
+import { AlertSuccessComponent } from '../alert-success/alert-success.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-preguntas',
@@ -42,6 +44,7 @@ export class PreguntasComponent implements OnInit {
     private alumnoService: AlumnoService,
     private formularioService: FormularioService,
     private docenteService: DocenteService,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
@@ -160,8 +163,8 @@ export class PreguntasComponent implements OnInit {
     this.formularioService.saveRespuestas(this.respuestas).subscribe(
       (data) => {
         this.alumnoService.updateEstadoEval(this.cursoEstudianteId).subscribe(          
-          (data) => {
-            alert('Respuestas guardadas');
+          (data) => {            
+            this.successModal("Respuestas guardadas correctamente");
             this.router.navigate(['cursos', this.id]);
           },
           (error) => {
@@ -173,6 +176,11 @@ export class PreguntasComponent implements OnInit {
         console.error(error);
       }
     );
+  }
+
+  successModal(message: string) {
+    const modalRef = this.modalService.open(AlertSuccessComponent);
+    modalRef.componentInstance.message = message;
   }
 
   volver() {

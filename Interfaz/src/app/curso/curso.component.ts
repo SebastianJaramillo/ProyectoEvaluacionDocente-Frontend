@@ -3,6 +3,7 @@ import { CursosService } from '../services/curso/cursos.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlumnoService } from '../services/alumno/alumno.service';
 import { EvaluacionService } from '../services/evaluacion/evaluacion.service';
+import { DocenteService } from '../services/docente/docente.service';
 
 @Component({
   selector: 'app-curso',
@@ -13,6 +14,7 @@ export class CursoComponent implements OnInit {
   cursos: any[] = [];
   curso: any = {};
   eval: any = {};
+  docente: any = {};
   id: any;
   evalId: any;
 
@@ -20,6 +22,7 @@ export class CursoComponent implements OnInit {
     private cursosService: CursosService,
     private alumnoService: AlumnoService,
     private evaluacionService: EvaluacionService,
+    private docenteService: DocenteService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -29,7 +32,7 @@ export class CursoComponent implements OnInit {
       this.id = params['id'];
     });
 
-    this.findByFechas();
+    this.findByFechas();    
   }
 
   findByFechas() {
@@ -37,7 +40,7 @@ export class CursoComponent implements OnInit {
       (data) => {
         this.eval = data;
         this.evalId = this.eval.id;
-        this.cargarCursosEstudiante(atob(this.id), this.evalId);
+        this.cargarCursosEstudiante(atob(this.id), this.evalId);                
       },
       (error) => {
         alert("Evaluación no se encuentra habilitada en estas fechas.")
@@ -61,6 +64,18 @@ export class CursoComponent implements OnInit {
     this.alumnoService.findByAlumno(id, evalId).subscribe(
       (data) => {
         this.cursos = data;
+        console.log(data);
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  findDocente(id: string) {
+    this.docenteService.findById(id).subscribe(
+      (data) => {
+        this.docente = data        
       },
       (error) => {
         console.error(error);

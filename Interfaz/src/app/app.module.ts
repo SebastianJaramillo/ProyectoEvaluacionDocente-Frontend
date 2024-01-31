@@ -32,6 +32,8 @@ import {
 import { ReporteComponent } from './reporte/reporte.component';
 import { PreguntasDocenteComponent } from './preguntas-docente/preguntas-docente.component';
 import { EvaluacionParesComponent } from './evaluacion-pares/evaluacion-pares.component';
+import { AlertSuccessComponent } from './alert-success/alert-success.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 const routes: Routes = [
   { path: 'alumnos', component: AlumnoComponent },
   { path: 'cursos', component: CursoComponent },  
@@ -53,7 +55,8 @@ const routes: Routes = [
     DocenteComponent,
     ReporteComponent,
     PreguntasDocenteComponent,
-    EvaluacionParesComponent
+    EvaluacionParesComponent,
+    AlertSuccessComponent
   ],
   imports: [
     BrowserModule,
@@ -72,6 +75,7 @@ const routes: Routes = [
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
+    NgbModule,
   ],
   providers: [AlumnoService,
     {provide:HTTP_INTERCEPTORS,useClass:JwtInterceptorService,multi:true},
