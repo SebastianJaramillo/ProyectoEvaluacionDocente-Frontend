@@ -35,6 +35,10 @@ public class Curso {
     @Column(name = "doc_id", nullable = false, length = 15)
     private String docId;
 
+    @OneToOne
+    @JoinColumn(name = "doc_id", insertable = false, updatable = false)
+    private Docente docente;
+
     public Curso() {
     }
 
@@ -93,6 +97,14 @@ public class Curso {
 
     public void setDocId(String docId) {
         this.docId = docId;
+    }
+
+    public Docente getDocente() {
+        return docente;
+    }
+
+    public void setDocente(Docente docente) {
+        this.docente = docente;
     }
 
     @Override

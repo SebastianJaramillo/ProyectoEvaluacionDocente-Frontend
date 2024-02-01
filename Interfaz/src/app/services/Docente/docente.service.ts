@@ -14,6 +14,10 @@ export class DocenteService {
     return this.http.get<any[]>(`${this.apiUrl}/funciones/${id}`);
   }
 
+  findFuncionDirector(id: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/funciones/buscar/${id}`);
+  }
+
   findById(id: string) {
     return this.http.get<any>(`${this.apiUrl}/buscar/${id}`);
   }

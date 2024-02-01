@@ -10,6 +10,7 @@ import { DocenteComponent } from './docente/docente.component';
 import { ReporteComponent } from './reporte/reporte.component';
 import { PreguntasDocenteComponent } from './preguntas-docente/preguntas-docente.component';
 import { EvaluacionParesComponent } from './evaluacion-pares/evaluacion-pares.component';
+import { EvaluacionDirectivaComponent } from './evaluacion-directiva/evaluacion-directiva.component';
 
 const routes: Routes = [
   {path:'iniciar-sesion',component:LoginComponent},
@@ -17,14 +18,15 @@ const routes: Routes = [
     path: '',
     component: NavbarComponent,
     children: [
-    { path: 'alumnos', component: AlumnoComponent },
-    { path: 'cursos/:id', component: CursoComponent },
-    { path: 'periodo/:id', component: EvaluacionComponent },
-    { path: 'Reporte', component:ReporteComponent },
-    { path: 'preguntas/:id/:cursoId/:formId/:idCurEst',component: PreguntasComponent},
-    { path: 'docentes/:id/:evalId', component: DocenteComponent},
-    { path: 'docentes-preguntas/:idJefe/:idDoc/:formId/:funcId/:evalId',component: PreguntasDocenteComponent},
-    { path: 'evaluacion-pares/:id/:evalId', component: EvaluacionParesComponent },
+      { path: 'alumnos', component: AlumnoComponent },
+      { path: 'cursos/:id', component: CursoComponent },
+      { path: 'periodo/:id', component: EvaluacionComponent },
+      { path: 'Reporte', component:ReporteComponent },
+      { path: 'preguntas/:id/:cursoId/:formId/:idCurEst',component: PreguntasComponent},
+      { path: 'docentes/:id/:evalId', component: DocenteComponent},
+      { path: 'docentes-preguntas/:idJefe/:idDoc/:formId/:funcId/:evalId',component: PreguntasDocenteComponent},
+      { path: 'evaluacion-pares/:id/:evalId', component: EvaluacionParesComponent},
+      { path: 'evaluacion-directiva/:id/:funcId/:evalId', component: EvaluacionDirectivaComponent}
     ],
   }
 ];

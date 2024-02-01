@@ -34,6 +34,7 @@ import { PreguntasDocenteComponent } from './preguntas-docente/preguntas-docente
 import { EvaluacionParesComponent } from './evaluacion-pares/evaluacion-pares.component';
 import { AlertSuccessComponent } from './alert-success/alert-success.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { EvaluacionDirectivaComponent } from './evaluacion-directiva/evaluacion-directiva.component';
 const routes: Routes = [
   { path: 'alumnos', component: AlumnoComponent },
   { path: 'cursos', component: CursoComponent },  
@@ -56,7 +57,8 @@ const routes: Routes = [
     ReporteComponent,
     PreguntasDocenteComponent,
     EvaluacionParesComponent,
-    AlertSuccessComponent
+    AlertSuccessComponent,
+    EvaluacionDirectivaComponent
   ],
   imports: [
     BrowserModule,

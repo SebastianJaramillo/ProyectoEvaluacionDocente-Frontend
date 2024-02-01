@@ -78,4 +78,8 @@ export class DocenteComponent implements OnInit {
   evaluacionPares() {  
     this.router.navigate(['evaluacion-pares', this.id, this.evalId]);
   }
+
+  evaluacionDirectiva(funcId: string) {
+    this.router.navigate(['evaluacion-directiva', this.id, btoa(funcId), this.evalId]);
+  }
 }

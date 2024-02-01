@@ -1,4 +1,4 @@
-package ec.edu.espe.microserviciodocente.model;
+package ec.edu.espe.microserviciocursoestudiante.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

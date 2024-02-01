@@ -32,18 +32,18 @@ export class CursoComponent implements OnInit {
       this.id = params['id'];
     });
 
-    this.findByFechas();    
+    this.findByFechas();
   }
 
   findByFechas() {
-    this.evaluacionService.findByFechas().subscribe(  
+    this.evaluacionService.findByFechas().subscribe(
       (data) => {
         this.eval = data;
         this.evalId = this.eval.id;
-        this.cargarCursosEstudiante(atob(this.id), this.evalId);                
+        this.cargarCursosEstudiante(atob(this.id), this.evalId);
       },
       (error) => {
-        alert("Evaluación no se encuentra habilitada en estas fechas.")
+        alert('Evaluación no se encuentra habilitada en estas fechas.');
         this.router.navigate(['periodo', this.id]);
       }
     );
@@ -64,7 +64,6 @@ export class CursoComponent implements OnInit {
     this.alumnoService.findByAlumno(id, evalId).subscribe(
       (data) => {
         this.cursos = data;
-        console.log(data);
       },
       (error) => {
         console.error(error);
@@ -72,10 +71,11 @@ export class CursoComponent implements OnInit {
     );
   }
 
-  findDocente(id: string) {
+  findDocente(id: string): any {
     this.docenteService.findById(id).subscribe(
       (data) => {
-        this.docente = data        
+        this.docente = data;
+        return this.docente
       },
       (error) => {
         console.error(error);
@@ -83,7 +83,7 @@ export class CursoComponent implements OnInit {
     );
   }
 
-  evaluacion(alumnoId: any, cursoId: any, id: any) {  
+  evaluacion(alumnoId: any, cursoId: any, id: any) {
     this.router.navigate(['preguntas', alumnoId, btoa(cursoId), 1, id]);
   }
 }

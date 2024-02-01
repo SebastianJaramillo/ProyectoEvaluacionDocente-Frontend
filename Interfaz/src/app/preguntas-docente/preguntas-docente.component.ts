@@ -20,7 +20,8 @@ export class PreguntasDocenteComponent implements OnInit {
   formularioId: any;
   formulario: any = {};
   docId: any;
-  funcId: any;  
+  funcId: any;
+  funcion: any;
   docente: any = {};
   eval: any = {};
   evalId: any;
@@ -48,24 +49,24 @@ export class PreguntasDocenteComponent implements OnInit {
       this.idJefe = params['idJefe'];
       this.id = params['idDoc'];      
       this.formularioId = params['formId'];
-      this.funcId = atob(params['funcId']);
+      this.funcId = params['funcId'];
       this.evalId = params['evalId'];
       this.findFormulario(this.formularioId);
       this.findDocente(atob(this.id));
       this.cargarPreguntas(this.formularioId);
 
-      switch (this.funcId) {
+      switch (atob(this.funcId)) {
         case "DOC":
-          this.funcId = "DOCENCIA";
+          this.funcion = "DOCENCIA";
           break;
         case "INV":
-          this.funcId = "INVESTIGACIÓN";
+          this.funcion = "INVESTIGACIÓN";
           break;
         case "GES":
-          this.funcId = "GESTIÓN";
+          this.funcion = "GESTIÓN";
           break;
         case "COR":
-          this.funcId = "";
+          this.funcion = "";
           break;
         default:
           console.log("No se encontró función");
@@ -169,7 +170,11 @@ export class PreguntasDocenteComponent implements OnInit {
             if(this.funcId == "") {
               this.router.navigate(['evaluacion-pares', this.idJefe, this.evalId]);
             } else {
-              this.router.navigate(['docentes', this.idJefe, this.evalId]);
+              if(this.formulario.descripcion == 'Coevaluación directiva') {
+                this.router.navigate(['evaluacion-directiva', this.idJefe, this.funcId, this.evalId]);
+              } else {
+                this.router.navigate(['docentes', this.idJefe, this.evalId]);
+              } 
             }   
           },
           (error) => {
@@ -187,7 +192,11 @@ export class PreguntasDocenteComponent implements OnInit {
     if(this.funcId == "") {
       this.router.navigate(['evaluacion-pares', this.idJefe, this.evalId]);
     } else {
-      this.router.navigate(['docentes', this.idJefe, this.evalId]);
+      if(this.formulario.descripcion == 'Coevaluación directiva') {
+        this.router.navigate(['evaluacion-directiva', this.idJefe, this.funcId, this.evalId]);
+      } else {
+        this.router.navigate(['docentes', this.idJefe, this.evalId]);
+      }      
     }
   }
 }

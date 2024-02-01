@@ -23,6 +23,9 @@ public class DocenteRelacion {
     @Column(name = "doc_id_docente", nullable = false)
     private String docIdDocente;
 
+    @Column(name = "doc_area", length = 20)
+    private String area;
+
     @Column(name = "doc_rel_estado", nullable = false, length = 10)
     private String estado;
     
@@ -37,11 +40,12 @@ public class DocenteRelacion {
     public DocenteRelacion() {
     }
 
-    public DocenteRelacion(Long codigo, String docIdJefe, String docIdDocente, String estado, Docente docenteJefe,
-            Docente docente) {
+    public DocenteRelacion(Long codigo, String docIdJefe, String docIdDocente, String area, String estado,
+            Docente docenteJefe, Docente docente) {
         this.codigo = codigo;
         this.docIdJefe = docIdJefe;
         this.docIdDocente = docIdDocente;
+        this.area = area;
         this.estado = estado;
         this.docenteJefe = docenteJefe;
         this.docente = docente;
@@ -93,6 +97,14 @@ public class DocenteRelacion {
 
     public void setDocente(Docente docente) {
         this.docente = docente;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
     }
 
     @Override

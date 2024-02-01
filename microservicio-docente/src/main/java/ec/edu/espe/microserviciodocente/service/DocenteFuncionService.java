@@ -30,7 +30,7 @@ public class DocenteFuncionService {
     }
 
     public List<DocenteFuncion> findByFuncion(String funcId) {
-        return docenteFuncionRepository.findByFuncId(funcId);
+        return docenteFuncionRepository.findByFuncIdAndEstado(funcId, "ACTIVO");
     }
 
     public DocenteFuncion addDocenteFuncion(DocenteFuncion docenteFuncion) {
