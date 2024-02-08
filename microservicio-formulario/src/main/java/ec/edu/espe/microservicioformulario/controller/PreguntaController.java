@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,4 +46,18 @@ public class PreguntaController {
     public ResponseEntity<List<Pregunta>> findByFormId(@PathVariable long id) {
         return ResponseEntity.ok().body(this.preguntaService.findByFormId(id));
     }
+
+    @PutMapping("/actualizar/{id}")
+    public ResponseEntity<Pregunta> update(@PathVariable String id, @RequestBody Pregunta pregunta) {
+        Pregunta preguntaActualizada = preguntaService.update(id, pregunta);
+        return ResponseEntity.ok().body(preguntaActualizada);
+    }
+
+    @DeleteMapping("/eliminar/{id}")
+    public ResponseEntity<?> eliminarById(@PathVariable String id) {
+        this.preguntaService.eliminarById(id);
+         return ResponseEntity.ok().build();
+
+    }
+
 }

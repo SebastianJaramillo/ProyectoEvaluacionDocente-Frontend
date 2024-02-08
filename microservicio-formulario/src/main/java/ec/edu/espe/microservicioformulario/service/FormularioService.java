@@ -33,4 +33,12 @@ public class FormularioService {
 
         throw new RuntimeException("Formulario con ID: " + id + " no se encuentra.");
     }
+
+    public void eliminarById(Long id) {
+        if (this.formularioRepository.existsById(id)) {
+            this.formularioRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Formulario no encontrado con ID: " + id);
+        }
+    }
 }

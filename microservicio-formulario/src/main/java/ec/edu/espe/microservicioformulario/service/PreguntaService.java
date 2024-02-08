@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
-
+import java.util.NoSuchElementException;
 import ec.edu.espe.microservicioformulario.model.Pregunta;
 import ec.edu.espe.microservicioformulario.repository.PreguntaRepository;
 
@@ -38,4 +38,19 @@ public class PreguntaService {
         return this.preguntaRepository.findByFormId(id);
     }
 
+
+
+    public Pregunta update(String id, Pregunta preguntaActualizada) {
+        Pregunta pregunta = preguntaRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("Pregunta no encontrada con el ID: " + id));
+        return preguntaRepository.save(pregunta);
+    }
+    
+    public void eliminarById(String id) {
+        if (this.preguntaRepository.existsById(id)) {
+            this.preguntaRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Pregunta no encontrado con ID: " + id);
+        }
+    }
 }
