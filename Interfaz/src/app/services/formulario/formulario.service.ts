@@ -21,4 +21,27 @@ export class FormularioService {
   saveRespuestas(respuestas: any[]) {
     return this.http.post<any>(`${this.apiUrl}/respuesta/registro`, respuestas);
   }
+  getFormularioListar(){
+    return this.http.get<any[]>(`${this.apiUrl}/formulario/listar`);
+  }
+  saveFormulario(formulario: any) {
+    return this.http.post<any>(`${this.apiUrl}/formulario/registro`, formulario);
+  }
+
+  savePregunta(pregunta: any) {
+      console.log("ingreso pregunta 2",pregunta);
+      return this.http.post<any>(`${this.apiUrl}/pregunta/registro`, pregunta);
+    
+  }
+  actualizarPregunta(pregunta: any){
+    return this.http.put<any>(`${this.apiUrl}/pregunta/actualizar/${pregunta.id}`, pregunta);
+      
+  }
+  deleteFormulario(id: number) {
+    return this.http.delete<any>(`${this.apiUrl}/formulario/eliminar/${id}`);
+  }
+  
+  deletePregunta(id: number) {
+    return this.http.delete<any>(`${this.apiUrl}/pregunta/eliminar/${id}`);
+  }
 }

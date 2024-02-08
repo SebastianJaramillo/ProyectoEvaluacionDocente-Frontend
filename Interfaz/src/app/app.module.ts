@@ -17,7 +17,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { JwtInterceptorService } from './services/auth/jwt-interceptor.service';
 import { ErrorInterceptorService } from './services/auth/error-interceptor.service';
-
+import { MatDialogModule } from '@angular/material/dialog';
 import { NavbarComponent } from './navbar/navbar.component';
 import { EvaluacionComponent } from './periodo/evaluacion.component';
 import { DocenteComponent } from './docente/docente.component';
@@ -32,9 +32,17 @@ import {
 import { ReporteComponent } from './reporte/reporte.component';
 import { PreguntasDocenteComponent } from './preguntas-docente/preguntas-docente.component';
 import { EvaluacionParesComponent } from './evaluacion-pares/evaluacion-pares.component';
-import { AlertSuccessComponent } from './alert-success/alert-success.component';
+import { AlertSuccessComponent } from './alerts/alert-success/alert-success.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { EvaluacionDirectivaComponent } from './evaluacion-directiva/evaluacion-directiva.component';
+import { AlertWarningComponent } from './alerts/alert-warning/alert-warning.component';
+import { NavbarAdminComponent } from './navbar-admin/navbar-admin.component';
+import { PeriodoAdminComponent } from './Admintracion/periodo-admin/periodo-admin.component';
+import { PeriodoFormAdminComponent } from './Admintracion/periodo-form-admin/periodo-form-admin.component';
+import { FormularioAdminComponent } from './Admintracion/formulario-admin/formulario-admin.component';
+import { FormularioFormAdminComponent } from './Admintracion/formulario-form-admin/formulario-form-admin.component';
+import { PreguntasFormAdminComponent } from './Admintracion/preguntas-form-admin/preguntas-form-admin.component';
+import { MatIconModule } from '@angular/material/icon';
 const routes: Routes = [
   { path: 'alumnos', component: AlumnoComponent },
   { path: 'cursos', component: CursoComponent },  
@@ -58,7 +66,14 @@ const routes: Routes = [
     PreguntasDocenteComponent,
     EvaluacionParesComponent,
     AlertSuccessComponent,
-    EvaluacionDirectivaComponent
+    EvaluacionDirectivaComponent,
+    AlertWarningComponent,
+    NavbarAdminComponent,
+    PeriodoAdminComponent,
+    PeriodoFormAdminComponent,
+    FormularioAdminComponent,
+    FormularioFormAdminComponent,
+    PreguntasFormAdminComponent
   ],
   imports: [
     BrowserModule,
@@ -78,6 +93,9 @@ const routes: Routes = [
     ReactiveFormsModule,
     HttpClientModule,
     NgbModule,
+    MatDialogModule,
+    MatIconModule,
+    ReactiveFormsModule
   ],
   providers: [AlumnoService,
     {provide:HTTP_INTERCEPTORS,useClass:JwtInterceptorService,multi:true},

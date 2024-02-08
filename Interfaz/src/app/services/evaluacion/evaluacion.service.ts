@@ -21,4 +21,12 @@ export class EvaluacionService {
   findByFechas() {
     return this.http.get<any>(`${this.apiUrl}/evaluacion/buscar/fechas`);
   }
+
+  getAllEvaluaciones(){
+    return this.http.get<any[]>(`${this.apiUrl}/evaluacion/listar`);
+  }
+  
+  createEvaluacion(evaluacion: any){
+    return this.http.get<any[]>(`${this.apiUrl}/evaluacion/registro`,evaluacion);
+  }
 }

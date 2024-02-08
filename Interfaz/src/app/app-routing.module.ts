@@ -11,10 +11,21 @@ import { ReporteComponent } from './reporte/reporte.component';
 import { PreguntasDocenteComponent } from './preguntas-docente/preguntas-docente.component';
 import { EvaluacionParesComponent } from './evaluacion-pares/evaluacion-pares.component';
 import { EvaluacionDirectivaComponent } from './evaluacion-directiva/evaluacion-directiva.component';
-
+import { NavbarAdminComponent } from './navbar-admin/navbar-admin.component';
+import { PeriodoAdminComponent } from './Admintracion/periodo-admin/periodo-admin.component';
+import { FormularioAdminComponent } from './Admintracion/formulario-admin/formulario-admin.component';
 const routes: Routes = [
   {path:'iniciar-sesion',component:LoginComponent},
+
   {
+    path: '',
+    component: NavbarAdminComponent,
+    children: [
+      { path: 'periodoAdmin', component:  PeriodoAdminComponent},
+      { path: 'formularioAdmin', component:  FormularioAdminComponent}
+    ],
+  },
+    {
     path: '',
     component: NavbarComponent,
     children: [
