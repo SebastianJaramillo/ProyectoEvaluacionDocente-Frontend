@@ -1,0 +1,48 @@
+<h2 mat-dialog-title>Evaluación</h2>
+<div mat-dialog-content>
+  <form [formGroup]="evaluacionForm">
+    <!-- Campo ID oculto -->
+    <table>
+      <input type="hidden" formControlName="id">
+
+      <!-- Campos de fecha de inicio y fin -->
+      <tr>
+        <td>
+          <label for="fechaInicio">Fecha de Inicio:</label>
+        </td>
+        <td>
+          <input type="date" formControlName="fechaInicio">
+
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="fechaFin">Fecha de Fin:</label>
+
+        </td>
+        <td>
+          <input type="date" formControlName="fechaFin">
+
+        </td>
+      </tr>
+      <tr>
+
+        <td>
+          <label for="idPeriodo">Periodo:</label>
+        </td>
+        <td>
+          <select formControlName="idPeriodo">
+            <option value="" selected>Seleccione el Periodo</option>
+            <option *ngFor="let periodo of periodos" [value]="periodo.id">{{ periodo.descripcion }}</option>
+          </select>
+        </td>
+      </tr>
+
+    </table>
+
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button type="submit">Guardar Evaluación</button>
+  <button mat-button [mat-dialog-close]="true" (click)="onCancel()">Cerrar</button>
+</div>

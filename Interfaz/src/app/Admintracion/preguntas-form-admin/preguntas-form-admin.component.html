@@ -1,0 +1,21 @@
+<h2 mat-dialog-title>Preguntas</h2>
+<div mat-dialog-content>
+  <form [formGroup]="preguntasForm">
+    <div formArrayName="preguntas">
+      <div *ngFor="let pregunta of preguntas.controls; let i = index" [formGroupName]="i">
+        <input type="text" formControlName="id">
+        <input formControlName="texto" placeholder="Texto de la Pregunta" (input)="cambioDetectado(i)">
+        <button mat-icon-button (click)="eliminarPregunta(i)" aria-label="Eliminar pregunta">
+          <mat-icon>delete</mat-icon>
+        </button>
+        <button *ngIf="cambios[i]" mat-icon-button (click)="guardarPregunta(i)" aria-label="Cambio detectado">
+          <mat-icon>check_circle</mat-icon>
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="agregarPregunta()">Agregar Nueva Pregunta</button>
+  <button mat-button [mat-dialog-close]="true">Cerrar</button>
+</div>

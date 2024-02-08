@@ -136,4 +136,37 @@ body {
     background-color: #007bff;
     opacity: .2;
     border: 2px solid #007bff; }
-  
+    button {
+      background: linear-gradient(to top, #009742, #05ba5a);
+      color: white;
+      margin-left: 10px;
+      padding-left: 25px;
+      padding-right: 25px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      
+      }
+      .btn-secondary {
+        background: linear-gradient(to top, #038ca7, #2bb4d6);
+        color: white;
+        margin-left: 10px;
+        padding-left: 25px;
+        padding-right: 25px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        
+        }
+        .btn-danger {
+          background: linear-gradient(to top, #bb1313, #df0b07);
+          color: white;
+          margin-left: 10px;
+          padding-left: 25px;
+          padding-right: 25px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          
+          }
+      

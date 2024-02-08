@@ -1,0 +1,23 @@
+<form class="form"  [formGroup]="formularioEmergente" (ngSubmit)="onSubmit()">
+  <label for="titulo">FORMULARIO</label>
+  <!-- El input de ID está oculto, así que no necesita estilos de Bootstrap -->
+  <input type="hidden" formControlName="id">
+
+  <!-- Grupo de formulario para el estado -->
+  <div class="mb-3">
+    <label for="nombre" class="form-label">Nombre:</label>
+    <input type="text" class="form-control" id="nombre" formControlName="nombre">
+  </div>
+
+  <!-- Grupo de formulario para la descripción -->
+  <div class="mb-3">
+    <label for="descripcion" class="form-label">Descripción:</label>
+    <input type="text" class="form-control" id="descripcion" formControlName="descripcion">
+  </div>
+
+
+
+  <!-- Botones con estilos de Bootstrap -->
+  <button type="submit" class="btn btn-primary" >Guardar</button>
+  <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancelar</button>
+</form>

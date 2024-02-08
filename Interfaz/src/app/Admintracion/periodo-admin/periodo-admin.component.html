@@ -1,0 +1,34 @@
+<div class="container">
+    <h2 class="mb-5">PERIODOS ACADEMICOS</h2>
+    <button (click)="abrirFormulario()">Crear</button>
+<br>
+<br>
+    <div class="table-responsive custom-table-responsive">
+      <table class="table custom-table" style="text-align: center;">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">FECHA INICIO</th>
+            <th scope="col">FECHA FIN</th>
+            <th scope="col">PERIODO</th>
+            <th scope="col">ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr scope="row" *ngFor="let evaluacion of evaluaciones">
+            <td>{{ evaluacion.id }}</td>
+            <td>{{ evaluacion.evalFechaInicio | date:'dd/MM/yyyy' }}</td>
+            <td>{{ evaluacion.evalFechaFin | date:'dd/MM/yyyy'}}</td>
+            
+            <td>{{ evaluacion.nombrePeriodo}}</td>
+            <td>
+              <button class="btn btn-secondary" (click)="editarPeriodo(evaluacion.id)">Editar</button>
+              <button class="btn btn-danger" (click)="eliminarPeriodo(evaluacion.id)">Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <br>
+  </div>
+  

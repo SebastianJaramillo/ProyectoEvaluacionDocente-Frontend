@@ -1,0 +1,53 @@
+
+<div class="d-flex">
+    <div class="content w-100">
+      <nav class="navbar navbar-expand-lg  ">
+        <div class="container-xl">
+          <a class="navbar-brand" href="#">
+            <img src="../../assets/img/logoBlanco.png" class="navbar-logo" alt="Logo ESPE">
+          </a>
+          <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item dropdown">
+                <a class="nav-link" aria-haspopup="true" aria-expanded="false">
+                 Periodo
+                </a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link" aria-haspopup="true" aria-expanded="false">
+                 Formulario
+                </a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link" aria-haspopup="true" aria-expanded="false">
+                  {{ user.firstname + " " + user.lastname }}
+                </a>
+              </li>
+              <li>
+                <button (click)="salir()" class="btn btn-danger">Salir</button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <section class="p-3">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <router-outlet></router-outlet>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <div id="sidebar">
+      <div id="sidebar-accordion" class="accordion">
+        <ul>
+          <li>
+            <button style="width: 85%; margin-top: 40px;" onclick="regresar()">Estudiantes</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  

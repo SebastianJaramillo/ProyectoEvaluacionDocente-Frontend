@@ -1,0 +1,43 @@
+<div class="container">
+    <h2 class="mb-5">Gestión de Formularios</h2>
+    <button (click)="abrirModalFormulario()" class="btn btn-primary">Crear Formulario</button>
+    <br><br>
+    <div *ngIf="formularios && formularios.length > 0">
+      <div class="table-responsive custom-table-responsive">
+        <table class="table custom-table" style="text-align: center;">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">NOMBRE</th>
+              <th scope="col">DESCRIPCION</th>
+              <th scope="col">ACCIONES</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let formulario of formularios">
+              <td>{{ formulario.id }}</td>
+              <td>{{ formulario.nombre }}</td>
+              <td>{{ formulario.descripcion }}</td>
+              <!--
+<td>
+                <label class="switch">
+                  <input type="checkbox" [id]="'switch'+formulario.id" [(ngModel)]="formulario.estado" (change)="cambiarEstado(formulario)">
+                  <span class="slider round"></span>
+                </label>
+              </td>
+              -->
+              
+              <td>
+                <button class="btn btn-secondary" (click)="cargarPreguntas(formulario.id)">Ver Preguntas</button>
+                <button class="btn btn-secondary" (click)="editarModalFormulario(formulario.id)">Editar</button>
+                <button class="btn btn-danger" (click)="eliminarFormulario(formulario.id)">Eliminar</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <br>
+   
+  </div>
+  
