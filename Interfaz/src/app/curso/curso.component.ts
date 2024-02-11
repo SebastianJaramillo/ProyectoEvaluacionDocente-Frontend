@@ -15,6 +15,7 @@ export class CursoComponent implements OnInit {
   curso: any = {};
   eval: any = {};
   docente: any = {};
+  periodo: any = {};
   id: any;
   evalId: any;
 
@@ -40,6 +41,7 @@ export class CursoComponent implements OnInit {
       (data) => {
         this.eval = data;
         this.evalId = this.eval.id;
+        this.findPeriodo(this.eval.perId);
         this.cargarCursosEstudiante(atob(this.id), this.evalId);
       },
       (error) => {
@@ -83,7 +85,18 @@ export class CursoComponent implements OnInit {
     );
   }
 
+  findPeriodo(id: number): any {
+    this.evaluacionService.getPeriodoById(id).subscribe(
+      (data) => {
+        this.periodo = data;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
   evaluacion(alumnoId: any, cursoId: any, id: any) {
-    this.router.navigate(['preguntas', alumnoId, btoa(cursoId), 1, id]);
+    this.router.navigate(['preguntas', alumnoId, btoa(cursoId), 1, id, this.evalId]);
   }
 }

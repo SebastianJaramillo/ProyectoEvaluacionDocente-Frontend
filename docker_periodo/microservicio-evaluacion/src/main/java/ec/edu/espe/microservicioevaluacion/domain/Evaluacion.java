@@ -21,7 +21,7 @@ public class Evaluacion {
 	private Long id;
 
 	@Column(name = "per_id", nullable = false)
-	private Long per_id;
+	private Long perId;
 
 	@Column(name = "eval_fecha_Inicio", nullable = false)
 	private Date evalFechaInicio;
@@ -39,10 +39,10 @@ public class Evaluacion {
 	public Evaluacion() {
 	}
 
-	public Evaluacion(Long id, Long per_id, Date evalFechaInicio, Date evalFechaFin, String estado,
+	public Evaluacion(Long id, Long perId, Date evalFechaInicio, Date evalFechaFin, String estado,
 			Periodo periodo) {
 		this.id = id;
-		this.per_id = per_id;
+		this.perId = perId;
 		this.evalFechaInicio = evalFechaInicio;
 		this.evalFechaFin = evalFechaFin;
 		this.estado = estado;
@@ -57,12 +57,12 @@ public class Evaluacion {
 		this.id = id;
 	}
 
-	public Long getPer_id() {
-		return per_id;
+	public Long getPerId() {
+		return perId;
 	}
 
-	public void setPer_id(Long per_id) {
-		this.per_id = per_id;
+	public void setPerId(Long perId) {
+		this.perId = perId;
 	}
 
 	public Date getEvalFechaInicio() {

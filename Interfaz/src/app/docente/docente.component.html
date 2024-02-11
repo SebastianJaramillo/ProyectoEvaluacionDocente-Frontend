@@ -1,69 +1,37 @@
 <div class="container">
-  <h3>Evaluaciones</h3>
-  <div class="row" *ngFor="let f of funciones">
-    <div class="col-md-12">
-      <div
-        class="card"
-        *ngIf="f.funcId == 'DOC' || f.funcId == 'INV' || f.funcId == 'GES'"
-      >
-        <div class="card-body">
-          <h5 class="card-title">Autoevaluación {{ f.funcion.descripcion }} <button class="btn btn-primary" (click)="evaluacion(id, 21, f.funcId)">Evaluar</button></h5>
-          <p class="card-text">
-            Es tu momento para reflexionar sobre tu práctica pedagógica,
-            identificar fortalezas y áreas de mejora, y tomar medidas para tu
-            desarrollo profesional. ¡Aprovecha esta oportunidad para crecer y
-            destacar en tu trayectoria educativa!
-          </p>          
-        </div>
-      </div>
-    </div>
+  <h2>EVALUACIONES</h2><button class="btn btn-secondary" (click)="generarInforme()">Generar Informe</button>
+  <h2><b>PERIODO: </b>{{ periodo.descripcion }}</h2>
+  <div class="table-responsive custom-table-responsive">
+  <table class="table custom-table" style="text-align: center;">
+    <thead>
+      <tr>
+        <th scope="col">ACTIVIDAD</th>
+        <th scope="col">EVALUACION</th>
+        <th scope="col">ESTADO</th> 
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let f of funciones">
+        <tr scope="row">
+          <td *ngIf="f.funcId == 'DOC' || f.funcId == 'INV' || f.funcId == 'GES' || f.funcId == 'VIN'">{{ f.funcion.descripcion.toUpperCase() }}</td>
+          <td *ngIf="f.funcId == 'COR'">DOCENCIA</td>
+
+          <td *ngIf="f.funcId == 'DOC' || f.funcId == 'INV' || f.funcId == 'GES' || f.funcId == 'VIN'">AUTOEVALUACIÓN</td>
+          <td *ngIf="f.funcId == 'COR'">COEVALUACIÓN POR PARES</td>
+
+          <td *ngIf="f.funcId == 'DOC' || f.funcId == 'INV' || f.funcId == 'GES' || f.funcId == 'VIN'"><button class="btn btn-secondary" (click)="evaluacion(id, 21, f.funcId)">Evaluar</button></td>
+          <td *ngIf="f.funcId == 'COR'"><button class="btn btn-secondary" (click)="evaluacionPares()">Seleccionar</button></td>          
+        </tr>
+        <tr scope="row" *ngFor="let act of ['DOCENCIA', 'INVESTIGACIÓN', 'GESTIÓN', 'VINCULACIÓN']">
+          <ng-container *ngIf="f.funcId == 'DIR'">
+            <td>{{act}}</td>
+            <td>COEVALUACIÓN DIRECTIVA</td>
+            <td><button class="btn btn-secondary" (click)="evaluacionDirectiva(act.substring(0, 3))">Seleccionar</button></td>
+          </ng-container>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
   </div>
-  <div class="row" *ngFor="let f of funciones">
-    <div class="col-md-12">
-      <div class="card" *ngIf="f.funcId == 'COR'">
-        <div class="card-body">
-          <h5 class="card-title">Coevaluación por pares <button class="btn btn-primary" (click)="evaluacionPares()" >Seleccionar</button></h5>
-          <p class="card-text">
-            Es una emocionante oportunidad para recibir retroalimentación
-            externa valiosa y avanzar en tu crecimiento profesional. ¡Aprovecha
-            esta experiencia para destacar tus fortalezas y recibir orientación
-            constructiva!.
-          </p>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-12">
-      <div class="card" *ngIf="f.funcId == 'DIR'">
-        <div class="card-body">
-          <h5 class="card-title">Coevaluación directiva: Docencia <button class="btn btn-primary" (click)="evaluacionDirectiva('DOC')" >Seleccionar</button></h5>
-          <p class="card-text">
-            Es la oportunidad de analizar críticamente el liderazgo, identificar prácticas exitosas y comprometerse a abordar áreas 
-            que necesitan atención.
-          </p>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-12">
-      <div class="card" *ngIf="f.funcId == 'DIR'">
-        <div class="card-body">
-          <h5 class="card-title">Coevaluación directiva: Investigación <button class="btn btn-primary" (click)="evaluacionDirectiva('INV')" >Seleccionar</button></h5>
-          <p class="card-text">
-            Es la oportunidad de analizar críticamente el liderazgo, identificar prácticas exitosas y comprometerse a abordar áreas 
-            que necesitan atención.
-          </p>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-12">
-      <div class="card" *ngIf="f.funcId == 'DIR'">
-        <div class="card-body">
-          <h5 class="card-title">Coevaluación directiva: Gestión <button class="btn btn-primary" (click)="evaluacionDirectiva('GES')" >Seleccionar</button></h5>
-          <p class="card-text">
-            Es la oportunidad de analizar críticamente el liderazgo, identificar prácticas exitosas y comprometerse a abordar áreas 
-            que necesitan atención.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
+  <br>
 </div>

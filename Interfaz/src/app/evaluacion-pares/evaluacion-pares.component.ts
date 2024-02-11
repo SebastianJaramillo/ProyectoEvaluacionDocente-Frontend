@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DocenteService } from '../services/docente/docente.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { EvaluacionService } from '../services/evaluacion/evaluacion.service';
 
 @Component({
   selector: 'app-evaluacion-pares',
@@ -10,6 +11,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class EvaluacionParesComponent implements OnInit {
   docentes: any[] = [];
   docente: any = {};
+  periodo: any = {};
+  eval: any = {};
   id: any;
   idJefe: any;
   evalId: any;
@@ -17,6 +20,7 @@ export class EvaluacionParesComponent implements OnInit {
 
   constructor(
     private docenteService: DocenteService,
+    private evaluacionService: EvaluacionService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -26,6 +30,7 @@ export class EvaluacionParesComponent implements OnInit {
       this.id = params['id'];
       this.evalId = params['evalId'];
       this.findByJefe(atob(this.id));
+      this.findEvaluacion(this.evalId);
     });
   }
 
@@ -33,6 +38,29 @@ export class EvaluacionParesComponent implements OnInit {
     this.docenteService.findByJefe(id).subscribe(
       (data) => {
         this.docentes = data;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  findPeriodo(id: number): any {
+    this.evaluacionService.getPeriodoById(id).subscribe(
+      (data) => {
+        this.periodo = data;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  findEvaluacion(id: number): any {
+    this.evaluacionService.findEvaluacion(id).subscribe(
+      (data) => {
+        this.eval = data;
+        this.findPeriodo(this.eval.perId);
       },
       (error) => {
         console.error(error);

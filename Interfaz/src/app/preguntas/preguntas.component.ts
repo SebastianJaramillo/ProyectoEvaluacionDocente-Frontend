@@ -6,6 +6,7 @@ import { FormularioService } from '../services/formulario/formulario.service';
 import { DocenteService } from '../services/docente/docente.service';
 import { AlertSuccessComponent } from '../alerts/alert-success/alert-success.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EvaluacionService } from '../services/evaluacion/evaluacion.service';
 
 @Component({
   selector: 'app-preguntas',
@@ -23,8 +24,11 @@ export class PreguntasComponent implements OnInit {
   curso: any = {};
   formularioId: any;
   formulario: any = {};
+  periodo: any = {};
+  evaluacion: any = {};
   cursoEstudianteId: any;
   docId: any;
+  evalId: number | undefined;
   asignatura: any;
   docente: any = {};
   botonDesactivado = true;
@@ -44,6 +48,7 @@ export class PreguntasComponent implements OnInit {
     private alumnoService: AlumnoService,
     private formularioService: FormularioService,
     private docenteService: DocenteService,
+    private evaluacionService: EvaluacionService,
     private modalService: NgbModal
   ) {}
 
@@ -53,9 +58,11 @@ export class PreguntasComponent implements OnInit {
       this.cursoId = params['cursoId'];
       this.formularioId = params['formId'];
       this.cursoEstudianteId = params['idCurEst'];
+      this.evalId = params['evalId'];
       this.findFormulario(this.formularioId);
       this.findEstudiante(atob(this.id));
       this.findCurso(Number(atob(this.cursoId)));
+      this.findEvaluacion(Number(this.evalId))
       this.cargarPreguntas(this.formularioId);
     });
     setTimeout(() => {
@@ -116,6 +123,30 @@ export class PreguntasComponent implements OnInit {
     this.docenteService.findById(id).subscribe(
       (data) => {
         this.docente = data        
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  findEvaluacion(id: number): any {
+    this.evaluacionService.findEvaluacion(id).subscribe(
+      (data) => {
+        this.evaluacion = data;
+        this.findPeriodo(this.evaluacion.perId);
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  findPeriodo(id: number): any {
+    this.evaluacionService.getPeriodoById(id).subscribe(
+      (data) => {
+        this.periodo = data;
+        console.log(data)
       },
       (error) => {
         console.error(error);
@@ -184,6 +215,6 @@ export class PreguntasComponent implements OnInit {
   }
 
   volver() {
-    this.router.navigate(['cursos', this.id]);
+    this.router.navigate(['cursos', this.id, this.evalId]);
   }
 }

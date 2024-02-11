@@ -25,6 +25,7 @@ export class PreguntasDocenteComponent implements OnInit {
   docente: any = {};
   eval: any = {};
   evalId: any;
+  periodo: any = {};  
   evaluacion: DocenteEvaluacion = {} as DocenteEvaluacion;
 
   opciones = [
@@ -53,10 +54,12 @@ export class PreguntasDocenteComponent implements OnInit {
       this.evalId = params['evalId'];
       this.findFormulario(this.formularioId);
       this.findDocente(atob(this.id));
+      this.findEvaluacion(Number(this.evalId))
       this.cargarPreguntas(this.formularioId);
 
       switch (atob(this.funcId)) {
         case "DOC":
+        case "COR":
           this.funcion = "DOCENCIA";
           break;
         case "INV":
@@ -64,9 +67,6 @@ export class PreguntasDocenteComponent implements OnInit {
           break;
         case "GES":
           this.funcion = "GESTIÓN";
-          break;
-        case "COR":
-          this.funcion = "";
           break;
         default:
           console.log("No se encontró función");
@@ -101,6 +101,29 @@ export class PreguntasDocenteComponent implements OnInit {
     this.docenteService.findById(id).subscribe(
       (data) => {
         this.docente = data;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  findEvaluacion(id: number): any {
+    this.evaluacionService.findEvaluacion(id).subscribe(
+      (data) => {
+        this.eval = data;
+        this.findPeriodo(this.eval.perId);
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  findPeriodo(id: number): any {
+    this.evaluacionService.getPeriodoById(id).subscribe(
+      (data) => {
+        this.periodo = data;
       },
       (error) => {
         console.error(error);
@@ -189,7 +212,7 @@ export class PreguntasDocenteComponent implements OnInit {
   }
 
   volver() {
-    if(this.funcId == "") {
+    if(this.funcion == "DOCENCIA" && atob(this.funcId) == 'COR') {
       this.router.navigate(['evaluacion-pares', this.idJefe, this.evalId]);
     } else {
       if(this.formulario.descripcion == 'Coevaluación directiva') {

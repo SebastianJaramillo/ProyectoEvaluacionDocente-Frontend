@@ -4,7 +4,8 @@
 <p> <b>Docente evaluado: </b>{{ docente.nombres + " " + docente.apellidos}}
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-   <b>Actividad: </b>{{ funcion}}    
+   <b>Actividad: </b>{{ funcion}}<br>
+   <b>Período: </b>{{ periodo.descripcion}}
 </p>
 
 <div *ngIf="preguntas && preguntas.length > 0">

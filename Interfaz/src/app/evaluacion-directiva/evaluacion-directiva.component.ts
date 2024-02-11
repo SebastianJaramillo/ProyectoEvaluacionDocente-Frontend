@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DocenteService } from '../services/docente/docente.service';
 import { FuncionService } from '../services/funcion/funcion.service';
+import { EvaluacionService } from '../services/evaluacion/evaluacion.service';
 
 @Component({
   selector: 'app-evaluacion-directiva',
@@ -16,11 +17,14 @@ export class EvaluacionDirectivaComponent implements OnInit {
   evalId: any;
   funcId: any;
   funcion: any = {};
+  periodo: any = {};
+  eval: any = {};
   desactivado: any;
 
   constructor(
     private docenteService: DocenteService,
     private funcionService: FuncionService,
+    private evaluacionService: EvaluacionService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -31,6 +35,7 @@ export class EvaluacionDirectivaComponent implements OnInit {
       this.evalId = params['evalId'];
       this.funcId = atob(params['funcId']);
       this.findByFuncion(this.funcId);
+      this.findEvaluacion(this.evalId);
       this.findFuncionById(this.funcId);
     });
   }
@@ -66,6 +71,29 @@ export class EvaluacionDirectivaComponent implements OnInit {
       btoa(funcId),
       this.evalId,
     ]);
+  }
+
+  findPeriodo(id: number): any {
+    this.evaluacionService.getPeriodoById(id).subscribe(
+      (data) => {
+        this.periodo = data;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  findEvaluacion(id: number): any {
+    this.evaluacionService.findEvaluacion(id).subscribe(
+      (data) => {
+        this.eval = data;
+        this.findPeriodo(this.eval.perId);
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
   }
 
   volver() {
