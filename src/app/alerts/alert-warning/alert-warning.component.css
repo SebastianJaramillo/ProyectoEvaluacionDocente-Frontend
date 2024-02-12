@@ -1,0 +1,51 @@
+
+.modal-content {
+    background-color: white;
+    color: black;
+    border: 2px solid rgb(223, 82, 82);
+    border-radius: 5px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+
+  }
+
+  .modal-header {
+    background-color: rgb(242, 95, 95);
+    color: white;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    text-align: center;
+  }
+
+
+
+  .error-icon {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    background-color: rgb(242, 95, 95);
+    color: white;
+    font-size: 32px;
+    line-height: 50px;
+    margin-bottom: 10px;
+    border-radius: 50%;
+  }
+
+  .error-icon:before {
+    content: "!";
+    text-align: center;
+    display: block;
+  }
+  button {
+    background: linear-gradient(to top, #ff5e5e, #fc9590);
+    color: white;
+    
+    padding-left: 10px;
+    padding-right: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    
+    }

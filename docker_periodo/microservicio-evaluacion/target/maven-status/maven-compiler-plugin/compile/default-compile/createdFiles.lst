@@ -1,9 +1,0 @@
-ec\edu\espe\microservicioevaluacion\MicroservicioevaluacionApplication.class
-ec\edu\espe\microservicioevaluacion\domain\Evaluacion.class
-ec\edu\espe\microservicioevaluacion\controller\PeriodoController.class
-ec\edu\espe\microservicioevaluacion\controller\EvaluacionController.class
-ec\edu\espe\microservicioevaluacion\service\PeriodoService.class
-ec\edu\espe\microservicioevaluacion\repository\PeriodoRepository.class
-ec\edu\espe\microservicioevaluacion\domain\Periodo.class
-ec\edu\espe\microservicioevaluacion\repository\EvaluacionRepository.class
-ec\edu\espe\microservicioevaluacion\service\EvaluacionService.class

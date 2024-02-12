@@ -1,0 +1,37 @@
+<div class="container">
+  <h2>EVALUACIONES</h2><button class="btn btn-secondary" (click)="generarInforme()">Generar Informe</button>
+  <h2><b>PERIODO: </b>{{ periodo.descripcion }}</h2>
+  <div class="table-responsive custom-table-responsive">
+  <table class="table custom-table" style="text-align: center;">
+    <thead>
+      <tr>
+        <th scope="col">ACTIVIDAD</th>
+        <th scope="col">EVALUACION</th>
+        <th scope="col">ESTADO</th> 
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let f of funciones">
+        <tr scope="row">
+          <td *ngIf="f.funcId == 'DOC' || f.funcId == 'INV' || f.funcId == 'GES' || f.funcId == 'VIN'">{{ f.funcion.descripcion.toUpperCase() }}</td>
+          <td *ngIf="f.funcId == 'COR'">DOCENCIA</td>
+
+          <td *ngIf="f.funcId == 'DOC' || f.funcId == 'INV' || f.funcId == 'GES' || f.funcId == 'VIN'">AUTOEVALUACIÓN</td>
+          <td *ngIf="f.funcId == 'COR'">COEVALUACIÓN POR PARES</td>
+
+          <td *ngIf="f.funcId == 'DOC' || f.funcId == 'INV' || f.funcId == 'GES' || f.funcId == 'VIN'"><button class="btn btn-secondary" (click)="evaluacion(id, 21, f.funcId)">Evaluar</button></td>
+          <td *ngIf="f.funcId == 'COR'"><button class="btn btn-secondary" (click)="evaluacionPares()">Seleccionar</button></td>          
+        </tr>
+        <tr scope="row" *ngFor="let act of ['DOCENCIA', 'INVESTIGACIÓN', 'GESTIÓN', 'VINCULACIÓN']">
+          <ng-container *ngIf="f.funcId == 'DIR'">
+            <td>{{act}}</td>
+            <td>COEVALUACIÓN DIRECTIVA</td>
+            <td><button class="btn btn-secondary" (click)="evaluacionDirectiva(act.substring(0, 3))">Seleccionar</button></td>
+          </ng-container>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+  </div>
+  <br>
+</div>
