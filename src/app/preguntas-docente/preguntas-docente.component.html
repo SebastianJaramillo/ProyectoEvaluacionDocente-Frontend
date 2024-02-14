@@ -1,11 +1,12 @@
 <!-- HTML para mostrar la pregunta actual y las opciones de respuesta -->
 <button class="btn btn-danger" (click)="volver()">Volver</button>
-<p style="font-size: 18px; text-align: center;"><b style="font-size: 18px;">{{ formulario.nombre}}</b><br><br></p>
-<p> <b>Docente evaluado: </b>{{ docente.nombres + " " + docente.apellidos}}
+<p style="font-size: 18px; text-align: center;"><b style="font-size: 18px;">{{ formulario.nombre }}</b><br><br></p>
+<p> <b>Evaluador: </b>{{ evaluador.apellidos + " " + evaluador.nombres }}<br>
+<b>Docente evaluado: </b>{{ docente.apellidos + " " + docente.nombres }}
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-   <b>Actividad: </b>{{ funcion}}<br>
-   <b>Período: </b>{{ periodo.descripcion}}
+   <b>Actividad: </b>{{ formulario.descripcion }}<br>
+   <b>Período: </b>{{ periodo.descripcion }}
 </p>
 
 <div *ngIf="preguntas && preguntas.length > 0">

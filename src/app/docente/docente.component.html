@@ -1,5 +1,5 @@
 <div class="container">
-  <h2>EVALUACIONES</h2><button class="btn btn-secondary" (click)="generarInforme()">Generar Informe</button>
+  <h2><b>EVALUACIONES</b></h2><button class="btn btn-secondary" (click)="reportes()">Reportes</button>
   <h2><b>PERIODO: </b>{{ periodo.descripcion }}</h2>
   <div class="table-responsive custom-table-responsive">
   <table class="table custom-table" style="text-align: center;">
@@ -11,19 +11,18 @@
       </tr>
     </thead>
     <tbody>
-      <ng-container *ngFor="let f of funciones">
+      <ng-container *ngFor="let f of docFunciones">
         <tr scope="row">
-          <td *ngIf="f.funcId == 'DOC' || f.funcId == 'INV' || f.funcId == 'GES' || f.funcId == 'VIN'">{{ f.funcion.descripcion.toUpperCase() }}</td>
-          <td *ngIf="f.funcId == 'COR'">DOCENCIA</td>
+          <td *ngIf="f.funcion.rol != 'Director'">{{ f.funcion.descripcion.toUpperCase() }}</td>
 
-          <td *ngIf="f.funcId == 'DOC' || f.funcId == 'INV' || f.funcId == 'GES' || f.funcId == 'VIN'">AUTOEVALUACIÓN</td>
-          <td *ngIf="f.funcId == 'COR'">COEVALUACIÓN POR PARES</td>
+          <td *ngIf="f.funcion.rol == 'Docente'">AUTOEVALUACIÓN</td>
+          <td *ngIf="f.funcion.rol == 'Coordinador'">COEVALUACIÓN POR PARES</td>
 
-          <td *ngIf="f.funcId == 'DOC' || f.funcId == 'INV' || f.funcId == 'GES' || f.funcId == 'VIN'"><button class="btn btn-secondary" (click)="evaluacion(id, 21, f.funcId)">Evaluar</button></td>
-          <td *ngIf="f.funcId == 'COR'"><button class="btn btn-secondary" (click)="evaluacionPares()">Seleccionar</button></td>          
+          <td *ngIf="f.funcion.rol == 'Docente'"><button class="btn btn-secondary" (click)="evaluacion(id, f.funcId)">Evaluar</button></td>
+          <td *ngIf="f.funcion.rol == 'Coordinador'"><button class="btn btn-secondary" (click)="evaluacionPares(f.funcId)">Seleccionar</button></td>          
         </tr>
         <tr scope="row" *ngFor="let act of ['DOCENCIA', 'INVESTIGACIÓN', 'GESTIÓN', 'VINCULACIÓN']">
-          <ng-container *ngIf="f.funcId == 'DIR'">
+          <ng-container *ngIf="f.funcion.rol == 'Director'">
             <td>{{act}}</td>
             <td>COEVALUACIÓN DIRECTIVA</td>
             <td><button class="btn btn-secondary" (click)="evaluacionDirectiva(act.substring(0, 3))">Seleccionar</button></td>

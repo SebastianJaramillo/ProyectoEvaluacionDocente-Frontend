@@ -1,6 +1,6 @@
 
 <div class="container">
-  <h2>HETEROEVALUACIÓN</h2>
+  <h2><b>HETEROEVALUACIÓN</b></h2>
   <h2><b>PERIODO: </b>{{ periodo.descripcion }}</h2>
   <div class="table-responsive custom-table-responsive">
   <table class="table custom-table" style="text-align: center;">
@@ -14,10 +14,10 @@
       </tr>
     </thead>
     <tbody>
-      <tr scope="row" *ngFor="let cursoEstudiante of cursos">        
+      <tr scope="row" *ngFor="let cursoEstudiante of cursos">
         <td>DOCENCIA</td>
         <td>{{ cursoEstudiante.curNrc }}</td>
-        <td>{{ cursoEstudiante.curso.docente.nombres + " " + cursoEstudiante.curso.docente.apellidos}}</td>
+        <td>{{ cursoEstudiante.curso.docente.apellidos + " " + cursoEstudiante.curso.docente.nombres}}</td>
         <td>{{ cursoEstudiante.curso.asignatura.nombre}}</td>
         <td *ngIf="cursoEstudiante.eval_estado != 'TERMINADA'"><button class="btn btn-secondary" (click)="evaluacion(id, cursoEstudiante.curso.nrc, cursoEstudiante.id)">Evaluar</button></td>
         <td *ngIf="cursoEstudiante.eval_estado == 'TERMINADA'">{{ cursoEstudiante.eval_estado}}</td>      

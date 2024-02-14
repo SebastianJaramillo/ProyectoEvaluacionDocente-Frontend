@@ -48,8 +48,6 @@ export class NavbarComponent implements OnInit{
   }
   
   findUsuario(id: string) {
-    //this.alumno.apellidos = 'Constante';
-    //this.alumno.nombres ='Roberson';
     this.userService.findById(atob(this.userIdActual)).subscribe({
       next: (user) => {
         this.user = user;

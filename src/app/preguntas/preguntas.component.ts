@@ -7,6 +7,7 @@ import { DocenteService } from '../services/docente/docente.service';
 import { AlertSuccessComponent } from '../alerts/alert-success/alert-success.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EvaluacionService } from '../services/evaluacion/evaluacion.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-preguntas',
@@ -178,6 +179,7 @@ export class PreguntasComponent implements OnInit {
         preId: pregunta.id,
         texto: pregunta.respuestaSeleccionada,
         docEvaluado: this.docId,
+        evalId: this.evalId
       });
     }
   }
@@ -189,14 +191,15 @@ export class PreguntasComponent implements OnInit {
       preId: pregunta.id,
       texto: pregunta.respuestaSeleccionada,
       docEvaluado: this.docId,
+      evalId: this.evalId
     });    
 
     this.formularioService.saveRespuestas(this.respuestas).subscribe(
       (data) => {
         this.alumnoService.updateEstadoEval(this.cursoEstudianteId).subscribe(          
           (data) => {            
-            this.successModal("Respuestas guardadas correctamente");
-            this.router.navigate(['cursos', this.id]);
+            this.mensaje("Respuestas guardadas correctamente");
+            this.router.navigate(['cursos', this.id, this.evalId]);
           },
           (error) => {
             console.error(error);
@@ -216,5 +219,15 @@ export class PreguntasComponent implements OnInit {
 
   volver() {
     this.router.navigate(['cursos', this.id, this.evalId]);
+  }
+
+  mensaje(texto: any) {
+    Swal.fire({
+      title: 'Éxito',
+      text: texto,
+      icon: 'success',
+      confirmButtonText: 'Aceptar',
+      width: '350px',      
+    });
   }
 }

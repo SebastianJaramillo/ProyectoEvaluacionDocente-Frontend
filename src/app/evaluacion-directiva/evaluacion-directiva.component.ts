@@ -16,6 +16,7 @@ export class EvaluacionDirectivaComponent implements OnInit {
   idJefe: any;
   evalId: any;
   funcId: any;
+  formId: any;
   funcion: any = {};
   periodo: any = {};
   eval: any = {};
@@ -35,8 +36,25 @@ export class EvaluacionDirectivaComponent implements OnInit {
       this.evalId = params['evalId'];
       this.funcId = atob(params['funcId']);
       this.findByFuncion(this.funcId);
+      
+      switch (this.funcId) {
+        case 'DOC':
+          this.funcId = 'DOCENCIA';
+          break;
+        case 'VIN':
+          this.funcId = 'VINCULACION';
+          break;
+        case 'GES':
+          this.funcId = 'GESTION';
+          break;
+        case 'INV':
+          this.funcId = 'INVESTIGACION';
+          break;
+        default:
+          console.log('No se encontró función');
+      }
+
       this.findEvaluacion(this.evalId);
-      this.findFuncionById(this.funcId);
     });
   }
 
@@ -51,26 +69,25 @@ export class EvaluacionDirectivaComponent implements OnInit {
     );
   }
 
-  findFuncionById(id: string) {
-    this.funcionService.findById(id).subscribe(
-      (data) => {
-        this.funcion = data;
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-  }
+  evaluacion(id: any) {
+    switch (this.funcId) {
+      case 'DOCENCIA':
+        this.formId = 10;
+        break;
+      case 'VINCULACION':
+        this.formId = 11;
+        break;
+      case 'GESTION':
+        this.formId = 12;
+        break;
+      case 'INVESTIGACION':
+        this.formId = 13;
+        break;
+      default:
+        console.log('No se encontró función');
+    }
 
-  evaluacion(id: any, formId: any, funcId: any) {
-    this.router.navigate([
-      'docentes-preguntas',
-      this.id,
-      btoa(id),
-      formId,
-      btoa(funcId),
-      this.evalId,
-    ]);
+    this.router.navigate(['docentes-preguntas', this.id, btoa(id), this.formId, this.evalId, btoa(this.funcId)]);  
   }
 
   findPeriodo(id: number): any {

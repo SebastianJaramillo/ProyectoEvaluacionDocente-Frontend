@@ -4,6 +4,7 @@ import { FormularioService } from '../services/formulario/formulario.service';
 import { DocenteService } from '../services/docente/docente.service';
 import { DocenteEvaluacion } from './DocenteEvaluacion';
 import { EvaluacionService } from '../services/evaluacion/evaluacion.service';
+import { FuncionService } from '../services/funcion/funcion.service';
 
 @Component({
   selector: 'app-preguntas-docente',
@@ -21,11 +22,12 @@ export class PreguntasDocenteComponent implements OnInit {
   formulario: any = {};
   docId: any;
   funcId: any;
-  funcion: any;
+  funcion: any = {};
   docente: any = {};
+  evaluador: any = {};
   eval: any = {};
   evalId: any;
-  periodo: any = {};  
+  periodo: any = {};
   evaluacion: DocenteEvaluacion = {} as DocenteEvaluacion;
 
   opciones = [
@@ -40,7 +42,8 @@ export class PreguntasDocenteComponent implements OnInit {
     private router: Router,
     private formularioService: FormularioService,
     private docenteService: DocenteService,
-    private evaluacionService: EvaluacionService
+    private evaluacionService: EvaluacionService,
+    private funcionService: FuncionService
   ) {}
 
   ngOnInit(): void {
@@ -48,29 +51,15 @@ export class PreguntasDocenteComponent implements OnInit {
 
     this.route.params.subscribe((params) => {
       this.idJefe = params['idJefe'];
-      this.id = params['idDoc'];      
+      this.id = params['idDoc'];
       this.formularioId = params['formId'];
       this.funcId = params['funcId'];
       this.evalId = params['evalId'];
       this.findFormulario(this.formularioId);
       this.findDocente(atob(this.id));
-      this.findEvaluacion(Number(this.evalId))
+      this.findEvaluador(atob(this.idJefe));
+      this.findEvaluacion(Number(this.evalId));
       this.cargarPreguntas(this.formularioId);
-
-      switch (atob(this.funcId)) {
-        case "DOC":
-        case "COR":
-          this.funcion = "DOCENCIA";
-          break;
-        case "INV":
-          this.funcion = "INVESTIGACIÓN";
-          break;
-        case "GES":
-          this.funcion = "GESTIÓN";
-          break;
-        default:
-          console.log("No se encontró función");
-      }
     });
   }
 
@@ -89,7 +78,22 @@ export class PreguntasDocenteComponent implements OnInit {
     this.formularioService.findById(id).subscribe(
       (data) => {
         this.formulario = data;
-        this.formulario.nombre = this.formulario.nombre.toUpperCase();
+
+        switch (this.formulario.nombre) {
+          case 'Coevaluacion':
+            this.formulario.nombre = 'COEVALUACION POR PARES';
+            break;
+          case 'Coevaluacion director':
+            this.formulario.nombre = 'COEVALUACION DIRECTIVA';
+            break;
+          case 'Autoevaluacion':
+            this.formulario.nombre = 'AUTOEVALUACION';
+            break;
+          default:
+            console.log('No se encontró formulario');
+        }
+
+        this.formulario.descripcion = this.formulario.descripcion.toUpperCase();
       },
       (error) => {
         console.error(error);
@@ -101,6 +105,28 @@ export class PreguntasDocenteComponent implements OnInit {
     this.docenteService.findById(id).subscribe(
       (data) => {
         this.docente = data;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  findEvaluador(id: string) {
+    this.docenteService.findById(id).subscribe(
+      (data) => {
+        this.evaluador = data;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  findFuncion(id: string) {
+    this.funcionService.findById(id).subscribe(
+      (data) => {
+        this.funcion = data;
       },
       (error) => {
         console.error(error);
@@ -154,19 +180,20 @@ export class PreguntasDocenteComponent implements OnInit {
       this.respuestas.push({
         preId: pregunta.id,
         texto: pregunta.respuestaSeleccionada,
-        docEvaluado: atob(this.id)
+        docEvaluado: atob(this.id),
+        evalId: this.evalId,
       });
     }
   }
 
   findByFechas() {
-    this.evaluacionService.findByFechas().subscribe(  
+    this.evaluacionService.findByFechas().subscribe(
       (data) => {
         this.eval = data;
         this.evalId = this.eval.id;
       },
       (error) => {
-        alert("Evaluación no se encuentra habilitada en estas fechas.")
+        alert('Evaluación no se encuentra habilitada en estas fechas.');
         this.router.navigate(['periodo', this.idJefe]);
       }
     );
@@ -178,7 +205,8 @@ export class PreguntasDocenteComponent implements OnInit {
     this.respuestas.push({
       preId: pregunta.id,
       texto: pregunta.respuestaSeleccionada,
-      docEvaluado: atob(this.id)
+      docEvaluado: atob(this.id),
+      evalId: this.evalId,
     });
 
     this.formularioService.saveRespuestas(this.respuestas).subscribe(
@@ -186,24 +214,29 @@ export class PreguntasDocenteComponent implements OnInit {
         this.evaluacion.docEvaluador = atob(this.idJefe);
         this.evaluacion.docEvaluado = atob(this.id);
         this.evaluacion.evalId = this.evalId;
-        
+
         this.docenteService.saveEvaluacion(this.evaluacion).subscribe(
           (data) => {
             alert('Respuestas guardadas');
-            if(this.funcId == "") {
-              this.router.navigate(['evaluacion-pares', this.idJefe, this.evalId]);
+            if (this.funcion.rol == 'Coordinador') {
+              this.router.navigate(['evaluacion-pares', this.idJefe, this.evalId, this.funcId]);
             } else {
-              if(this.formulario.descripcion == 'Coevaluación directiva') {
-                this.router.navigate(['evaluacion-directiva', this.idJefe, this.funcId, this.evalId]);
+              if (this.formulario.nombre == 'COEVALUACION DIRECTIVA') {
+                this.router.navigate([
+                  'evaluacion-directiva',
+                  this.idJefe,
+                  this.funcId.substring(0, 4),
+                  this.evalId,
+                ]);
               } else {
                 this.router.navigate(['docentes', this.idJefe, this.evalId]);
-              } 
-            }   
+              }
+            }
           },
           (error) => {
             console.error(error);
           }
-        );     
+        );
       },
       (error) => {
         console.error(error);
@@ -212,14 +245,19 @@ export class PreguntasDocenteComponent implements OnInit {
   }
 
   volver() {
-    if(this.funcion == "DOCENCIA" && atob(this.funcId) == 'COR') {
-      this.router.navigate(['evaluacion-pares', this.idJefe, this.evalId]);
+    if (this.funcion.rol == 'Coordinador') {
+      this.router.navigate(['evaluacion-pares', this.idJefe, this.evalId, this.funcId]);
     } else {
-      if(this.formulario.descripcion == 'Coevaluación directiva') {
-        this.router.navigate(['evaluacion-directiva', this.idJefe, this.funcId, this.evalId]);
+      if (this.formulario.nombre == 'COEVALUACION DIRECTIVA') {
+        this.router.navigate([
+          'evaluacion-directiva',
+          this.idJefe,
+          this.funcId.substring(0, 4),
+          this.evalId,
+        ]);
       } else {
         this.router.navigate(['docentes', this.idJefe, this.evalId]);
-      }      
+      }
     }
   }
 }

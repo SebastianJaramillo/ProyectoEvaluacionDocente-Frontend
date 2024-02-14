@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AlumnoComponent } from './alumno/alumno.component';
 import { CursoComponent } from './curso/curso.component';
 import { LoginComponent } from './auth/login/login.component';
 import { EvaluacionComponent } from './periodo/evaluacion.component';
@@ -29,14 +28,13 @@ const routes: Routes = [
     path: '',
     component: NavbarComponent,
     children: [
-      { path: 'alumnos', component: AlumnoComponent },
       { path: 'cursos/:id/:evalId', component: CursoComponent },
       { path: 'periodo/:id', component: EvaluacionComponent },
-      { path: 'Reporte', component:ReporteComponent },
+      { path: 'reporte/:id/:evalId', component:ReporteComponent },
       { path: 'preguntas/:id/:cursoId/:formId/:idCurEst/:evalId',component: PreguntasComponent},
       { path: 'docentes/:id/:evalId', component: DocenteComponent},
-      { path: 'docentes-preguntas/:idJefe/:idDoc/:formId/:funcId/:evalId',component: PreguntasDocenteComponent},
-      { path: 'evaluacion-pares/:id/:evalId', component: EvaluacionParesComponent},
+      { path: 'docentes-preguntas/:idJefe/:idDoc/:formId/:evalId/:funcId',component: PreguntasDocenteComponent},
+      { path: 'evaluacion-pares/:id/:evalId/:funcId', component: EvaluacionParesComponent},
       { path: 'evaluacion-directiva/:id/:funcId/:evalId', component: EvaluacionDirectivaComponent}
     ],
   }

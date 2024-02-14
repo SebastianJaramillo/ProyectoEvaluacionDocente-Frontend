@@ -44,4 +44,8 @@ export class FormularioService {
   deletePregunta(id: number) {
     return this.http.delete<any>(`${this.apiUrl}/pregunta/eliminar/${id}`);
   }
+
+  resultados(preId: any, docEvaluado: any, evalId: number) {
+    return this.http.get<any[]>(`${this.apiUrl}/respuesta/resultados/${preId}/${docEvaluado}/${evalId}`);
+  }
 }

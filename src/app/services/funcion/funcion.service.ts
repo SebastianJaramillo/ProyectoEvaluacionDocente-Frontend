@@ -13,4 +13,12 @@ export class FuncionService {
   findById(id: string) {
     return this.http.get<any>(`${this.apiUrl}/buscar/${id}`);
   }
+
+  findByRol(rol: string) {
+    return this.http.get<any>(`${this.apiUrl}/rol/${rol}`);
+  }
+
+  findByDescripcion(descripcion: string) {
+    return this.http.get<any>(`${this.apiUrl}/descripcion/${descripcion}`);
+  }
 }

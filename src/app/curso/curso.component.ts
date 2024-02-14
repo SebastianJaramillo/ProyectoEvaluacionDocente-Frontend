@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AlumnoService } from '../services/alumno/alumno.service';
 import { EvaluacionService } from '../services/evaluacion/evaluacion.service';
 import { DocenteService } from '../services/docente/docente.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-curso',
@@ -45,7 +46,7 @@ export class CursoComponent implements OnInit {
         this.cargarCursosEstudiante(atob(this.id), this.evalId);
       },
       (error) => {
-        alert('Evaluación no se encuentra habilitada en estas fechas.');
+        this.mensaje('Evaluación no se encuentra habilitada en estas fechas.');
         this.router.navigate(['periodo', this.id]);
       }
     );
@@ -98,5 +99,15 @@ export class CursoComponent implements OnInit {
 
   evaluacion(alumnoId: any, cursoId: any, id: any) {
     this.router.navigate(['preguntas', alumnoId, btoa(cursoId), 1, id, this.evalId]);
+  }
+
+  mensaje(texto: any) {
+    Swal.fire({
+      title: 'Error',
+      text: texto,
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+      width: '350px',      
+    });
   }
 }

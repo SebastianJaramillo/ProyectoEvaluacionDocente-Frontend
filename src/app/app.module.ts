@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AlumnoComponent } from './alumno/alumno.component';
 import { AlumnoService } from './services/alumno/alumno.service';
 import { CursoComponent } from './curso/curso.component';
 import { RouterModule, Routes } from '@angular/router';
@@ -44,7 +43,6 @@ import { FormularioFormAdminComponent } from './Admintracion/formulario-form-adm
 import { PreguntasFormAdminComponent } from './Admintracion/preguntas-form-admin/preguntas-form-admin.component';
 import { MatIconModule } from '@angular/material/icon';
 const routes: Routes = [
-  { path: 'alumnos', component: AlumnoComponent },
   { path: 'cursos', component: CursoComponent },  
   { path: '', redirectTo: '/inicio', pathMatch: 'full' },
 ];
@@ -52,8 +50,6 @@ const routes: Routes = [
   declarations: [
     AppComponent,
     NavbarComponent,
-
-    AlumnoComponent,
     CursoComponent,
     EvaluacionComponent,
     PreguntasComponent,

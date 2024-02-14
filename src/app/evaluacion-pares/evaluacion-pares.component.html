@@ -1,6 +1,6 @@
 <div class="container">
   <button class="btn btn-danger" (click)="volver()">Volver</button>
-  <h2>COEVALUACIÓN POR PARES</h2>
+  <h2><b>COEVALUACIÓN POR PARES: {{ funcion.descripcion }}</b></h2>
   <h2><b>PERIODO: </b>{{ periodo.descripcion }}</h2>
   <div class="table-responsive custom-table-responsive">
     <table class="table custom-table" style="text-align: center">
@@ -16,10 +16,9 @@
         <tr *ngIf="docentes.length == 0"><td colspan="4">NO EXISTEN REGISTROS</td></tr>
         <tr scope="row" *ngFor="let doc of docentes">
           <td>{{ doc.docIdDocente }}</td>
-          <td>{{ doc.docente.nombres + " " + doc.docente.apellidos }}</td>
+          <td>{{ doc.docente.apellidos + " " + doc.docente.nombres }}</td>
           <td>{{ doc.area }}</td>
-          <td><button class="btn btn-secondary" (click)="evaluacion(doc.docIdDocente, 41, 'COR')">Evaluar</button>
-          </td>
+          <td><button class="btn btn-secondary" (click)="evaluacion(doc.docIdDocente)">Evaluar</button></td>
         </tr>
       </tbody>
     </table>
