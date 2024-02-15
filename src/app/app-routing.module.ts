@@ -13,6 +13,11 @@ import { EvaluacionDirectivaComponent } from './evaluacion-directiva/evaluacion-
 import { NavbarAdminComponent } from './navbar-admin/navbar-admin.component';
 import { PeriodoAdminComponent } from './Admintracion/periodo-admin/periodo-admin.component';
 import { FormularioAdminComponent } from './Admintracion/formulario-admin/formulario-admin.component';
+import { AsignacionRolesComponent } from './Admintracion/asignacion-roles/asignacion-roles.component';
+import { AsignacionDocenteComponent } from './Admintracion/asignacion-docente/asignacion-docente.component';
+import { SeleccionarCoordinadorComponent } from './Admintracion/asignacion/seleccionar-coordinador/seleccionar-coordinador.component';
+import { DocenteAsignacionComponent } from './Admintracion/asignacion/docente-asignacion/docente-asignacion.component';
+import { ListaDocentesComponent } from './Admintracion/asignacion/lista-docentes/lista-docentes.component';
 const routes: Routes = [
   {path:'iniciar-sesion',component:LoginComponent},
 
@@ -30,11 +35,16 @@ const routes: Routes = [
     children: [
       { path: 'cursos/:id/:evalId', component: CursoComponent },
       { path: 'periodo/:id', component: EvaluacionComponent },
-      { path: 'reporte/:id/:evalId', component:ReporteComponent },
+      { path: 'Reporte', component:ReporteComponent },
+      { path: 'rolesAdmin', component: AsignacionRolesComponent  },
+      { path: 'asignarRol/:id', component: AsignacionDocenteComponent  },
+      { path: 'selectCoordinador/:id', component: SeleccionarCoordinadorComponent  },
+      { path: 'asignarDocentes', component: DocenteAsignacionComponent  },
+      { path: 'listarDocentes/:id', component: ListaDocentesComponent  },
       { path: 'preguntas/:id/:cursoId/:formId/:idCurEst/:evalId',component: PreguntasComponent},
       { path: 'docentes/:id/:evalId', component: DocenteComponent},
-      { path: 'docentes-preguntas/:idJefe/:idDoc/:formId/:evalId/:funcId',component: PreguntasDocenteComponent},
-      { path: 'evaluacion-pares/:id/:evalId/:funcId', component: EvaluacionParesComponent},
+      { path: 'docentes-preguntas/:idJefe/:idDoc/:formId/:funcId/:evalId',component: PreguntasDocenteComponent},
+      { path: 'evaluacion-pares/:id/:evalId', component: EvaluacionParesComponent},
       { path: 'evaluacion-directiva/:id/:funcId/:evalId', component: EvaluacionDirectivaComponent}
     ],
   }
