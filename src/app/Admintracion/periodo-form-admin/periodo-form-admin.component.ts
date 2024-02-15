@@ -9,7 +9,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
   styleUrls: ['./periodo-form-admin.component.css']
 })
 export class PeriodoFormAdminComponent {
-  evaluacionForm!: FormGroup;
+  evaluacionForm: FormGroup;
   periodos: any[] = []; // Ajusta el tipo según tu modelo de Periodo
 
   constructor(
@@ -49,6 +49,8 @@ export class PeriodoFormAdminComponent {
 
   
   onSubmit() {
+    console.log("ente")
+    this.dialogRef.close(this.evaluacionForm.value);
     if (this.evaluacionForm.valid) {
       this.dialogRef.close(this.evaluacionForm.value);
     }
@@ -57,6 +59,7 @@ export class PeriodoFormAdminComponent {
     this.dialogRef.close(); // Cierra sin enviar datos, result será undefined
   }
   inicializarFormulario(datos?: any): void {
+    console.log("datos",datos)
     this.evaluacionForm.patchValue({
       fechaInicio: datos ? datos.fechaInicio : '',
       fechaFin: datos ? datos.fechaFin : '',

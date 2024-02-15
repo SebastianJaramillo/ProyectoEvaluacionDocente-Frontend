@@ -1,0 +1,31 @@
+<div class="container">
+    <button class="btn btn-danger" (click)="volver()">Volver</button>
+    <h2>Asignación de docentes a coordinadores</h2>
+    <input type="text" [(ngModel)]="terminoBusqueda" placeholder="Buscar docente por nombre..." class="form-control mb-3" (change)="filtrarDocentes()">
+  
+    <div class="table-responsive custom-table-responsive">
+      <table class="table custom-table" style="text-align: center">
+        <thead>
+          <tr> 
+            <th scope="col">ID</th>
+            <th scope="col">DOCENTE</th>            
+            <th scope="col">ESCALAFON</th>
+            <th scope="col">ACTIVIDAD</th>
+            <th scope="col">ACCIONES</th>            
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="docentes.length == 0"><td colspan="5">NO EXISTEN REGISTROS</td></tr>
+          <tr scope="row" *ngFor="let doc of docentes">
+            <td>{{ doc.id }}</td>
+            <td>{{ doc.nombres + " " + doc.apellidos }}</td>            
+            <td>{{ doc.escalafon}}</td>
+            <td>{{ doc.nombreFuncion}}</td>
+            <td><button class="btn btn-secondary" (click)="asignarDocentes(doc.id)">Asignar Docentes</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <br/>
+  </div>

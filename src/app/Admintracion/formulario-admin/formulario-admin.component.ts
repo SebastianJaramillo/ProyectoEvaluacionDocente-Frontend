@@ -19,7 +19,8 @@ export class FormularioAdminComponent implements OnInit {
   eval: any = {};
   evalId: any;
   preguntas: any[] = [];
-
+  public filtroSeleccionado: string = '';
+  opcionesDeFiltro: string[] = ['HETEROEVALUACION', 'AUTOEVALUACION', 'COEVALUACION', 'COEVALUACION DIRECTOR'];
 
   evaluacionForm!: FormGroup;
   preguntasForm!: FormGroup;
@@ -32,17 +33,43 @@ export class FormularioAdminComponent implements OnInit {
     private fb: FormBuilder,
     public dialog: MatDialog
   ) { }
+
+  filtrarFormularios(): void {
+    console.log(this.filtroSeleccionado);
+    switch (this.filtroSeleccionado) {
+      case 'HETEROEVALUACION':
+
+        this.getFormularioByNombre("Heteroevaluacion");
+        break;
+      case 'AUTOEVALUACION':
+        // Ejemplo para otro filtro específico
+        this.getFormularioByNombre("Autoevaluacion");
+        break;
+      case 'COEVALUACION':
+        // Ejemplo para otro filtro específico
+        this.getFormularioByNombre("Coevaluacion");
+        break;
+      case 'COEVALUACION DIRECTOR':
+        // Ejemplo para otro filtro específico
+        this.getFormularioByNombre("Coevaluacion director");
+        break;
+      default:
+        this.getAllFormularios();
+
+        break;
+    }
+  }
   ngOnInit(): void {
 
     this.evaluacionForm = this.fb.group({
       id: [''],
-      descripcion: [''],
-      estado: ['']
+      nombre: [''],
+      descripcion: ['']
     });
     this.preguntasForm = this.fb.group({
       id: ['']
     });
-    this.getAllFormularios();
+
 
   }
   getAllFormularios() {
@@ -56,6 +83,16 @@ export class FormularioAdminComponent implements OnInit {
     );
   }
 
+  getFormularioByNombre(nombre: string) {
+    this.formularioService.findByNombre(nombre).subscribe(
+      (data) => {
+        this.formularios = data;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
 
 
   abrirModalFormulario() {
@@ -97,6 +134,7 @@ export class FormularioAdminComponent implements OnInit {
     this.formularioService.findById(id).subscribe(
       (data) => {
         this.formulario = data;
+
         this.evaluacionForm.patchValue({
           id: id,
           nombre: this.formulario.nombre,
@@ -162,7 +200,7 @@ export class FormularioAdminComponent implements OnInit {
       (data) => {
         this.preguntas = data;
         //this.preguntas.push(this.fb.control(this.preguntas))
-        
+
         console.log("Preguntas obtenidas:", this.preguntas);
         this.preguntasForm.patchValue({
           id: id
@@ -189,7 +227,7 @@ export class FormularioAdminComponent implements OnInit {
 
   cambiarEstado(formulario: any): void {
     console.log('Nuevo estado del formulario:', formulario.estado);
-  
+
     // Aquí podrías llamar a tu servicio para actualizar el estado en el backend
     // this.formularioService.actualizarEstado(formulario.id, formulario.estado).subscribe(...);
   }

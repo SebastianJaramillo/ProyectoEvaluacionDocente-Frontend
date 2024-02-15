@@ -1,7 +1,13 @@
 <div class="container">
     <h2 class="mb-5">Gestión de Formularios</h2>
-    <button (click)="abrirModalFormulario()" class="btn btn-primary">Crear Formulario</button>
-    <br><br>
+    <br>
+    <div class="filtro">
+      <select [(ngModel)]="filtroSeleccionado" (change)="filtrarFormularios()">
+        <option value="" selected>Seleccione la evaluación</option>
+        <option *ngFor="let opcion of opcionesDeFiltro" [value]="opcion">{{opcion}}</option>
+      </select>
+    </div>
+    <br>
     <div *ngIf="formularios && formularios.length > 0">
       <div class="table-responsive custom-table-responsive">
         <table class="table custom-table" style="text-align: center;">
@@ -14,23 +20,15 @@
             </tr>
           </thead>
           <tbody>
+            <tr *ngIf="formularios.length <= 0"><td colspan="5">NO EXISTEN REGISTROS</td></tr>
             <tr *ngFor="let formulario of formularios">
               <td>{{ formulario.id }}</td>
               <td>{{ formulario.nombre }}</td>
               <td>{{ formulario.descripcion }}</td>
-              <!--
-<td>
-                <label class="switch">
-                  <input type="checkbox" [id]="'switch'+formulario.id" [(ngModel)]="formulario.estado" (change)="cambiarEstado(formulario)">
-                  <span class="slider round"></span>
-                </label>
-              </td>
-              -->
-              
+
               <td>
                 <button class="btn btn-secondary" (click)="cargarPreguntas(formulario.id)">Ver Preguntas</button>
-                <button class="btn btn-secondary" (click)="editarModalFormulario(formulario.id)">Editar</button>
-                <button class="btn btn-danger" (click)="eliminarFormulario(formulario.id)">Eliminar</button>
+                <button class="btn btn-danger" (click)="editarModalFormulario(formulario.id)">Editar</button>
               </td>
             </tr>
           </tbody>

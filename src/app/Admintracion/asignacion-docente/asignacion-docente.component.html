@@ -1,0 +1,62 @@
+<!-- HTML para mostrar la pregunta actual y las opciones de respuesta -->
+<button class="btn btn-danger" (click)="volver()">Volver</button>
+<h2>ASIGNACION DE ROLES - DIRECTIVO</h2>
+    
+<table>
+  <tr>
+    <td><b>Docente: </b></td>
+    <td>{{ docente.nombres + " " + docente.apellidos}}</td>
+  </tr>
+  <tr>
+    <td><b>Periodo: </b></td>
+    <td>{{ periodo.descripcion}}</td>
+  </tr>
+  <tr>
+    <td><b>Rol: </b></td>
+    <td>{{ rol + " " + rolD}} </td>
+  </tr>
+</table>
+<br>
+<div *ngIf="rol === 'Coordinador'">
+
+  <button class="btn btn-success" (click)="cambiarRolCoordinadorDocente()">Cambiar Rol</button>
+  
+  <br><br>
+  <div class="table-responsive custom-table-responsive">
+    <table class="table custom-table" style="text-align: center">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">DOCENTE</th>
+          <th scope="col">DEPARTAMENTO</th>
+          <th scope="col">ESCALAFON</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="docente.length == 0">
+          <td colspan="5">NO EXISTEN REGISTROS</td>
+        </tr>
+        <tr scope="row" *ngFor="let doc of docentesACargo">
+          <td>{{ doc.docIdDocente }}</td>
+          <td>{{ doc.docente.nombres + " " + doc.docente.apellidos }}</td>
+          <td>{{ doc.docente.departamento}}</td>
+          <td>{{ doc.docente.escalafon}}</td>
+
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div *ngIf="rol === 'Docente'">
+  <select [(ngModel)]="rolSeleccionado">
+    
+    <option value="" selected>Seleccione el tipo de coordinador</option>
+    <option [value]="'COR-DOC'">Coordinador Docencia</option>
+    <option [value]="'COR-VIN'">Coordinador Vinculación</option>
+    <option [value]="'COR-GES'">Coordinador Gestión</option>
+    <option [value]="'COR-INV'">Coordinador Investigación</option>
+  </select>
+  <button class="btn btn-success" (click)="cambiarRolDocenteCoordinador()">Cambiar Rol</button>
+  
+  <p>El rol de docente no tiene más docente a su cargo.</p>
+</div>
