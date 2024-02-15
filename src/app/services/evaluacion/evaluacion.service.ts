@@ -36,4 +36,18 @@ export class EvaluacionService {
   createEvaluacion(evaluacion: any){
     return this.http.get<any[]>(`${this.apiUrl}/evaluacion/registro`,evaluacion);
   }
+
+  
+  updateEstadoEvaluacion(id: number, estado: string){
+    return this.http.put<any[]>(`${this.apiUrl}/evaluacion/estado/${id}`,estado);
+  }
+
+
+  updateEvaluacion(evaluacion:any){
+    return this.http.put<any[]>(`${this.apiUrl}/evaluacion/actualizar/${evaluacion.id}`,evaluacion);
+  }
+
+  deleteEvalucion(id: number){
+    return this.http.delete<any[]>(`${this.apiUrl}/evaluacion/eliminar/${id}`);
+  }
 }
