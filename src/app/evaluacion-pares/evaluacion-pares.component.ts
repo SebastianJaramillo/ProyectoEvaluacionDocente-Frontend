@@ -117,8 +117,4 @@ export class EvaluacionParesComponent implements OnInit {
 
     this.router.navigate(['docentes-preguntas', this.id, btoa(id), this.formId, this.evalId, btoa(this.funcId)]);  
   }
-
-  volver() {
-    this.router.navigate(['docentes', this.id, this.evalId]);
-  }
 }

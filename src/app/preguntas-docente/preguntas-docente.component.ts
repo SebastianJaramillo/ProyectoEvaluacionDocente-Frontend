@@ -5,6 +5,7 @@ import { DocenteService } from '../services/docente/docente.service';
 import { DocenteEvaluacion } from './DocenteEvaluacion';
 import { EvaluacionService } from '../services/evaluacion/evaluacion.service';
 import { FuncionService } from '../services/funcion/funcion.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-preguntas-docente',
@@ -217,7 +218,7 @@ export class PreguntasDocenteComponent implements OnInit {
 
         this.docenteService.saveEvaluacion(this.evaluacion).subscribe(
           (data) => {
-            alert('Respuestas guardadas');
+            this.mensaje('Respuestas guardadas');
             if (this.funcion.rol == 'Coordinador') {
               this.router.navigate(['evaluacion-pares', this.idJefe, this.evalId, this.funcId]);
             } else {
@@ -259,5 +260,15 @@ export class PreguntasDocenteComponent implements OnInit {
         this.router.navigate(['docentes', this.idJefe, this.evalId]);
       }
     }
+  }
+
+  mensaje(texto: any) {
+    Swal.fire({
+      title: 'Éxito',
+      text: texto,
+      icon: 'success',
+      confirmButtonText: 'Aceptar',
+      width: '350px',      
+    });
   }
 }

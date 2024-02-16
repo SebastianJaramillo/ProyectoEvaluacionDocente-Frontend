@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { LoginService } from 'src/app/services/auth/login.service';
 import { LoginRequest } from 'src/app/services/auth/loginRequest';
 import { UserService } from 'src/app/services/user/user.service';
-import { NavbarService } from 'src/app/services/navbar/navbar.service';
 
 @Component({
   selector: 'app-login',
@@ -33,7 +32,6 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private loginService: LoginService,
     private userService: UserService,
-    private NavbarService: NavbarService
   ) {}
 
   ngOnInit(): void {
@@ -69,9 +67,13 @@ export class LoginComponent implements OnInit {
           this.userService.getUser(this.loginForm.value.username).subscribe({
             next: (user) => {
               if (user && user.id) {
-                this.router.navigate(['periodo', btoa(user.id.toString())]);
-                const userId = btoa(user.id.toString());
-                this.NavbarService.setUserId(userId);
+                localStorage.setItem('idUser', btoa(user.id));
+                localStorage.setItem('role', user.role);
+                if(user.role != 'ADMIN') {
+                  this.router.navigate(['periodo', btoa(user.id.toString())]);
+                } else {
+                  this.router.navigate(['periodoAdmin']);
+                }
               } else {
                 console.error(
                   'No se encontró un usuario con el nombre proporcionado.'

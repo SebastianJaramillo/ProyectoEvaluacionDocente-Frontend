@@ -2,7 +2,6 @@ import { Component, ViewChild, OnInit, Output, EventEmitter} from '@angular/core
 import { ActivatedRoute, Router } from '@angular/router';
 import { IgxNavigationDrawerComponent } from 'igniteui-angular';
 import { UserService } from '../services/user/user.service';
-import { NavbarService } from '../services/navbar/navbar.service';
 
 @Component({
   selector: 'app-navbar-admin',
@@ -29,37 +28,45 @@ export class NavbarAdminComponent {
   userIdActual: any;
 
   constructor(
-    private route: ActivatedRoute,
     private router: Router,
-    private NavbarService: NavbarService,
     private userService: UserService
   ) {}
 
   ngOnInit(): void {
-    const userIdA = this.NavbarService.getUserId();
-    this.userIdActual = userIdA;
-    this.route.params.subscribe((params) => {
-      this.id = params['id'];
-      
+    const idUser = localStorage.getItem('idUser');
+    const role = localStorage.getItem('role');
 
-      this.findUsuario(this.userIdActual);
-    });
-
+    if(idUser && role) {
+      this.findUsuario(atob(idUser))
+    } else {
+      localStorage.removeItem('idUser');
+      localStorage.removeItem('role');
+      this.router.navigate(['iniciar-sesion']);
+    }
   }
-  
-  findUsuario(id: string) {
-    this.userService.findById(atob(this.userIdActual)).subscribe({
-      next: (user) => {
-        this.user = user;
-          
+
+  findUsuario(id: string): any {
+    this.userService.findById(id).subscribe(
+      (data) => {
+        this.user = data;
       },
-      error: (user) => {
-        console.error('Error al obtener usuario:', user);
-      },
-    });
+      (error) => {
+        console.error(error);
+      }
+    );
   }
 
   salir() {
+    localStorage.removeItem('idUser');
+    localStorage.removeItem('role');
     this.router.navigate(['iniciar-sesion']);
+  }
+
+  periodo() {
+    this.router.navigate(['periodoAdmin']);
+  }
+
+  formulario() {
+    this.router.navigate(['formularioAdmin']);
   }
 }

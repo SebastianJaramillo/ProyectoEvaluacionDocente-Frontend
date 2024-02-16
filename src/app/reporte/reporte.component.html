@@ -1,9 +1,11 @@
-<button class="btn btn-danger" (click)="volver()">Volver</button>
-<p style="font-size: 18px;"><b>REPORTE INDIVIDUAL</b><br><br>
-<b>DOCENTE: </b>{{ docente.apellidos + " " + docente.nombres }}</p>
+<p style="font-size: 18px">
+  <b>REPORTE INDIVIDUAL</b><br /><br />
+  <b>DOCENTE: </b>{{ docente.apellidos + " " + docente.nombres }}
+</p>
 <select [ngModel]="perId">
-    <option *ngFor="let periodo of periodos" [value]="periodo.id">
-      {{ periodo.descripcion }}
-    </option>
-  </select>
+  <option *ngFor="let periodo of periodos" [value]="periodo.id">
+    {{ periodo.descripcion }}
+  </option>
+</select>
 <button class="btn boton" (click)="generarInforme()">Generar Informe</button>
+<button class="btn boton" (click)="generarInformeGlobal()">Generar Informe Global</button>

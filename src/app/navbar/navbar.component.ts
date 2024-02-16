@@ -2,7 +2,8 @@ import { Component, ViewChild, OnInit, Output, EventEmitter} from '@angular/core
 import { ActivatedRoute, Router } from '@angular/router';
 import { IgxNavigationDrawerComponent } from 'igniteui-angular';
 import { UserService } from '../services/user/user.service';
-import { NavbarService } from '../services/navbar/navbar.service';
+import { DocenteService } from '../services/docente/docente.service';
+import { AlumnoService } from '../services/alumno/alumno.service';
 
 @Component({
   selector: 'app-navbar',
@@ -24,42 +25,79 @@ export class NavbarComponent implements OnInit{
     this.drawer.toggle();
   }
   id: any;
-  alumno: any = {};
+  role: any;
+  evalId: any;
   user: any ={};
-  userIdActual: any;
 
   constructor(
-    private route: ActivatedRoute,
     private router: Router,
-    private NavbarService: NavbarService,
-    private userService: UserService
+    private userService: UserService,
+    private alumnoService: AlumnoService,
+    private docenteService: DocenteService,
   ) {}
 
   ngOnInit(): void {
-    const userIdA = this.NavbarService.getUserId();
-    this.userIdActual = userIdA;
-    this.route.params.subscribe((params) => {
-      this.id = params['id'];
-      
+    this.id = localStorage.getItem('idUser');
+    this.role = localStorage.getItem('role');
 
-      this.findUsuario(this.userIdActual);
-    });
-
+    if(this.id && this.role) {
+      switch (this.role) {
+        case 'DOCENTE':
+          this.findDocente(atob(this.id));
+          break;
+        case 'ESTUDIANTE':
+          this.findEstudiante(atob(this.id));
+          break;
+        default:
+          console.log('No se encontró rol');
+      }
+    } else {
+      localStorage.removeItem('idUser');
+      localStorage.removeItem('role');
+      localStorage.removeItem('evalId');
+      this.router.navigate(['iniciar-sesion']);
+    }
   }
-  
-  findUsuario(id: string) {
-    this.userService.findById(atob(this.userIdActual)).subscribe({
-      next: (user) => {
-        this.user = user;
-          
+
+  findDocente(id: string): any {
+    this.docenteService.findById(id).subscribe(
+      (data) => {
+        this.user = data;
       },
-      error: (user) => {
-        console.error('Error al obtener usuario:', user);
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  findEstudiante(id: string) {
+    this.alumnoService.getAlumnoById(id).subscribe(
+      (data) => {
+        this.user = data;
       },
-    });
+      (error) => {
+        console.error(error);
+      }
+    );
   }
 
   salir() {
+    localStorage.removeItem('idUser');
+    localStorage.removeItem('role');
+    localStorage.removeItem('evalId');
     this.router.navigate(['iniciar-sesion']);
+  }
+
+  encuesta() {
+    this.evalId = localStorage.getItem('evalId');
+    if(this.role == "ESTUDIANTE") {
+      this.router.navigate(['cursos', this.id, this.evalId]);
+    } else {
+      this.router.navigate(['docentes', this.id, this.evalId]);
+    }
+  }
+
+  reportes() {
+    this.router.navigate(['reporte', this.id, this.evalId]);
   }
 }

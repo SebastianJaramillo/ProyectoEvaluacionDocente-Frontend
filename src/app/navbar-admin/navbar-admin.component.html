@@ -10,17 +10,7 @@
             <ul class="navbar-nav ms-auto">
               <li class="nav-item dropdown">
                 <a class="nav-link" aria-haspopup="true" aria-expanded="false">
-                 Periodo
-                </a>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link" aria-haspopup="true" aria-expanded="false">
-                 Formulario
-                </a>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link" aria-haspopup="true" aria-expanded="false">
-                  {{ user.firstname + " " + user.lastname }}
+                  {{ user.apellidos + " " + user.nombres }}
                 </a>
               </li>
               <li>
@@ -43,9 +33,14 @@
     <div id="sidebar">
       <div id="sidebar-accordion" class="accordion">
         <ul>
-          <li>
-            <button style="width: 85%; margin-top: 40px;" onclick="regresar()">Estudiantes</button>
-          </li>
+          <ul>
+            <li>
+              <button (click)="periodo()" style="width: 85%; margin-top: 40px;">Periodo</button>
+            </li>
+            <li>
+              <button (click)="formulario()" style="width: 85%; margin-top: 10px;">Formulario</button>
+            </li>
+          </ul>
         </ul>
       </div>
     </div>

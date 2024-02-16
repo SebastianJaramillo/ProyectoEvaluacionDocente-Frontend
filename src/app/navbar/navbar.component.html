@@ -35,7 +35,10 @@
     <div id="sidebar-accordion" class="accordion">
       <ul>
         <li>
-          <button style="width: 85%; margin-top: 40px;" onclick="regresar()">Estudiantes</button>
+          <button (click)="encuesta()" style="width: 85%; margin-top: 40px;">Encuestas</button>
+        </li>
+        <li>
+          <button *ngIf="role == 'DOCENTE'" (click)="reportes()" style="width: 85%; margin-top: 10px;">Reportes</button>
         </li>
       </ul>
     </div>

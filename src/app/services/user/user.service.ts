@@ -10,10 +10,8 @@ import { environment } from 'src/environments/environment';
 export class UserService {
   constructor(private http: HttpClient) {}
 
-  findById(id: any): Observable<User> {
-    return this.http
-      .get<User>(environment.urlApi + 'user/' + id)
-      .pipe(catchError(this.handleError));
+  findById(id: string) {
+    return this.http.get<any>(`${environment.urlApi}user/${id}`);
   }
 
   getUser(username: any): Observable<User> {

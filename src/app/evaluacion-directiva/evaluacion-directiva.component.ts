@@ -24,7 +24,6 @@ export class EvaluacionDirectivaComponent implements OnInit {
 
   constructor(
     private docenteService: DocenteService,
-    private funcionService: FuncionService,
     private evaluacionService: EvaluacionService,
     private router: Router,
     private route: ActivatedRoute
@@ -61,7 +60,9 @@ export class EvaluacionDirectivaComponent implements OnInit {
   findByFuncion(id: string) {
     this.docenteService.findFuncionDirector(id).subscribe(
       (data) => {
-        this.docentes = data.filter((docente) => docente.docId !== atob(this.id));
+        this.docentes = data.filter((docente, index, self) => 
+          docente.docId !== atob(this.id) && self.findIndex(d => d.docId === docente.docId) === index
+        );
       },
       (error) => {
         console.error(error);
@@ -111,9 +112,5 @@ export class EvaluacionDirectivaComponent implements OnInit {
         console.error(error);
       }
     );
-  }
-
-  volver() {
-    this.router.navigate(['docentes', this.id, this.evalId]);
-  }
+  }  
 }

@@ -7,6 +7,7 @@ import { DocenteService } from '../services/docente/docente.service';
 import { FormularioService } from '../services/formulario/formulario.service';
 import { Observable } from 'rxjs';
 import { EvaluacionService } from '../services/evaluacion/evaluacion.service';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-reporte',
@@ -20,6 +21,7 @@ export class ReporteComponent implements OnInit {
   periodo: any = {};
   periodos: any[] = [];
   perId: any;
+  docentes: any[] = [];
   docFunciones: any[] = [];
 
   respHetDoc: any[] = [];
@@ -59,9 +61,36 @@ export class ReporteComponent implements OnInit {
   totalParVin: number = 0;
   totalDirVin: number = 0;
 
+  notaAutDoc = 0;
+  notaHetDoc = 0;
+  notaParDoc = 0;
+  notaDirDoc = 0;
+
+  notaAutInv = 0;
+  notaParInv = 0;
+  notaDirInv = 0;
+
+  notaAutGes = 0;
+  notaDirGes = 0;
+
+  notaAutVin = 0;
+  notaParVin = 0;
+  notaDirVin = 0;
+
+  totalDocencia = 0;
+  totalGestion = 0;
+  totalInvestigacion = 0;
+  totalVinculacion = 0;
+
+  totalDocenciaPonderacion = 0;
+  totalGestionPonderacion = 0;
+  totalInvestigacionPonderacion = 0;
+  totalVinculacionPonderacion = 0;
+
+  totalFinal = 0;
+
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
     private formularioService: FormularioService,
     private evaluacionService: EvaluacionService,
     private docenteService: DocenteService
@@ -74,8 +103,8 @@ export class ReporteComponent implements OnInit {
     });
 
     this.findDocente(atob(this.id));
-    this.getAllPeriodos();
-    this.findFunciones(atob(this.id));
+    this.getAllPeriodos();    
+    this.listarDocentes();
   }
 
   findDocente(id: string): any {
@@ -90,6 +119,11 @@ export class ReporteComponent implements OnInit {
   }
 
   findFunciones(id: string) {
+    this.horasGestion = 0;
+    this.horasDocencia = 0;
+    this.horasInvestigacion = 0;
+    this.horasVinculacion = 0;
+
     this.docenteService.findFunciones(id).subscribe(
       (data) => {
         this.docFunciones = data;
@@ -129,10 +163,6 @@ export class ReporteComponent implements OnInit {
     );
   }
 
-  volver() {
-    this.router.navigate(['docentes', this.id, this.evalId]);
-  }
-
   findRespuestas(
     preId: any,
     docEvaluado: any,
@@ -152,8 +182,29 @@ export class ReporteComponent implements OnInit {
     );
   }
 
-  generarInforme() {
-    this.findPeriodo(this.perId);
+  listarDocentes() {
+    this.docenteService.listar().subscribe(
+      (data) => {
+        this.docentes = data;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  sleep(ms: any) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  async generarInforme() {
+    await this.findFunciones(atob(this.id));
+    
+    await this.findPeriodo(this.perId);    
+
+    await this.sleep(300);
+
+    await this.calculos(this.docente.id);
 
     const pdf = new jsPDF({ orientation: 'landscape' });
 
@@ -270,280 +321,7 @@ export class ReporteComponent implements OnInit {
     pdf.text('PERIODO: ' + this.periodo.descripcion, 20, 107, {
       maxWidth,
       align: 'justify',
-    });
-
-    this.findRespuestas('HET', this.docente.id, this.evalId).subscribe(
-      (data) => {
-        this.respHetDoc = data;
-
-        this.totalHetDoc = 0;
-
-        this.respHetDoc.forEach((resp) => {
-          this.totalHetDoc += parseInt(resp.texto);
-        });
-      }
-    );
-
-    this.findRespuestas('AD', this.docente.id, this.evalId).subscribe(
-      (data) => {
-        this.respAutDoc = data;
-
-        this.totalAutDoc = 0;
-
-        this.respAutDoc.forEach((resp) => {
-          this.totalAutDoc += parseInt(resp.texto);
-        });
-      }
-    );
-
-    this.findRespuestas('CD', this.docente.id, this.evalId).subscribe(
-      (data) => {
-        this.respParDoc = data;
-
-        this.totalParDoc = 0;
-
-        this.respParDoc.forEach((resp) => {
-          this.totalParDoc += parseInt(resp.texto);
-        });
-      }
-    );
-
-    this.findRespuestas('DD', this.docente.id, this.evalId).subscribe(
-      (data) => {
-        this.respDirDoc = data;
-
-        this.totalDirDoc = 0;
-
-        this.respDirDoc.forEach((resp) => {
-          this.totalDirDoc += parseInt(resp.texto);
-        });
-      }
-    );
-
-    let notaAutDoc = 0;
-    let notaHetDoc = 0;
-    let notaParDoc = 0;
-    let notaDirDoc = 0;
-
-    if (this.respHetDoc.length <= 0) {
-      notaHetDoc = 0;
-    } else {
-      notaHetDoc = (this.totalHetDoc * 10) / (this.respHetDoc.length * 5);
-    }
-
-    if (this.respAutDoc.length <= 0) {
-      notaAutDoc = 0;
-    } else {
-      notaAutDoc = (this.totalAutDoc * 10) / (this.respAutDoc.length * 5);
-    }
-
-    if (this.respParDoc.length <= 0) {
-      notaParDoc = 0;
-    } else {
-      notaParDoc = (this.totalParDoc * 10) / (this.respParDoc.length * 5);
-    }
-
-    if (this.respDirDoc.length <= 0) {
-      notaDirDoc = 0;
-    } else {
-      notaDirDoc = (this.totalDirDoc * 10) / (this.respDirDoc.length * 5);
-    }
-
-    this.findRespuestas('AI', this.docente.id, this.evalId).subscribe(
-      (data) => {
-        this.respAutInv = data;
-
-        this.totalAutInv = 0;
-
-        this.respAutInv.forEach((resp) => {
-          this.totalAutInv += parseInt(resp.texto);
-        });
-      }
-    );
-
-    this.findRespuestas('CI', this.docente.id, this.evalId).subscribe(
-      (data) => {
-        this.respParInv = data;
-
-        this.totalParInv = 0;
-
-        this.respParInv.forEach((resp) => {
-          this.totalParInv += parseInt(resp.texto);
-        });
-      }
-    );
-
-    this.findRespuestas('DI', this.docente.id, this.evalId).subscribe(
-      (data) => {
-        this.respDirInv = data;
-
-        this.totalDirInv = 0;
-
-        this.respDirInv.forEach((resp) => {
-          this.totalDirInv += parseInt(resp.texto);
-        });
-      }
-    );
-
-    let notaAutInv = 0;
-    let notaParInv = 0;
-    let notaDirInv = 0;
-
-    if (this.respAutInv.length <= 0) {
-      notaAutInv = 0;
-    } else {
-      notaAutInv = (this.totalAutInv * 10) / (this.respAutInv.length * 5);
-    }
-
-    if (this.respParInv.length <= 0) {
-      notaParInv = 0;
-    } else {
-      notaParInv = (this.totalParInv * 10) / (this.respParInv.length * 5);
-    }
-
-    if (this.respDirInv.length <= 0) {
-      notaDirInv = 0;
-    } else {
-      notaDirInv = (this.totalDirInv * 10) / (this.respDirInv.length * 5);
-    }
-
-    this.findRespuestas('AG', this.docente.id, this.evalId).subscribe(
-      (data) => {
-        this.respAutGes = data;
-
-        this.totalAutGes = 0;
-
-        this.respAutGes.forEach((resp) => {
-          this.totalAutGes += parseInt(resp.texto);
-        });
-      }
-    );
-
-    this.findRespuestas('DG', this.docente.id, this.evalId).subscribe(
-      (data) => {
-        this.respDirGes = data;
-
-        this.totalDirGes = 0;
-
-        this.respDirGes.forEach((resp) => {
-          this.totalDirGes += parseInt(resp.texto);
-        });
-      }
-    );
-
-    let notaAutGes = 0;
-    let notaDirGes = 0;
-
-    if (this.respAutGes.length <= 0) {
-      notaAutGes = 0;
-    } else {
-      notaAutGes = (this.totalAutGes * 10) / (this.respAutGes.length * 5);
-    }
-
-    if (this.respDirGes.length <= 0) {
-      notaDirGes = 0;
-    } else {
-      notaDirGes = (this.totalDirGes * 10) / (this.respDirGes.length * 5);
-    }
-
-    this.findRespuestas('AV', this.docente.id, this.evalId).subscribe(
-      (data) => {
-        this.respAutVin = data;
-
-        this.totalAutVin = 0;
-
-        this.respAutVin.forEach((resp) => {
-          this.totalAutVin += parseInt(resp.texto);
-        });
-      }
-    );
-
-    this.findRespuestas('CV', this.docente.id, this.evalId).subscribe(
-      (data) => {
-        this.respParVin = data;
-
-        this.totalParVin = 0;
-
-        this.respParVin.forEach((resp) => {
-          this.totalParVin += parseInt(resp.texto);
-        });
-      }
-    );
-
-    this.findRespuestas('DV', this.docente.id, this.evalId).subscribe(
-      (data) => {
-        this.respDirVin = data;
-
-        this.totalDirVin = 0;
-
-        this.respDirVin.forEach((resp) => {
-          this.totalDirVin += parseInt(resp.texto);
-        });
-      }
-    );
-
-    let notaAutVin = 0;
-    let notaParVin = 0;
-    let notaDirVin = 0;
-
-    if (this.respAutVin.length <= 0) {
-      notaAutVin = 0;
-    } else {
-      notaAutVin = (this.totalAutVin * 10) / (this.respAutVin.length * 5);
-    }
-
-    if (this.respParVin.length <= 0) {
-      notaParVin = 0;
-    } else {
-      notaParVin = (this.totalParVin * 10) / (this.respParVin.length * 5);
-    }
-
-    if (this.respDirVin.length <= 0) {
-      notaDirVin = 0;
-    } else {
-      notaDirVin = (this.totalDirVin * 10) / (this.respDirVin.length * 5);
-    }
-
-    let totalDocencia = notaAutDoc / 10 + (notaHetDoc * 3.5) / 10 + (notaParDoc * 3) / 10 + (notaDirDoc * 2.5) / 10;
-    let totalInvestigacion = notaAutInv / 10 + (notaParInv * 4) / 10 + (notaDirInv * 5) / 10;
-    let totalGestion = (notaAutGes * 4) / 10 + (notaDirGes * 6) / 10;
-    let totalVinculacion = notaAutVin / 10 + (notaParVin * 4) / 10 + (notaDirVin * 5) / 10;
-
-    let totalFinal = 0;
-
-    if(this.horasDocencia > 0 && this.horasInvestigacion > 0 && this.horasGestion > 0 && this.horasVinculacion > 0) {
-      totalFinal = ((totalDocencia*6)/10) + ((totalInvestigacion*1.5)/10) + ((totalVinculacion*1.5)/10) + (totalGestion/10);
-    } 
-    else if(this.horasDocencia > 0 && this.horasInvestigacion > 0 && this.horasVinculacion > 0) {
-      totalFinal = ((totalDocencia*6)/10) + ((totalInvestigacion*2)/10) + ((totalVinculacion*2)/10);
-    }
-    else if(this.horasDocencia > 0 && this.horasVinculacion > 0 && this.horasGestion > 0) {
-      totalFinal = ((totalDocencia*6)/10) + ((totalInvestigacion*2)/10) + ((totalGestion*2)/10);
-    }
-    else if(this.horasDocencia > 0 && this.horasGestion > 0 && this.horasVinculacion > 0) {
-      totalFinal = ((totalDocencia*6)/10) + ((totalVinculacion*2)/10) + ((totalGestion*2)/10);
-    }
-    else if(this.horasDocencia > 0 && this.horasInvestigacion > 0) {
-      totalFinal = ((totalDocencia*6)/10) + ((totalInvestigacion*4)/10);
-    }
-    else if(this.horasDocencia > 0 && this.horasVinculacion > 0) {
-      totalFinal = ((totalDocencia*6)/10) + ((totalVinculacion*4)/10);
-    }
-    else if(this.horasDocencia > 0 && this.horasGestion > 0) {
-      totalFinal = ((totalDocencia*6)/10) + ((totalGestion*4)/10);
-    }
-    else if(this.horasDocencia > 0 ) {
-      totalFinal = totalDocencia;
-    }
-    else if(this.horasVinculacion > 0 ) {
-      totalFinal = totalVinculacion;
-    }
-    else if(this.horasGestion > 0 ) {
-      totalFinal = totalGestion;
-    }
-    else if(this.horasInvestigacion > 0 ) {
-      totalFinal = totalInvestigacion;
-    }
+    });    
 
     autoTable(pdf, {
       startY: 110,
@@ -633,25 +411,29 @@ export class ReporteComponent implements OnInit {
         [
           { content: this.horasDocencia, styles: { halign: 'center' } },
           {
-            content: totalDocencia,
+            content: Number(this.totalDocenciaPonderacion.toFixed(2)),
             styles: { halign: 'center' },
           },
           { content: this.horasInvestigacion, styles: { halign: 'center' } },
           {
-            content: totalInvestigacion,
+            content: Number(this.totalInvestigacionPonderacion.toFixed(2)),
             styles: { halign: 'center' },
           },
           { content: this.horasGestion, styles: { halign: 'center' } },
           {
-            content: totalGestion,
+            content: Number(this.totalGestionPonderacion.toFixed(2)),
             styles: { halign: 'center' },
           },
           { content: this.horasVinculacion, styles: { halign: 'center' } },
           {
-            content: totalVinculacion,
+            content: Number(this.totalVinculacionPonderacion.toFixed(2)),
             styles: { halign: 'center' },
           },
-          { content: totalFinal, colSpan: 2, styles: { fontStyle: 'bold', halign: 'center', fontSize: 10} },
+          {
+            content: Number(this.totalFinal.toFixed(2)),
+            colSpan: 2,
+            styles: { fontStyle: 'bold', halign: 'center', fontSize: 10 },
+          },
         ],
       ],
       theme: 'grid',
@@ -760,18 +542,54 @@ export class ReporteComponent implements OnInit {
           },
         ],
         [
-          { content: notaAutDoc, styles: { fontSize: 9, halign: 'center' } },
-          { content: notaHetDoc, styles: { fontSize: 9, halign: 'center' } },
-          { content: notaParDoc, styles: { fontSize: 9, halign: 'center' } },
-          { content: notaDirDoc, styles: { fontSize: 9, halign: 'center' } },
-          { content: notaAutInv, styles: { fontSize: 9, halign: 'center' } },
-          { content: notaParInv, styles: { fontSize: 9, halign: 'center' } },
-          { content: notaDirInv, styles: { fontSize: 9, halign: 'center' } },
-          { content: notaAutGes, styles: { fontSize: 9, halign: 'center' } },
-          { content: notaDirGes, styles: { fontSize: 9, halign: 'center' } },
-          { content: notaAutVin, styles: { fontSize: 9, halign: 'center' } },
-          { content: notaParVin, styles: { fontSize: 9, halign: 'center' } },
-          { content: notaDirVin, styles: { fontSize: 9, halign: 'center' } },
+          {
+            content: Number(this.notaAutDoc.toFixed(2)),
+            styles: { fontSize: 9, halign: 'center' },
+          },
+          {
+            content: Number(this.notaHetDoc.toFixed(2)),
+            styles: { fontSize: 9, halign: 'center' },
+          },
+          {
+            content: Number(this.notaParDoc.toFixed(2)),
+            styles: { fontSize: 9, halign: 'center' },
+          },
+          {
+            content: Number(this.notaDirDoc.toFixed(2)),
+            styles: { fontSize: 9, halign: 'center' },
+          },
+          {
+            content: Number(this.notaAutInv.toFixed(2)),
+            styles: { fontSize: 9, halign: 'center' },
+          },
+          {
+            content: Number(this.notaParInv.toFixed(2)),
+            styles: { fontSize: 9, halign: 'center' },
+          },
+          {
+            content: Number(this.notaDirInv.toFixed(2)),
+            styles: { fontSize: 9, halign: 'center' },
+          },
+          {
+            content: Number(this.notaAutGes.toFixed(2)),
+            styles: { fontSize: 9, halign: 'center' },
+          },
+          {
+            content: Number(this.notaDirGes.toFixed(2)),
+            styles: { fontSize: 9, halign: 'center' },
+          },
+          {
+            content: Number(this.notaAutVin.toFixed(2)),
+            styles: { fontSize: 9, halign: 'center' },
+          },
+          {
+            content: Number(this.notaParVin.toFixed(2)),
+            styles: { fontSize: 9, halign: 'center' },
+          },
+          {
+            content: Number(this.notaDirVin.toFixed(2)),
+            styles: { fontSize: 9, halign: 'center' },
+          },
         ],
         [
           {
@@ -780,7 +598,7 @@ export class ReporteComponent implements OnInit {
             styles: { fontStyle: 'bold', halign: 'center' },
           },
           {
-            content: totalDocencia,
+            content: Number(this.totalDocencia.toFixed(2)),
             colSpan: 2,
             styles: { halign: 'center', fontSize: 9 },
           },
@@ -790,7 +608,7 @@ export class ReporteComponent implements OnInit {
             styles: { halign: 'center' },
           },
           {
-            content: totalInvestigacion,
+            content: Number(this.totalInvestigacion.toFixed(2)),
             styles: { halign: 'center', fontSize: 9 },
           },
           {
@@ -798,7 +616,7 @@ export class ReporteComponent implements OnInit {
             styles: { halign: 'center' },
           },
           {
-            content: totalGestion,
+            content: Number(this.totalGestion.toFixed(2)),
             styles: { halign: 'center', fontSize: 9 },
           },
           {
@@ -807,7 +625,7 @@ export class ReporteComponent implements OnInit {
             styles: { halign: 'center' },
           },
           {
-            content: totalVinculacion,
+            content: Number(this.totalVinculacion.toFixed(2)),
             styles: { halign: 'center', fontSize: 9 },
           },
         ],
@@ -834,5 +652,357 @@ export class ReporteComponent implements OnInit {
     });
 
     pdf.save('EVALUACION_DETALLE_IND.pdf');
+  }
+
+  async generarInformeGlobal() {
+    await this.findPeriodo(this.perId);
+
+    await this.sleep(300);
+
+    var datos: any[] = [];
+
+    this.docentes.forEach((item) => {      
+      this.findFunciones(item.id);
+
+      this.calculos(item.id);
+      
+      const registro = {
+        DOCENTE: item.apellidos + ' ' + item.nombres,
+        'HORAS DOCENCIA': this.horasDocencia,
+        "NOTA DOCENCIA": this.totalDocencia,
+        'HORAS INVESTIGACION': this.horasInvestigacion,
+        "NOTA INVESTIGACION": this.totalInvestigacion,
+        'HORAS GESTION': this.horasGestion,
+        "NOTA GESTION": this.totalGestion,
+        'HORAS VINCULACION': this.horasVinculacion,
+        "NOTA VINCULACION": this.totalVinculacion,
+        'NOTA FINAL': this.totalFinal,
+      };      
+      datos.push(registro);
+    });
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(datos);
+    XLSX.utils.book_append_sheet(wb, ws, 'REPORTE GLOBAL');
+    XLSX.writeFile(wb, 'ReporteGlobal_' + this.periodo.descripcion + '.xlsx');
+  }
+
+  async calculos(docId: string) {
+    this.findRespuestas('HET', docId, this.evalId).subscribe((data) => {
+      this.respHetDoc = data;
+
+      this.totalHetDoc = 0;
+
+      this.respHetDoc.forEach((resp) => {
+        this.totalHetDoc += parseInt(resp.texto);
+      });
+    });
+
+    this.findRespuestas('AD', docId, this.evalId).subscribe((data) => {
+      this.respAutDoc = data;
+
+      this.totalAutDoc = 0;
+
+      this.respAutDoc.forEach((resp) => {
+        this.totalAutDoc += parseInt(resp.texto);
+      });
+    });
+
+    this.findRespuestas('CD', docId, this.evalId).subscribe((data) => {
+      this.respParDoc = data;
+
+      this.totalParDoc = 0;
+
+      this.respParDoc.forEach((resp) => {
+        this.totalParDoc += parseInt(resp.texto);
+      });
+    });
+
+    this.findRespuestas('DD', docId, this.evalId).subscribe((data) => {
+      this.respDirDoc = data;
+
+      this.totalDirDoc = 0;
+
+      this.respDirDoc.forEach((resp) => {
+        this.totalDirDoc += parseInt(resp.texto);
+      });
+    });
+
+    await this.sleep(300);
+
+    this.notaAutDoc = 0;
+    this.notaHetDoc = 0;
+    this.notaParDoc = 0;
+    this.notaDirDoc = 0;
+
+    if (this.respHetDoc.length <= 0) {
+      this.notaHetDoc = 0;
+    } else {
+      this.notaHetDoc = (this.totalHetDoc * 10) / (this.respHetDoc.length * 5);
+    }
+
+    if (this.respAutDoc.length <= 0) {
+      this.notaAutDoc = 0;
+    } else {
+      this.notaAutDoc = (this.totalAutDoc * 10) / (this.respAutDoc.length * 5);
+    }
+
+    if (this.respParDoc.length <= 0) {
+      this.notaParDoc = 0;
+    } else {
+      this.notaParDoc = (this.totalParDoc * 10) / (this.respParDoc.length * 5);
+    }
+
+    if (this.respDirDoc.length <= 0) {
+      this.notaDirDoc = 0;
+    } else {
+      this.notaDirDoc = (this.totalDirDoc * 10) / (this.respDirDoc.length * 5);
+    }
+
+    this.findRespuestas('AI', docId, this.evalId).subscribe((data) => {
+      this.respAutInv = data;
+
+      this.totalAutInv = 0;
+
+      this.respAutInv.forEach((resp) => {
+        this.totalAutInv += parseInt(resp.texto);
+      });
+    });
+
+    this.findRespuestas('CI', docId, this.evalId).subscribe((data) => {
+      this.respParInv = data;
+
+      this.totalParInv = 0;
+
+      this.respParInv.forEach((resp) => {
+        this.totalParInv += parseInt(resp.texto);
+      });
+    });
+
+    this.findRespuestas('DI', docId, this.evalId).subscribe((data) => {
+      this.respDirInv = data;
+
+      this.totalDirInv = 0;
+
+      this.respDirInv.forEach((resp) => {
+        this.totalDirInv += parseInt(resp.texto);
+      });
+    });
+
+    await this.sleep(300);
+
+    this.notaAutInv = 0;
+    this.notaParInv = 0;
+    this.notaDirInv = 0;
+
+    if (this.respAutInv.length <= 0) {
+      this.notaAutInv = 0;
+    } else {
+      this.notaAutInv = (this.totalAutInv * 10) / (this.respAutInv.length * 5);
+    }
+
+    if (this.respParInv.length <= 0) {
+      this.notaParInv = 0;
+    } else {
+      this.notaParInv = (this.totalParInv * 10) / (this.respParInv.length * 5);
+    }
+
+    if (this.respDirInv.length <= 0) {
+      this.notaDirInv = 0;
+    } else {
+      this.notaDirInv = (this.totalDirInv * 10) / (this.respDirInv.length * 5);
+    }
+
+    this.findRespuestas('AG', docId, this.evalId).subscribe((data) => {
+      this.respAutGes = data;
+
+      this.totalAutGes = 0;
+
+      this.respAutGes.forEach((resp) => {
+        this.totalAutGes += parseInt(resp.texto);
+      });
+    });
+
+    this.findRespuestas('DG', docId, this.evalId).subscribe((data) => {
+      this.respDirGes = data;
+
+      this.totalDirGes = 0;
+
+      this.respDirGes.forEach((resp) => {
+        this.totalDirGes += parseInt(resp.texto);
+      });
+    });
+
+    await this.sleep(300);
+
+    this.notaAutGes = 0;
+    this.notaDirGes = 0;
+
+    if (this.respAutGes.length <= 0) {
+      this.notaAutGes = 0;
+    } else {
+      this.notaAutGes = (this.totalAutGes * 10) / (this.respAutGes.length * 5);
+    }
+
+    if (this.respDirGes.length <= 0) {
+      this.notaDirGes = 0;
+    } else {
+      this.notaDirGes = (this.totalDirGes * 10) / (this.respDirGes.length * 5);
+    }
+
+    this.findRespuestas('AV', docId, this.evalId).subscribe((data) => {
+      this.respAutVin = data;
+
+      this.totalAutVin = 0;
+
+      this.respAutVin.forEach((resp) => {
+        this.totalAutVin += parseInt(resp.texto);
+      });
+    });
+
+    this.findRespuestas('CV', docId, this.evalId).subscribe((data) => {
+      this.respParVin = data;
+
+      this.totalParVin = 0;
+
+      this.respParVin.forEach((resp) => {
+        this.totalParVin += parseInt(resp.texto);
+      });
+    });
+
+    this.findRespuestas('DV', docId, this.evalId).subscribe((data) => {
+      this.respDirVin = data;
+
+      this.totalDirVin = 0;
+
+      this.respDirVin.forEach((resp) => {
+        this.totalDirVin += parseInt(resp.texto);
+      });
+    });
+
+    await this.sleep(300);
+
+    this.notaAutVin = 0;
+    this.notaParVin = 0;
+    this.notaDirVin = 0;
+
+    if (this.respAutVin.length <= 0) {
+      this.notaAutVin = 0;
+    } else {
+      this.notaAutVin = (this.totalAutVin * 10) / (this.respAutVin.length * 5);
+    }
+
+    if (this.respParVin.length <= 0) {
+      this.notaParVin = 0;
+    } else {
+      this.notaParVin = (this.totalParVin * 10) / (this.respParVin.length * 5);
+    }
+
+    if (this.respDirVin.length <= 0) {
+      this.notaDirVin = 0;
+    } else {
+      this.notaDirVin = (this.totalDirVin * 10) / (this.respDirVin.length * 5);
+    }
+
+    this.totalDocencia =
+      this.notaAutDoc / 10 +
+      (this.notaHetDoc * 3.5) / 10 +
+      (this.notaParDoc * 3) / 10 +
+      (this.notaDirDoc * 2.5) / 10;
+    this.totalInvestigacion =
+      this.notaAutInv / 10 +
+      (this.notaParInv * 4) / 10 +
+      (this.notaDirInv * 5) / 10;
+    this.totalGestion = (this.notaAutGes * 4) / 10 + (this.notaDirGes * 6) / 10;
+    this.totalVinculacion =
+      this.notaAutVin / 10 +
+      (this.notaParVin * 4) / 10 +
+      (this.notaDirVin * 5) / 10;
+
+    this.totalDocenciaPonderacion = 0;
+    this.totalInvestigacionPonderacion = 0;
+    this.totalGestionPonderacion = 0;
+    this.totalVinculacionPonderacion = 0;
+    this.totalFinal = 0;
+
+    if (
+      this.horasDocencia > 0 &&
+      this.horasInvestigacion > 0 &&
+      this.horasGestion > 0 &&
+      this.horasVinculacion > 0
+    ) {
+      this.totalDocenciaPonderacion = (this.totalDocencia * 6) / 10;
+      this.totalInvestigacionPonderacion = (this.totalInvestigacion * 1.5) / 10;
+      this.totalGestionPonderacion = (this.totalVinculacion * 1.5) / 10;
+      this.totalVinculacionPonderacion = this.totalGestion / 10;
+      this.totalFinal =
+        (this.totalDocencia * 6) / 10 +
+        (this.totalInvestigacion * 1.5) / 10 +
+        (this.totalVinculacion * 1.5) / 10 +
+        this.totalGestion / 10;
+    } else if (
+      this.horasDocencia > 0 &&
+      this.horasInvestigacion > 0 &&
+      this.horasVinculacion > 0
+    ) {
+      this.totalDocenciaPonderacion = (this.totalDocencia * 6) / 10;
+      this.totalInvestigacionPonderacion = (this.totalInvestigacion * 2) / 10;
+      this.totalVinculacionPonderacion = (this.totalVinculacion * 2) / 10;
+      this.totalFinal =
+        (this.totalDocencia * 6) / 10 +
+        (this.totalInvestigacion * 2) / 10 +
+        (this.totalVinculacion * 2) / 10;
+    } else if (
+      this.horasDocencia > 0 &&
+      this.horasVinculacion > 0 &&
+      this.horasGestion > 0
+    ) {
+      this.totalDocenciaPonderacion = (this.totalDocencia * 6) / 10;
+      this.totalVinculacionPonderacion = (this.totalInvestigacion * 2) / 10;
+      this.totalGestionPonderacion = (this.totalGestion * 2) / 10;
+      this.totalFinal =
+        (this.totalDocencia * 6) / 10 +
+        (this.totalInvestigacion * 2) / 10 +
+        (this.totalGestion * 2) / 10;
+    } else if (
+      this.horasDocencia > 0 &&
+      this.horasGestion > 0 &&
+      this.horasInvestigacion > 0
+    ) {
+      this.totalDocenciaPonderacion = (this.totalDocencia * 6) / 10;
+      this.totalInvestigacionPonderacion = (this.totalInvestigacion * 2) / 10;
+      this.totalGestionPonderacion = (this.totalGestion * 2) / 10;
+      this.totalFinal =
+        (this.totalDocencia * 6) / 10 +
+        (this.totalInvestigacion * 2) / 10 +
+        (this.totalGestion * 2) / 10;
+    } else if (this.horasDocencia > 0 && this.horasInvestigacion > 0) {
+      this.totalDocenciaPonderacion = (this.totalDocencia * 6) / 10;
+      this.totalInvestigacionPonderacion = (this.totalInvestigacion * 4) / 10;
+      this.totalFinal =
+        (this.totalDocencia * 6) / 10 + (this.totalInvestigacion * 4) / 10;
+    } else if (this.horasDocencia > 0 && this.horasVinculacion > 0) {
+      this.totalDocenciaPonderacion = (this.totalDocencia * 6) / 10;
+      this.totalVinculacionPonderacion = (this.totalVinculacion * 4) / 10;
+      this.totalFinal =
+        (this.totalDocencia * 6) / 10 + (this.totalVinculacion * 4) / 10;
+    } else if (this.horasDocencia > 0 && this.horasGestion > 0) {
+      this.totalDocenciaPonderacion = (this.totalDocencia * 6) / 10;
+      this.totalGestionPonderacion = (this.totalGestion * 4) / 10;
+      this.totalFinal =
+        (this.totalDocencia * 6) / 10 + (this.totalGestion * 4) / 10;
+    } else if (this.horasDocencia > 0) {
+      this.totalDocenciaPonderacion = this.totalDocencia;
+      this.totalFinal = this.totalDocencia;
+    } else if (this.horasVinculacion > 0) {
+      this.totalVinculacionPonderacion = this.totalVinculacion;
+      this.totalFinal = this.totalVinculacion;
+    } else if (this.horasGestion > 0) {
+      this.totalGestionPonderacion = this.totalGestion;
+      this.totalFinal = this.totalGestion;
+    } else if (this.horasInvestigacion > 0) {
+      this.totalInvestigacionPonderacion = this.totalInvestigacion;
+      this.totalFinal = this.totalInvestigacion;
+    }
   }
 }
