@@ -54,12 +54,12 @@ export class PeriodoAdminComponent implements OnInit {
         console.log("evaluaciones", evaluaciones);
         this.evaluaciones = evaluaciones.map(evaluacion => {
           const periodo = periodos.find(p => {
-            
-            console.log(`Comparando:`,evaluacion);
-            console.log(`Comparando: ${p.id} con ${evaluacion.per_id}`);
-            return p.id === evaluacion.per_id;
+
+            //console.log(`Comparando:`, evaluacion);
+            //console.log(`Comparando: ${p.id} con ${evaluacion.perId}`);
+            return p.id === evaluacion.perId;
           });
-          console.log("Periodo encontrado:", periodo);
+          //console.log("Periodo encontrado:", periodo);
           return {
             ...evaluacion,
             nombrePeriodo: periodo ? periodo.descripcion : 'Periodo no encontrado',
@@ -113,20 +113,24 @@ export class PeriodoAdminComponent implements OnInit {
       if (result !== undefined) {
         console.log("Datos del formulario:", result);
         if (result.fechaFin && result.fechaInicio) {
-          this.evaluacion.nombre = result.nombre;
-          this.evaluacion.descripcion = result.descripcion;
-          console.log("Datos del formulario actualizado:", this.evaluacion);
-
-          // Guarda o procesa los datos aquí
+          this.evaluacion.evalFechaFin = new Date(result.fechaFin).toISOString();
+          //this.evaluacion.fechaFin = result.fechaFin + "T00:00:00.000+00:00";
+          this.evaluacion.evalFechaInicio = new Date(result.fechaInicio).toISOString();
+          this.evaluacion.estado = "ACTIVO";
+          this.evaluacion.perId = result.idPeriodo;
           this.evaluacionService.createEvaluacion(this.evaluacion).subscribe(
             (data) => {
               console.log("Registro guardado", this.evaluacion);
-              this.getAllEvaluaciones();
+              this.getAllEvaluacionesConNombreDePeriodo();
             },
             (error) => {
               console.error(error);
             }
           );
+
+          console.log("Datos del formulario actualizado:", this.evaluacion);
+
+
         }
       } else {
         // Manejo de cierre sin acción (por ejemplo, cancelar)
@@ -157,6 +161,32 @@ export class PeriodoAdminComponent implements OnInit {
   }
 
   eliminarPeriodo(id: number) {
+    this.evaluacionService.findEvaluacion(id).subscribe(
+      {
+        next: (data) => {
+          this.evaluacion = data
+          if(this.evaluacion.estado == 'ACTIVO'){
+              alert('no es posible eliminar una evaluacion activa')
+          }else {
+            this.evaluacionService.deleteEvalucion(id).subscribe({
+              next: (data) => {
+                console.log("Registro eliminado correctamente");
+                this.getAllEvaluacionesConNombreDePeriodo();
+              },
+              error: (error) => {
+                console.error("Error al eliminar el estado de la evaluación", error);
+              }
+            });
+          }
+          console.log("Estado de la evaluación actualizado", data);
+          this.getAllEvaluacionesConNombreDePeriodo();
+        },
+        error: (error) => {
+          console.error("Error al actualizar el estado de la evaluación", error);
+        }
+      }
+
+    );
     /*this.periodoService.eliminarPeriodo(id).subscribe(() => {
       this.cargarPeriodos();
     });*/
@@ -166,5 +196,34 @@ export class PeriodoAdminComponent implements OnInit {
     /*this.periodoForm.reset();
     this.modoEdicion = false;
   */
+  }
+
+  cambiarEstado(id: number, estadoActual: string): void {
+    console.log(`estado`, estadoActual);
+    if (estadoActual == 'ACTIVO') {
+      estadoActual = 'INACTIVO';
+    } else {
+      estadoActual = 'ACTIVO';
+    }
+
+    console.log(`Cambiando estado del formulario con ID ${id} a ${estadoActual}`);
+
+    this.evaluacionService.updateEstadoEvaluacion(id, estadoActual).subscribe({
+      next: (data) => {
+        console.log("Estado de la evaluación actualizado", data);
+        this.getAllEvaluacionesConNombreDePeriodo();
+      },
+      error: (error) => {
+        console.error("Error al actualizar el estado de la evaluación", error);
+      }
+    });
+  }
+  getEstadoAsBoolean(estado: string): boolean {
+    if (estado == 'ACTIVO') {
+      return true;
+    } else {
+      return false;
+    }
+
   }
 }

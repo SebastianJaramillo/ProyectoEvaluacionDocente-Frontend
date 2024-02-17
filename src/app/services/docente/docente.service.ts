@@ -33,8 +33,20 @@ export class DocenteService {
   findByEvaluacion(docEvaluador: string, docEvaluado: string, evalId: number) {
     return this.http.get<any>(`${this.apiUrl}/evaluacion/${docEvaluador}/${docEvaluado}/${evalId}`);
   }
+  findAllDocente(){
+    return this.http.get<any>(`${this.apiUrl}/listar`);  
+  }
 
   saveEvaluacion(evaluacion: any) {
     return this.http.post<any>(`${this.apiUrl}/evaluacion/registro`, evaluacion);
   }
+  
+  cambiarRolCoodinador(id: string, rol: string){
+    return this.http.get<any>(`${this.apiUrl}/listar`);  
+  }
+
+  cambiarJefeDocente(id: string,idNuevoJefe: string){
+    return this.http.post<any[]>(`${this.apiUrl}/cambiarJefe/${id}/${idNuevoJefe}`,idNuevoJefe);
+  }
+
 }

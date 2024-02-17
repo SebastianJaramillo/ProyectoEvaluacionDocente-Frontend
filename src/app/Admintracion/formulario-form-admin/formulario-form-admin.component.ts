@@ -41,6 +41,7 @@ export class FormularioFormAdminComponent implements OnInit {
     this.dialogRef.close(); // Cierra sin enviar datos, result será undefined
   }
   inicializarFormulario(datos?: any): void {
+    console.log("prueba formulario", datos)
     this.formularioEmergente.patchValue({
       nombre: datos ? datos.nombre : '',
       descripcion: datos ? datos.descripcion : '',

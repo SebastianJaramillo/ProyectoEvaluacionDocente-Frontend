@@ -42,6 +42,11 @@ import { FormularioAdminComponent } from './Admintracion/formulario-admin/formul
 import { FormularioFormAdminComponent } from './Admintracion/formulario-form-admin/formulario-form-admin.component';
 import { PreguntasFormAdminComponent } from './Admintracion/preguntas-form-admin/preguntas-form-admin.component';
 import { MatIconModule } from '@angular/material/icon';
+import { AsignacionRolesComponent } from './Admintracion/asignacion-roles/asignacion-roles.component';
+import { AsignacionDocenteComponent } from './Admintracion/asignacion-docente/asignacion-docente.component';
+import { SeleccionarCoordinadorComponent } from './Admintracion/asignacion/seleccionar-coordinador/seleccionar-coordinador.component';
+import { DocenteAsignacionComponent } from './Admintracion/asignacion/docente-asignacion/docente-asignacion.component';
+import { ListaDocentesComponent } from './Admintracion/asignacion/lista-docentes/lista-docentes.component';
 const routes: Routes = [
   { path: 'cursos', component: CursoComponent },  
   { path: '', redirectTo: '/inicio', pathMatch: 'full' },
@@ -69,7 +74,12 @@ const routes: Routes = [
     PeriodoFormAdminComponent,
     FormularioAdminComponent,
     FormularioFormAdminComponent,
-    PreguntasFormAdminComponent
+    PreguntasFormAdminComponent,
+    AsignacionRolesComponent,
+    AsignacionDocenteComponent,
+    SeleccionarCoordinadorComponent,
+    DocenteAsignacionComponent,
+    ListaDocentesComponent
   ],
   imports: [
     BrowserModule,
