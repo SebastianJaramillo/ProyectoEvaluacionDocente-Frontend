@@ -10,10 +10,6 @@ export class DocenteService {
 
   constructor(private http: HttpClient) {}
 
-  listar(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/listar`);
-  }
-
   findFunciones(id: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/funciones/${id}`);
   }
@@ -33,6 +29,7 @@ export class DocenteService {
   findByEvaluacion(docEvaluador: string, docEvaluado: string, evalId: number) {
     return this.http.get<any>(`${this.apiUrl}/evaluacion/${docEvaluador}/${docEvaluado}/${evalId}`);
   }
+
   findAllDocente(){
     return this.http.get<any>(`${this.apiUrl}/listar`);  
   }

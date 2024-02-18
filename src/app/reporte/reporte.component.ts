@@ -183,7 +183,7 @@ export class ReporteComponent implements OnInit {
   }
 
   listarDocentes() {
-    this.docenteService.listar().subscribe(
+    this.docenteService.findAllDocente().subscribe(
       (data) => {
         this.docentes = data;
       },
@@ -202,7 +202,7 @@ export class ReporteComponent implements OnInit {
     
     await this.findPeriodo(this.perId);    
 
-    await this.sleep(300);
+    await this.sleep(100);
 
     await this.calculos(this.docente.id);
 
@@ -657,7 +657,7 @@ export class ReporteComponent implements OnInit {
   async generarInformeGlobal() {
     await this.findPeriodo(this.perId);
 
-    await this.sleep(300);
+    await this.sleep(100);
 
     var datos: any[] = [];
 
@@ -683,8 +683,8 @@ export class ReporteComponent implements OnInit {
 
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet(datos);
-    XLSX.utils.book_append_sheet(wb, ws, 'REPORTE GLOBAL');
-    XLSX.writeFile(wb, 'ReporteGlobal_' + this.periodo.descripcion + '.xlsx');
+    XLSX.utils.book_append_sheet(wb, ws, 'EVALUACION DOCENTE');
+    XLSX.writeFile(wb, 'REPORTE GLOBAL_' + this.periodo.descripcion + '.xlsx');
   }
 
   async calculos(docId: string) {
@@ -728,7 +728,7 @@ export class ReporteComponent implements OnInit {
       });
     });
 
-    await this.sleep(300);
+    await this.sleep(100);
 
     this.notaAutDoc = 0;
     this.notaHetDoc = 0;
@@ -789,7 +789,7 @@ export class ReporteComponent implements OnInit {
       });
     });
 
-    await this.sleep(300);
+    await this.sleep(100);
 
     this.notaAutInv = 0;
     this.notaParInv = 0;
@@ -833,7 +833,7 @@ export class ReporteComponent implements OnInit {
       });
     });
 
-    await this.sleep(300);
+    await this.sleep(100);
 
     this.notaAutGes = 0;
     this.notaDirGes = 0;
@@ -880,7 +880,7 @@ export class ReporteComponent implements OnInit {
       });
     });
 
-    await this.sleep(300);
+    await this.sleep(100);
 
     this.notaAutVin = 0;
     this.notaParVin = 0;

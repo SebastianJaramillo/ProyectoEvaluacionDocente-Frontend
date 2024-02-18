@@ -19,22 +19,6 @@ export class DocenteComponent implements OnInit {
   docente: any = {};
   docFunciones: any[] = [];
 
-  respHetDoc: any[] = [];
-  respAutDoc: any[] = [];
-  respParDoc: any[] = [];
-  respDirDoc: any[] = [];
-
-  respAutInv: any[] = [];
-  respParInv: any[] = [];
-  respDirInv: any[] = [];
-
-  respAutGes: any[] = [];
-  respDirGes: any[] = [];
-
-  respAutVin: any[] = [];
-  respParVin: any[] = [];
-  respDirVin: any[] = [];
-
   funcion: any = {};
   periodo: any = {};
   id: any;
@@ -42,27 +26,6 @@ export class DocenteComponent implements OnInit {
   evalId: any;
   desactivado: any;
   formId: any;
-
-  horasDocencia: 0 = 0;
-  horasInvestigacion: 0 = 0;
-  horasGestion: 0 = 0;
-  horasVinculacion: 0 = 0;
-
-  totalHetDoc: number = 0;
-  totalAutDoc: number = 0;
-  totalParDoc: number = 0;
-  totalDirDoc: number = 0;
-
-  totalAutInv: number = 0;
-  totalParInv: number = 0;
-  totalDirInv: number = 0;
-
-  totalAutGes: number = 0;
-  totalDirGes: number = 0;
-
-  totalAutVin: number = 0;
-  totalParVin: number = 0;
-  totalDirVin: number = 0;
 
   constructor(
     private docenteService: DocenteService,
@@ -104,24 +67,6 @@ export class DocenteComponent implements OnInit {
     this.docenteService.findFunciones(id).subscribe(
       (data) => {
         this.docFunciones = data;
-        this.docFunciones.forEach((item) => {
-          switch (item.funcion.descripcion) {
-            case 'Docencia':
-              this.horasDocencia += item.horas;
-              break;
-            case 'Vinculacion':
-              this.horasVinculacion += item.horas;
-              break;
-            case 'Gestion':
-              this.horasGestion += item.horas;
-              break;
-            case 'Investigacion':
-              this.horasInvestigacion += item.horas;
-              break;
-            default:
-              console.log('No se encontró función');
-          }
-        });
       },
       (error) => {
         console.error(error);
