@@ -204,7 +204,7 @@ export class SeleccionarCoordinadorComponent implements OnInit {
         console.error(error);
       }
     );
-
+    this.findDocenteAll();
     this.router.navigate(['rolesAdmin']);
   }
 

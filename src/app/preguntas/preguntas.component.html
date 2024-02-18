@@ -2,10 +2,12 @@
 <button class="btn btn-danger" (click)="volver()">Volver</button>
 <p style="font-size: 18px; text-align: center;"><b style="font-size: 18px;">{{ formulario.nombre }}</b><br><br></p>
 <p>
+
 <b>Evaluador: </b>{{ alumno.apellidos + " " + alumno.nombres }}<br>
 <b>Período: </b>{{ periodo.descripcion}}<br>
 <b>Asignatura: </b>{{ asignatura }} <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NRC: </b>{{ curso.nrc }}<br>
 <b>Docente evaluado: </b>{{ docente.apellidos + " " + docente.nombres}} </p>
+<b>Consideración: </b> Seleccione <br> 
 
 <div *ngIf="preguntas && preguntas.length > 0">
   <p style="font-size: 18px; text-align: center;">Pregunta <strong>{{ preguntaActual + 1 }}</strong> de {{preguntas.length}}</p>
