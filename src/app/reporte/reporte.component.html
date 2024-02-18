@@ -1,11 +1,33 @@
-<p style="font-size: 18px">
-  <b>REPORTE INDIVIDUAL</b><br /><br />
-  <b>DOCENTE: </b>{{ docente.apellidos + " " + docente.nombres }}
-</p>
-<select [ngModel]="perId">
-  <option *ngFor="let periodo of periodos" [value]="periodo.id">
-    {{ periodo.descripcion }}
-  </option>
-</select>
-<button class="btn boton" (click)="generarInforme()">Generar Informe</button>
-<button class="btn boton" (click)="generarInformeGlobal()">Generar Informe Global</button>
+<div *ngIf="!director">
+  <p style="font-size: 18px">
+    <b>REPORTE INDIVIDUAL</b><br /><br />
+    <b>DOCENTE: </b>{{ docente.apellidos + " " + docente.nombres }}
+  </p>
+  <select [ngModel]="perId">
+    <option *ngFor="let periodo of periodos" [value]="periodo.id">
+      {{ periodo.descripcion }}
+    </option>
+  </select>
+  <button class="btn boton" (click)="generarInforme()">Generar Informe</button>
+</div>
+
+<div *ngIf="director">
+  <p style="font-size: 18px">
+    <b>REPORTE INDIVIDUAL</b><br /><br />
+    <b>DOCENTE: </b>
+    <select [ngModel]="docId">
+      <option *ngFor="let doc of docentes" [value]="doc.id">
+        {{ doc.apellidos + " " + doc.nombres }}
+      </option>
+    </select>
+  </p>
+  <select [ngModel]="perId">
+    <option *ngFor="let periodo of periodos" [value]="periodo.id">
+      {{ periodo.descripcion }}
+    </option>
+  </select>
+  <button class="btn boton" (click)="generarInforme()">Generar Informe</button>
+  <button class="btn boton" (click)="generarInformeGlobal()">
+    Generar Informe Global
+  </button>
+</div>

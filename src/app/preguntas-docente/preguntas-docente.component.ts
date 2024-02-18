@@ -215,6 +215,7 @@ export class PreguntasDocenteComponent implements OnInit {
         this.evaluacion.docEvaluador = atob(this.idJefe);
         this.evaluacion.docEvaluado = atob(this.id);
         this.evaluacion.evalId = this.evalId;
+        this.evaluacion.actividad = this.formulario.descripcion;
 
         this.docenteService.saveEvaluacion(this.evaluacion).subscribe(
           (data) => {

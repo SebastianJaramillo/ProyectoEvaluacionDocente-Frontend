@@ -8,6 +8,10 @@ export class EvaluacionService {
   private apiUrl = 'http://localhost:8082';
 
   constructor(private http: HttpClient) { }
+
+  getPeriodosActivosInactivos() {
+    return this.http.get<any[]>(`${this.apiUrl}/periodo`);
+  }
   
   getAllPeriodos() {
     return this.http.get<any[]>(`${this.apiUrl}/periodo/listar`);

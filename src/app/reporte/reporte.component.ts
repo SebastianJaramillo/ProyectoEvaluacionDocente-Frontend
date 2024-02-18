@@ -17,6 +17,8 @@ import * as XLSX from 'xlsx';
 export class ReporteComponent implements OnInit {
   id: any;
   evalId: any;
+  docId: any;
+  director: any;
   docente: any = {};
   periodo: any = {};
   periodos: any[] = [];
@@ -40,61 +42,13 @@ export class ReporteComponent implements OnInit {
   respParVin: any[] = [];
   respDirVin: any[] = [];
 
-  horasDocencia: 0 = 0;
-  horasInvestigacion: 0 = 0;
-  horasGestion: 0 = 0;
-  horasVinculacion: 0 = 0;
-
-  totalHetDoc: number = 0;
-  totalAutDoc: number = 0;
-  totalParDoc: number = 0;
-  totalDirDoc: number = 0;
-
-  totalAutInv: number = 0;
-  totalParInv: number = 0;
-  totalDirInv: number = 0;
-
-  totalAutGes: number = 0;
-  totalDirGes: number = 0;
-
-  totalAutVin: number = 0;
-  totalParVin: number = 0;
-  totalDirVin: number = 0;
-
-  notaAutDoc = 0;
-  notaHetDoc = 0;
-  notaParDoc = 0;
-  notaDirDoc = 0;
-
-  notaAutInv = 0;
-  notaParInv = 0;
-  notaDirInv = 0;
-
-  notaAutGes = 0;
-  notaDirGes = 0;
-
-  notaAutVin = 0;
-  notaParVin = 0;
-  notaDirVin = 0;
-
-  totalDocencia = 0;
-  totalGestion = 0;
-  totalInvestigacion = 0;
-  totalVinculacion = 0;
-
-  totalDocenciaPonderacion = 0;
-  totalGestionPonderacion = 0;
-  totalInvestigacionPonderacion = 0;
-  totalVinculacionPonderacion = 0;
-
-  totalFinal = 0;
-
   constructor(
     private route: ActivatedRoute,
     private formularioService: FormularioService,
     private evaluacionService: EvaluacionService,
     private docenteService: DocenteService
   ) {}
+
   ngOnInit(): void {
     this.perId = 1;
     this.route.params.subscribe((params) => {
@@ -102,9 +56,12 @@ export class ReporteComponent implements OnInit {
       this.evalId = params['evalId'];
     });
 
+    this.docId = atob(this.id);
+
     this.findDocente(atob(this.id));
-    this.getAllPeriodos();    
-    this.listarDocentes();
+    this.findFunciones(atob(this.id));
+    this.getAllPeriodos();
+    this.listarDocentes();    
   }
 
   findDocente(id: string): any {
@@ -118,33 +75,11 @@ export class ReporteComponent implements OnInit {
     );
   }
 
-  findFunciones(id: string) {
-    this.horasGestion = 0;
-    this.horasDocencia = 0;
-    this.horasInvestigacion = 0;
-    this.horasVinculacion = 0;
-
+  findFunciones(id: any) {
     this.docenteService.findFunciones(id).subscribe(
       (data) => {
         this.docFunciones = data;
-        this.docFunciones.forEach((item) => {
-          switch (item.funcion.descripcion) {
-            case 'Docencia':
-              this.horasDocencia += item.horas;
-              break;
-            case 'Vinculacion':
-              this.horasVinculacion += item.horas;
-              break;
-            case 'Gestion':
-              this.horasGestion += item.horas;
-              break;
-            case 'Investigacion':
-              this.horasInvestigacion += item.horas;
-              break;
-            default:
-              console.log('No se encontró función');
-          }
-        });
+        this.director = this.docFunciones.some(f => f.funcion.rol === 'Director');
       },
       (error) => {
         console.error(error);
@@ -153,7 +88,7 @@ export class ReporteComponent implements OnInit {
   }
 
   getAllPeriodos() {
-    this.evaluacionService.getAllPeriodos().subscribe(
+    this.evaluacionService.getPeriodosActivosInactivos().subscribe(
       (data) => {
         this.periodos = data;
       },
@@ -194,17 +129,19 @@ export class ReporteComponent implements OnInit {
   }
 
   sleep(ms: any) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   async generarInforme() {
-    await this.findFunciones(atob(this.id));
-    
-    await this.findPeriodo(this.perId);    
+    await this.findPeriodo(this.perId);
 
     await this.sleep(100);
 
-    await this.calculos(this.docente.id);
+    let {horasDocencia, horasInvestigacion, horasGestion, horasVinculacion,
+      notaAutDoc, notaHetDoc, notaParDoc, notaDirDoc, notaAutInv, notaParInv, notaDirInv, notaAutGes, notaDirGes,
+      notaAutVin, notaParVin, notaDirVin, totalDocencia, totalGestion, totalInvestigacion, totalVinculacion,
+      totalDocenciaPonderacion, totalGestionPonderacion, totalInvestigacionPonderacion, totalVinculacionPonderacion,
+      totalFinal} = await this.calculos(this.docente.id);
 
     const pdf = new jsPDF({ orientation: 'landscape' });
 
@@ -321,7 +258,7 @@ export class ReporteComponent implements OnInit {
     pdf.text('PERIODO: ' + this.periodo.descripcion, 20, 107, {
       maxWidth,
       align: 'justify',
-    });    
+    });
 
     autoTable(pdf, {
       startY: 110,
@@ -409,28 +346,28 @@ export class ReporteComponent implements OnInit {
           },
         ],
         [
-          { content: this.horasDocencia, styles: { halign: 'center' } },
+          { content: horasDocencia === 0 ? '' : horasDocencia, styles: { halign: 'center' } },
           {
-            content: Number(this.totalDocenciaPonderacion.toFixed(2)),
+            content: Number(totalDocenciaPonderacion.toFixed(2)) === 0 ? '' : Number(totalDocenciaPonderacion.toFixed(2)),
             styles: { halign: 'center' },
           },
-          { content: this.horasInvestigacion, styles: { halign: 'center' } },
+          { content: horasInvestigacion === 0 ? '' : horasInvestigacion, styles: { halign: 'center' } },
           {
-            content: Number(this.totalInvestigacionPonderacion.toFixed(2)),
+            content: Number(totalInvestigacionPonderacion.toFixed(2)) === 0 ? '' : Number(totalInvestigacionPonderacion.toFixed(2)),
             styles: { halign: 'center' },
           },
-          { content: this.horasGestion, styles: { halign: 'center' } },
+          { content: horasGestion === 0 ? '' : horasGestion, styles: { halign: 'center' } },
           {
-            content: Number(this.totalGestionPonderacion.toFixed(2)),
+            content: Number(totalGestionPonderacion.toFixed(2)) === 0 ? '' : Number(totalGestionPonderacion.toFixed(2)),
             styles: { halign: 'center' },
           },
-          { content: this.horasVinculacion, styles: { halign: 'center' } },
+          { content: horasVinculacion === 0 ? '' : horasVinculacion, styles: { halign: 'center' } },
           {
-            content: Number(this.totalVinculacionPonderacion.toFixed(2)),
+            content: Number(totalVinculacionPonderacion.toFixed(2)) === 0 ? '' : Number(totalVinculacionPonderacion.toFixed(2)),
             styles: { halign: 'center' },
           },
           {
-            content: Number(this.totalFinal.toFixed(2)),
+            content: Number(totalFinal.toFixed(2)) === 0 ? '' : Number(totalFinal.toFixed(2)),
             colSpan: 2,
             styles: { fontStyle: 'bold', halign: 'center', fontSize: 10 },
           },
@@ -543,51 +480,51 @@ export class ReporteComponent implements OnInit {
         ],
         [
           {
-            content: Number(this.notaAutDoc.toFixed(2)),
+            content: Number(notaAutDoc.toFixed(2)) === 0 ? '' : Number(notaAutDoc.toFixed(2)),
             styles: { fontSize: 9, halign: 'center' },
           },
           {
-            content: Number(this.notaHetDoc.toFixed(2)),
+            content: Number(notaHetDoc.toFixed(2)) === 0 ? '' : Number(notaHetDoc.toFixed(2)),
             styles: { fontSize: 9, halign: 'center' },
           },
           {
-            content: Number(this.notaParDoc.toFixed(2)),
+            content: Number(notaParDoc.toFixed(2)) === 0 ? '' : Number(notaParDoc.toFixed(2)),
             styles: { fontSize: 9, halign: 'center' },
           },
           {
-            content: Number(this.notaDirDoc.toFixed(2)),
+            content: Number(notaDirDoc.toFixed(2)) === 0 ? '' : Number(notaDirDoc.toFixed(2)),
             styles: { fontSize: 9, halign: 'center' },
           },
           {
-            content: Number(this.notaAutInv.toFixed(2)),
+            content: Number(notaAutInv.toFixed(2)) === 0 ? '' : Number(notaAutInv.toFixed(2)),
             styles: { fontSize: 9, halign: 'center' },
           },
           {
-            content: Number(this.notaParInv.toFixed(2)),
+            content: Number(notaParInv.toFixed(2)) === 0 ? '' : Number(notaParInv.toFixed(2)),
             styles: { fontSize: 9, halign: 'center' },
           },
           {
-            content: Number(this.notaDirInv.toFixed(2)),
+            content: Number(notaDirInv.toFixed(2)) === 0 ? '' : Number(notaDirInv.toFixed(2)),
             styles: { fontSize: 9, halign: 'center' },
           },
           {
-            content: Number(this.notaAutGes.toFixed(2)),
+            content: Number(notaAutGes.toFixed(2)) === 0 ? '' : Number(notaAutGes.toFixed(2)),
             styles: { fontSize: 9, halign: 'center' },
           },
           {
-            content: Number(this.notaDirGes.toFixed(2)),
+            content: Number(notaDirGes.toFixed(2)) === 0 ? '' : Number(notaDirGes.toFixed(2)),
             styles: { fontSize: 9, halign: 'center' },
           },
           {
-            content: Number(this.notaAutVin.toFixed(2)),
+            content: Number(notaAutVin.toFixed(2)) === 0 ? '' : Number(notaAutVin.toFixed(2)),
             styles: { fontSize: 9, halign: 'center' },
           },
           {
-            content: Number(this.notaParVin.toFixed(2)),
+            content: Number(notaParVin.toFixed(2)) === 0 ? '' : Number(notaParVin.toFixed(2)),
             styles: { fontSize: 9, halign: 'center' },
           },
           {
-            content: Number(this.notaDirVin.toFixed(2)),
+            content: Number(notaDirVin.toFixed(2)) === 0 ? '' : Number(notaDirVin.toFixed(2)),
             styles: { fontSize: 9, halign: 'center' },
           },
         ],
@@ -598,7 +535,7 @@ export class ReporteComponent implements OnInit {
             styles: { fontStyle: 'bold', halign: 'center' },
           },
           {
-            content: Number(this.totalDocencia.toFixed(2)),
+            content: Number(totalDocencia.toFixed(2)) === 0 ? '' : Number(totalDocencia.toFixed(2)),
             colSpan: 2,
             styles: { halign: 'center', fontSize: 9 },
           },
@@ -608,7 +545,7 @@ export class ReporteComponent implements OnInit {
             styles: { halign: 'center' },
           },
           {
-            content: Number(this.totalInvestigacion.toFixed(2)),
+            content: Number(totalInvestigacion.toFixed(2)) === 0 ? '' : Number(totalInvestigacion.toFixed(2)),
             styles: { halign: 'center', fontSize: 9 },
           },
           {
@@ -616,7 +553,7 @@ export class ReporteComponent implements OnInit {
             styles: { halign: 'center' },
           },
           {
-            content: Number(this.totalGestion.toFixed(2)),
+            content: Number(totalGestion.toFixed(2)) === 0 ? '' : Number(totalGestion.toFixed(2)),
             styles: { halign: 'center', fontSize: 9 },
           },
           {
@@ -625,7 +562,7 @@ export class ReporteComponent implements OnInit {
             styles: { halign: 'center' },
           },
           {
-            content: Number(this.totalVinculacion.toFixed(2)),
+            content: Number(totalVinculacion.toFixed(2)) === 0 ? '' : Number(totalVinculacion.toFixed(2)),
             styles: { halign: 'center', fontSize: 9 },
           },
         ],
@@ -659,27 +596,32 @@ export class ReporteComponent implements OnInit {
 
     await this.sleep(100);
 
-    var datos: any[] = [];
+    let datos: any[] = [];
 
-    this.docentes.forEach((item) => {      
-      this.findFunciones(item.id);
-
-      this.calculos(item.id);
+    await Promise.all(this.docentes.map(async (item) => {
       
+      let {horasDocencia, horasInvestigacion, horasGestion, horasVinculacion,
+        notaAutDoc, notaHetDoc, notaParDoc, notaDirDoc, notaAutInv, notaParInv, notaDirInv, notaAutGes, notaDirGes,
+        notaAutVin, notaParVin, notaDirVin, totalDocencia, totalGestion, totalInvestigacion, totalVinculacion,
+        totalDocenciaPonderacion, totalGestionPonderacion, totalInvestigacionPonderacion, totalVinculacionPonderacion,
+        totalFinal} = await this.calculos(item.id);
+
+      await this.sleep(100);
+
       const registro = {
         DOCENTE: item.apellidos + ' ' + item.nombres,
-        'HORAS DOCENCIA': this.horasDocencia,
-        "NOTA DOCENCIA": this.totalDocencia,
-        'HORAS INVESTIGACION': this.horasInvestigacion,
-        "NOTA INVESTIGACION": this.totalInvestigacion,
-        'HORAS GESTION': this.horasGestion,
-        "NOTA GESTION": this.totalGestion,
-        'HORAS VINCULACION': this.horasVinculacion,
-        "NOTA VINCULACION": this.totalVinculacion,
-        'NOTA FINAL': this.totalFinal,
-      };      
-      datos.push(registro);
-    });
+        'HORAS DOCENCIA': horasDocencia,
+        'NOTA DOCENCIA': Number(totalDocencia).toFixed(2),
+        'HORAS INVESTIGACION': horasInvestigacion,
+        'NOTA INVESTIGACION': Number(totalInvestigacion).toFixed(2),
+        'HORAS GESTION': horasGestion,
+        'NOTA GESTION': Number(totalGestion).toFixed(2),
+        'HORAS VINCULACION': horasVinculacion,
+        'NOTA VINCULACION': Number(totalVinculacion).toFixed(2),
+        'NOTA FINAL': Number(totalFinal).toFixed(2),
+      };
+      datos.push(registro);      
+    }));
 
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet(datos);
@@ -688,321 +630,350 @@ export class ReporteComponent implements OnInit {
   }
 
   async calculos(docId: string) {
+    let horasGestion = 0;
+    let horasDocencia = 0;
+    let horasInvestigacion = 0;
+    let horasVinculacion = 0;
+
+    this.docenteService.findFunciones(docId).subscribe(
+      (data) => {
+        this.docFunciones = data;
+        this.docFunciones.forEach((item) => {
+          switch (item.funcion.descripcion) {
+            case 'Docencia':
+              horasDocencia += item.horas;
+              break;
+            case 'Vinculacion':
+              horasVinculacion += item.horas;
+              break;
+            case 'Gestion':
+              horasGestion += item.horas;
+              break;
+            case 'Investigacion':
+              horasInvestigacion += item.horas;
+              break;
+            default:
+              console.log('No se encontró función');
+          }
+        });
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+
+    await this.sleep(100);
+
+    let totalHetDoc = 0;
+    let totalAutDoc = 0;
+    let totalParDoc = 0;
+    let totalDirDoc = 0;
+
+    let totalAutInv = 0;
+    let totalParInv = 0;
+    let totalDirInv = 0;
+
+    let totalAutGes = 0;
+    let totalDirGes = 0;
+
+    let totalAutVin = 0;
+    let totalParVin = 0;
+    let totalDirVin = 0;
+
+    let notaAutDoc = 0;
+    let notaHetDoc = 0;
+    let notaParDoc = 0;
+    let notaDirDoc = 0;
+
+    let notaAutInv = 0;
+    let notaParInv = 0;
+    let notaDirInv = 0;
+
+    let notaAutGes = 0;
+    let notaDirGes = 0;
+
+    let notaAutVin = 0;
+    let notaParVin = 0;
+    let notaDirVin = 0;
+
+    let totalDocencia = 0;
+    let totalGestion = 0;
+    let totalInvestigacion = 0;
+    let totalVinculacion = 0;
+
+    let totalDocenciaPonderacion = 0;
+    let totalGestionPonderacion = 0;
+    let totalInvestigacionPonderacion = 0;
+    let totalVinculacionPonderacion = 0;
+
+    let totalFinal = 0;
+
     this.findRespuestas('HET', docId, this.evalId).subscribe((data) => {
       this.respHetDoc = data;
 
-      this.totalHetDoc = 0;
-
       this.respHetDoc.forEach((resp) => {
-        this.totalHetDoc += parseInt(resp.texto);
+        totalHetDoc += parseInt(resp.texto);
       });
     });
 
     this.findRespuestas('AD', docId, this.evalId).subscribe((data) => {
       this.respAutDoc = data;
 
-      this.totalAutDoc = 0;
-
       this.respAutDoc.forEach((resp) => {
-        this.totalAutDoc += parseInt(resp.texto);
+        totalAutDoc += parseInt(resp.texto);
       });
     });
 
     this.findRespuestas('CD', docId, this.evalId).subscribe((data) => {
       this.respParDoc = data;
 
-      this.totalParDoc = 0;
-
       this.respParDoc.forEach((resp) => {
-        this.totalParDoc += parseInt(resp.texto);
+        totalParDoc += parseInt(resp.texto);
       });
     });
 
     this.findRespuestas('DD', docId, this.evalId).subscribe((data) => {
       this.respDirDoc = data;
 
-      this.totalDirDoc = 0;
-
       this.respDirDoc.forEach((resp) => {
-        this.totalDirDoc += parseInt(resp.texto);
+        totalDirDoc += parseInt(resp.texto);
       });
     });
 
     await this.sleep(100);
 
-    this.notaAutDoc = 0;
-    this.notaHetDoc = 0;
-    this.notaParDoc = 0;
-    this.notaDirDoc = 0;
-
     if (this.respHetDoc.length <= 0) {
-      this.notaHetDoc = 0;
+      notaHetDoc = 0;
     } else {
-      this.notaHetDoc = (this.totalHetDoc * 10) / (this.respHetDoc.length * 5);
+      notaHetDoc = (totalHetDoc * 10) / (this.respHetDoc.length * 5);
     }
 
     if (this.respAutDoc.length <= 0) {
-      this.notaAutDoc = 0;
+      notaAutDoc = 0;
     } else {
-      this.notaAutDoc = (this.totalAutDoc * 10) / (this.respAutDoc.length * 5);
+      notaAutDoc = (totalAutDoc * 10) / (this.respAutDoc.length * 5);
     }
 
     if (this.respParDoc.length <= 0) {
-      this.notaParDoc = 0;
+      notaParDoc = 0;
     } else {
-      this.notaParDoc = (this.totalParDoc * 10) / (this.respParDoc.length * 5);
+      notaParDoc = (totalParDoc * 10) / (this.respParDoc.length * 5);
     }
 
     if (this.respDirDoc.length <= 0) {
-      this.notaDirDoc = 0;
+      notaDirDoc = 0;
     } else {
-      this.notaDirDoc = (this.totalDirDoc * 10) / (this.respDirDoc.length * 5);
+      notaDirDoc = (totalDirDoc * 10) / (this.respDirDoc.length * 5);
     }
 
     this.findRespuestas('AI', docId, this.evalId).subscribe((data) => {
       this.respAutInv = data;
 
-      this.totalAutInv = 0;
-
       this.respAutInv.forEach((resp) => {
-        this.totalAutInv += parseInt(resp.texto);
+        totalAutInv += parseInt(resp.texto);
       });
     });
 
     this.findRespuestas('CI', docId, this.evalId).subscribe((data) => {
       this.respParInv = data;
 
-      this.totalParInv = 0;
+      totalParInv = 0;
 
       this.respParInv.forEach((resp) => {
-        this.totalParInv += parseInt(resp.texto);
+        totalParInv += parseInt(resp.texto);
       });
     });
 
     this.findRespuestas('DI', docId, this.evalId).subscribe((data) => {
       this.respDirInv = data;
 
-      this.totalDirInv = 0;
-
       this.respDirInv.forEach((resp) => {
-        this.totalDirInv += parseInt(resp.texto);
+        totalDirInv += parseInt(resp.texto);
       });
     });
 
     await this.sleep(100);
 
-    this.notaAutInv = 0;
-    this.notaParInv = 0;
-    this.notaDirInv = 0;
-
     if (this.respAutInv.length <= 0) {
-      this.notaAutInv = 0;
+      notaAutInv = 0;
     } else {
-      this.notaAutInv = (this.totalAutInv * 10) / (this.respAutInv.length * 5);
+      notaAutInv = (totalAutInv * 10) / (this.respAutInv.length * 5);
     }
 
     if (this.respParInv.length <= 0) {
-      this.notaParInv = 0;
+      notaParInv = 0;
     } else {
-      this.notaParInv = (this.totalParInv * 10) / (this.respParInv.length * 5);
+      notaParInv = (totalParInv * 10) / (this.respParInv.length * 5);
     }
 
     if (this.respDirInv.length <= 0) {
-      this.notaDirInv = 0;
+      notaDirInv = 0;
     } else {
-      this.notaDirInv = (this.totalDirInv * 10) / (this.respDirInv.length * 5);
+      notaDirInv = (totalDirInv * 10) / (this.respDirInv.length * 5);
     }
 
     this.findRespuestas('AG', docId, this.evalId).subscribe((data) => {
       this.respAutGes = data;
 
-      this.totalAutGes = 0;
-
       this.respAutGes.forEach((resp) => {
-        this.totalAutGes += parseInt(resp.texto);
+        totalAutGes += parseInt(resp.texto);
       });
     });
 
     this.findRespuestas('DG', docId, this.evalId).subscribe((data) => {
       this.respDirGes = data;
 
-      this.totalDirGes = 0;
-
       this.respDirGes.forEach((resp) => {
-        this.totalDirGes += parseInt(resp.texto);
+        totalDirGes += parseInt(resp.texto);
       });
     });
 
     await this.sleep(100);
 
-    this.notaAutGes = 0;
-    this.notaDirGes = 0;
-
     if (this.respAutGes.length <= 0) {
-      this.notaAutGes = 0;
+      notaAutGes = 0;
     } else {
-      this.notaAutGes = (this.totalAutGes * 10) / (this.respAutGes.length * 5);
+      notaAutGes = (totalAutGes * 10) / (this.respAutGes.length * 5);
     }
 
     if (this.respDirGes.length <= 0) {
-      this.notaDirGes = 0;
+      notaDirGes = 0;
     } else {
-      this.notaDirGes = (this.totalDirGes * 10) / (this.respDirGes.length * 5);
+      notaDirGes = (totalDirGes * 10) / (this.respDirGes.length * 5);
     }
 
     this.findRespuestas('AV', docId, this.evalId).subscribe((data) => {
       this.respAutVin = data;
 
-      this.totalAutVin = 0;
-
       this.respAutVin.forEach((resp) => {
-        this.totalAutVin += parseInt(resp.texto);
+        totalAutVin += parseInt(resp.texto);
       });
     });
 
     this.findRespuestas('CV', docId, this.evalId).subscribe((data) => {
       this.respParVin = data;
 
-      this.totalParVin = 0;
-
       this.respParVin.forEach((resp) => {
-        this.totalParVin += parseInt(resp.texto);
+        totalParVin += parseInt(resp.texto);
       });
     });
 
     this.findRespuestas('DV', docId, this.evalId).subscribe((data) => {
       this.respDirVin = data;
 
-      this.totalDirVin = 0;
-
       this.respDirVin.forEach((resp) => {
-        this.totalDirVin += parseInt(resp.texto);
+        totalDirVin += parseInt(resp.texto);
       });
     });
 
     await this.sleep(100);
 
-    this.notaAutVin = 0;
-    this.notaParVin = 0;
-    this.notaDirVin = 0;
-
     if (this.respAutVin.length <= 0) {
-      this.notaAutVin = 0;
+      notaAutVin = 0;
     } else {
-      this.notaAutVin = (this.totalAutVin * 10) / (this.respAutVin.length * 5);
+      notaAutVin = (totalAutVin * 10) / (this.respAutVin.length * 5);
     }
 
     if (this.respParVin.length <= 0) {
-      this.notaParVin = 0;
+      notaParVin = 0;
     } else {
-      this.notaParVin = (this.totalParVin * 10) / (this.respParVin.length * 5);
+      notaParVin = (totalParVin * 10) / (this.respParVin.length * 5);
     }
 
     if (this.respDirVin.length <= 0) {
-      this.notaDirVin = 0;
+      notaDirVin = 0;
     } else {
-      this.notaDirVin = (this.totalDirVin * 10) / (this.respDirVin.length * 5);
+      notaDirVin = (totalDirVin * 10) / (this.respDirVin.length * 5);
     }
 
-    this.totalDocencia =
-      this.notaAutDoc / 10 +
-      (this.notaHetDoc * 3.5) / 10 +
-      (this.notaParDoc * 3) / 10 +
-      (this.notaDirDoc * 2.5) / 10;
-    this.totalInvestigacion =
-      this.notaAutInv / 10 +
-      (this.notaParInv * 4) / 10 +
-      (this.notaDirInv * 5) / 10;
-    this.totalGestion = (this.notaAutGes * 4) / 10 + (this.notaDirGes * 6) / 10;
-    this.totalVinculacion =
-      this.notaAutVin / 10 +
-      (this.notaParVin * 4) / 10 +
-      (this.notaDirVin * 5) / 10;
-
-    this.totalDocenciaPonderacion = 0;
-    this.totalInvestigacionPonderacion = 0;
-    this.totalGestionPonderacion = 0;
-    this.totalVinculacionPonderacion = 0;
-    this.totalFinal = 0;
+    totalDocencia =
+      notaAutDoc / 10 +
+      (notaHetDoc * 3.5) / 10 +
+      (notaParDoc * 3) / 10 +
+      (notaDirDoc * 2.5) / 10;
+    totalInvestigacion =
+      notaAutInv / 10 + (notaParInv * 4) / 10 + (notaDirInv * 5) / 10;
+    totalGestion = (notaAutGes * 4) / 10 + (notaDirGes * 6) / 10;
+    totalVinculacion =
+      notaAutVin / 10 + (notaParVin * 4) / 10 + (notaDirVin * 5) / 10;
 
     if (
-      this.horasDocencia > 0 &&
-      this.horasInvestigacion > 0 &&
-      this.horasGestion > 0 &&
-      this.horasVinculacion > 0
+      horasDocencia > 0 &&
+      horasInvestigacion > 0 &&
+      horasGestion > 0 &&
+      horasVinculacion > 0
     ) {
-      this.totalDocenciaPonderacion = (this.totalDocencia * 6) / 10;
-      this.totalInvestigacionPonderacion = (this.totalInvestigacion * 1.5) / 10;
-      this.totalGestionPonderacion = (this.totalVinculacion * 1.5) / 10;
-      this.totalVinculacionPonderacion = this.totalGestion / 10;
-      this.totalFinal =
-        (this.totalDocencia * 6) / 10 +
-        (this.totalInvestigacion * 1.5) / 10 +
-        (this.totalVinculacion * 1.5) / 10 +
-        this.totalGestion / 10;
+      totalDocenciaPonderacion = (totalDocencia * 6) / 10;
+      totalInvestigacionPonderacion = (totalInvestigacion * 1.5) / 10;
+      totalGestionPonderacion = (totalVinculacion * 1.5) / 10;
+      totalVinculacionPonderacion = totalGestion / 10;
+      totalFinal =
+        (totalDocencia * 6) / 10 +
+        (totalInvestigacion * 1.5) / 10 +
+        (totalVinculacion * 1.5) / 10 +
+        totalGestion / 10;
     } else if (
-      this.horasDocencia > 0 &&
-      this.horasInvestigacion > 0 &&
-      this.horasVinculacion > 0
+      horasDocencia > 0 &&
+      horasInvestigacion > 0 &&
+      horasVinculacion > 0
     ) {
-      this.totalDocenciaPonderacion = (this.totalDocencia * 6) / 10;
-      this.totalInvestigacionPonderacion = (this.totalInvestigacion * 2) / 10;
-      this.totalVinculacionPonderacion = (this.totalVinculacion * 2) / 10;
-      this.totalFinal =
-        (this.totalDocencia * 6) / 10 +
-        (this.totalInvestigacion * 2) / 10 +
-        (this.totalVinculacion * 2) / 10;
+      totalDocenciaPonderacion = (totalDocencia * 6) / 10;
+      totalInvestigacionPonderacion = (totalInvestigacion * 2) / 10;
+      totalVinculacionPonderacion = (totalVinculacion * 2) / 10;
+      totalFinal =
+        (totalDocencia * 6) / 10 +
+        (totalInvestigacion * 2) / 10 +
+        (totalVinculacion * 2) / 10;
+    } else if (horasDocencia > 0 && horasVinculacion > 0 && horasGestion > 0) {
+      totalDocenciaPonderacion = (totalDocencia * 6) / 10;
+      totalVinculacionPonderacion = (totalInvestigacion * 2) / 10;
+      totalGestionPonderacion = (totalGestion * 2) / 10;
+      totalFinal =
+        (totalDocencia * 6) / 10 +
+        (totalInvestigacion * 2) / 10 +
+        (totalGestion * 2) / 10;
     } else if (
-      this.horasDocencia > 0 &&
-      this.horasVinculacion > 0 &&
-      this.horasGestion > 0
+      horasDocencia > 0 &&
+      horasGestion > 0 &&
+      horasInvestigacion > 0
     ) {
-      this.totalDocenciaPonderacion = (this.totalDocencia * 6) / 10;
-      this.totalVinculacionPonderacion = (this.totalInvestigacion * 2) / 10;
-      this.totalGestionPonderacion = (this.totalGestion * 2) / 10;
-      this.totalFinal =
-        (this.totalDocencia * 6) / 10 +
-        (this.totalInvestigacion * 2) / 10 +
-        (this.totalGestion * 2) / 10;
-    } else if (
-      this.horasDocencia > 0 &&
-      this.horasGestion > 0 &&
-      this.horasInvestigacion > 0
-    ) {
-      this.totalDocenciaPonderacion = (this.totalDocencia * 6) / 10;
-      this.totalInvestigacionPonderacion = (this.totalInvestigacion * 2) / 10;
-      this.totalGestionPonderacion = (this.totalGestion * 2) / 10;
-      this.totalFinal =
-        (this.totalDocencia * 6) / 10 +
-        (this.totalInvestigacion * 2) / 10 +
-        (this.totalGestion * 2) / 10;
-    } else if (this.horasDocencia > 0 && this.horasInvestigacion > 0) {
-      this.totalDocenciaPonderacion = (this.totalDocencia * 6) / 10;
-      this.totalInvestigacionPonderacion = (this.totalInvestigacion * 4) / 10;
-      this.totalFinal =
-        (this.totalDocencia * 6) / 10 + (this.totalInvestigacion * 4) / 10;
-    } else if (this.horasDocencia > 0 && this.horasVinculacion > 0) {
-      this.totalDocenciaPonderacion = (this.totalDocencia * 6) / 10;
-      this.totalVinculacionPonderacion = (this.totalVinculacion * 4) / 10;
-      this.totalFinal =
-        (this.totalDocencia * 6) / 10 + (this.totalVinculacion * 4) / 10;
-    } else if (this.horasDocencia > 0 && this.horasGestion > 0) {
-      this.totalDocenciaPonderacion = (this.totalDocencia * 6) / 10;
-      this.totalGestionPonderacion = (this.totalGestion * 4) / 10;
-      this.totalFinal =
-        (this.totalDocencia * 6) / 10 + (this.totalGestion * 4) / 10;
-    } else if (this.horasDocencia > 0) {
-      this.totalDocenciaPonderacion = this.totalDocencia;
-      this.totalFinal = this.totalDocencia;
-    } else if (this.horasVinculacion > 0) {
-      this.totalVinculacionPonderacion = this.totalVinculacion;
-      this.totalFinal = this.totalVinculacion;
-    } else if (this.horasGestion > 0) {
-      this.totalGestionPonderacion = this.totalGestion;
-      this.totalFinal = this.totalGestion;
-    } else if (this.horasInvestigacion > 0) {
-      this.totalInvestigacionPonderacion = this.totalInvestigacion;
-      this.totalFinal = this.totalInvestigacion;
+      totalDocenciaPonderacion = (totalDocencia * 6) / 10;
+      totalInvestigacionPonderacion = (totalInvestigacion * 2) / 10;
+      totalGestionPonderacion = (totalGestion * 2) / 10;
+      totalFinal =
+        (totalDocencia * 6) / 10 +
+        (totalInvestigacion * 2) / 10 +
+        (totalGestion * 2) / 10;
+    } else if (horasDocencia > 0 && horasInvestigacion > 0) {
+      totalDocenciaPonderacion = (totalDocencia * 6) / 10;
+      totalInvestigacionPonderacion = (totalInvestigacion * 4) / 10;
+      totalFinal = (totalDocencia * 6) / 10 + (totalInvestigacion * 4) / 10;
+    } else if (horasDocencia > 0 && horasVinculacion > 0) {
+      totalDocenciaPonderacion = (totalDocencia * 6) / 10;
+      totalVinculacionPonderacion = (totalVinculacion * 4) / 10;
+      totalFinal = (totalDocencia * 6) / 10 + (totalVinculacion * 4) / 10;
+    } else if (horasDocencia > 0 && horasGestion > 0) {
+      totalDocenciaPonderacion = (totalDocencia * 6) / 10;
+      totalGestionPonderacion = (totalGestion * 4) / 10;
+      totalFinal = (totalDocencia * 6) / 10 + (totalGestion * 4) / 10;
+    } else if (horasDocencia > 0) {
+      totalDocenciaPonderacion = totalDocencia;
+      totalFinal = totalDocencia;
+    } else if (horasVinculacion > 0) {
+      totalVinculacionPonderacion = totalVinculacion;
+      totalFinal = totalVinculacion;
+    } else if (horasGestion > 0) {
+      totalGestionPonderacion = totalGestion;
+      totalFinal = totalGestion;
+    } else if (horasInvestigacion > 0) {
+      totalInvestigacionPonderacion = totalInvestigacion;
+      totalFinal = totalInvestigacion;
     }
+
+    return {horasDocencia, horasInvestigacion, horasGestion, horasVinculacion,
+      notaAutDoc, notaHetDoc, notaParDoc, notaDirDoc, notaAutInv, notaParInv, notaDirInv, notaAutGes, notaDirGes,
+      notaAutVin, notaParVin, notaDirVin, totalDocencia, totalGestion, totalInvestigacion, totalVinculacion,
+      totalDocenciaPonderacion, totalGestionPonderacion, totalInvestigacionPonderacion, totalVinculacionPonderacion,
+      totalFinal}
   }
 }

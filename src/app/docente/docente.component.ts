@@ -18,6 +18,7 @@ export class DocenteComponent implements OnInit {
   docentes: any[] = [];
   docente: any = {};
   docFunciones: any[] = [];
+  docEvaluaciones: any[] = [];
 
   funcion: any = {};
   periodo: any = {};
@@ -42,7 +43,8 @@ export class DocenteComponent implements OnInit {
       this.evalId = params['evalId'];
     });
 
-    this.findByFechas();
+    this.findByFechas()
+    this.findByEvaluacion(atob(this.id), atob(this.id), this.evalId);
     this.findDocente(atob(this.id));
         
     //this.deshabilitarBoton();
@@ -63,10 +65,22 @@ export class DocenteComponent implements OnInit {
     );
   }
 
+  findByEvaluacion(docEvaluado: string, docEvaluador: string, evalId: number) {
+    this.docenteService.findByEvaluacion(docEvaluado, docEvaluador, evalId).subscribe(
+      (data) => {
+        this.docEvaluaciones = data;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
   findFunciones(id: string) {
     this.docenteService.findFunciones(id).subscribe(
       (data) => {
         this.docFunciones = data;
+        console.log(this.docFunciones)
       },
       (error) => {
         console.error(error);
@@ -98,19 +112,6 @@ export class DocenteComponent implements OnInit {
 
   findRespuestas(preId: any, docEvaluado: any, evalId: number): Observable<any> {
     return this.formularioService.resultados(preId, docEvaluado, evalId);
-  }
-
-  deshabilitarBoton() {
-    this.docenteService
-      .findByEvaluacion(atob(this.id), atob(this.id), this.evalId)
-      .subscribe(
-        (data) => {
-          this.desactivado = true;
-        },
-        (error) => {
-          console.error(error);
-        }
-      );
   }
 
   evaluacion(id: any, funcId: any) {

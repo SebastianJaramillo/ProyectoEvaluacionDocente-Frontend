@@ -4,4 +4,5 @@ export interface DocenteEvaluacion {
     docEvaluado: String;
     estado: String;
     evalId: Number;    
+    actividad: String;
   }
