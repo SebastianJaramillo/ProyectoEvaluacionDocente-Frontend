@@ -588,7 +588,7 @@ export class ReporteComponent implements OnInit {
       },
     });
 
-    pdf.save('EVALUACION_DETALLE_IND.pdf');
+    pdf.save(this.docente.id + '_' + this.docente.apellidos + '_EVALUACION_DETALLE_IND.pdf');
   }
 
   async generarInformeGlobal() {

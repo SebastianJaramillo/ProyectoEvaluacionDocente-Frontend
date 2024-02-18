@@ -11,6 +11,7 @@
 
 <div *ngIf="preguntas && preguntas.length > 0">
   <p style="font-size: 18px; text-align: center;">Pregunta <strong>{{ preguntaActual + 1 }}</strong> de {{preguntas.length}}</p>
+  Seleccionar la opción que mejor refleje su opinión para evaluar el desempeño del docente en la actividad correspondiente, utilizando la siguiente escala:<br><br>
   <div class="progressBar">
     <div class="innerBar" [style.width]="(preguntaActual + 1) / preguntas.length * 100 + '%'"></div>
   </div>

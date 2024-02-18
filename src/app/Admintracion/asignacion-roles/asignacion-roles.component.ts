@@ -182,8 +182,4 @@ export class AsignacionRolesComponent implements OnInit {
       }
     );
   }
-
-  volver() {
-    this.router.navigate(['docentes', this.id, this.evalId]);
-  }
 }

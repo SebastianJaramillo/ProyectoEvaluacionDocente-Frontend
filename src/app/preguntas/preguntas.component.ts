@@ -35,11 +35,11 @@ export class PreguntasComponent implements OnInit {
   botonDesactivado = true;
 
   opciones = [
-    { valor: 1, texto: 'Totalmente en desacuerdo' },
-    { valor: 2, texto: 'Medianamente en desacuerdo' },
-    { valor: 3, texto: 'Ni de acuerdo ni en desacuerdo' },
-    { valor: 4, texto: 'Medianamente de acuerdo' },
-    { valor: 5, texto: 'Totalmente de acuerdo' },
+    { valor: 1, texto: ' (1) Totalmente en desacuerdo' },
+    { valor: 2, texto: ' (2) Medianamente en desacuerdo' },
+    { valor: 3, texto: ' (3) Ni de acuerdo ni en desacuerdo' },
+    { valor: 4, texto: ' (4) Medianamente de acuerdo' },
+    { valor: 5, texto: ' (5) Totalmente de acuerdo' },
   ];
   constructor(
     private route: ActivatedRoute,

@@ -39,6 +39,7 @@ export class NavbarComponent implements OnInit{
   ngOnInit(): void {
     this.id = localStorage.getItem('idUser');
     this.role = localStorage.getItem('role');
+    this.evalId = localStorage.getItem('evalId');
 
     if(this.id && this.role) {
       switch (this.role) {
@@ -88,8 +89,7 @@ export class NavbarComponent implements OnInit{
     this.router.navigate(['iniciar-sesion']);
   }
 
-  encuesta() {
-    this.evalId = localStorage.getItem('evalId');
+  encuesta() {    
     if(this.role == "ESTUDIANTE") {
       this.router.navigate(['cursos', this.id, this.evalId]);
     } else {
@@ -99,5 +99,9 @@ export class NavbarComponent implements OnInit{
 
   reportes() {
     this.router.navigate(['reporte', this.id, this.evalId]);
+  }
+
+  roles() {
+    this.router.navigate(['rolesAdmin']);
   }
 }
