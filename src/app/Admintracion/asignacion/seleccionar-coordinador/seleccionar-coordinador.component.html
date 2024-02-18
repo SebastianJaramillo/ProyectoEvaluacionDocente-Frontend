@@ -15,13 +15,14 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngIf="docentes.length == 0"><td colspan="5">NO EXISTEN REGISTROS</td></tr>
-          <tr scope="row" *ngFor="let doc of docentes">
-            <td>{{ doc.id }}</td>
-            <td>{{ doc.nombres + " " + doc.apellidos }}</td>            
-            <td>{{ doc.escalafon}}</td>
-            <td>{{ doc.nombreFuncion}}</td>
-            <td><button class="btn btn-secondary" (click)="cambiarJefeDeDocentes(doc.id)">Asignar</button>
+          <tr *ngIf="DocentesFuncion.length == 0"><td colspan="5">NO EXISTEN REGISTROS</td></tr>
+          <tr scope="row" *ngFor="let doc of DocentesFuncion">
+            <td>{{ doc.docente.id }}</td>
+            <td>{{ doc.docente.nombres + " " + doc.docente.apellidos }}</td>            
+            <td>{{ doc.docente.escalafon}}</td>
+            <td>{{ doc.funcion.rol}}</td>
+            <td>{{ doc.funcion.descripcion}}</td>
+            <td><button class="btn btn-secondary" (click)="cambiarJefeDeDocentes(doc.docente.id)">Asignar</button>
             </td>
           </tr>
         </tbody>

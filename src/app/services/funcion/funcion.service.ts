@@ -41,4 +41,12 @@ export class FuncionService {
   createDocenteFuncionById(docenteFuncion: any){
     return this.http.post<any>(`${this.apiUrl}/DocenteFuncion/registro`, docenteFuncion);
   }
+
+  findAllDocentesByEstado(){
+    return this.http.get<any>(`${this.apiUrl}/listarDocentes`);  
+  }
+
+  findDocenteFuncionById(id: string){
+    return this.http.get<any>(`${this.apiUrl}/buscarDocenteFuncion/${id}`);  
+  }
 }

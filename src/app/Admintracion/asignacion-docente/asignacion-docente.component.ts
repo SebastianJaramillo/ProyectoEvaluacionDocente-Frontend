@@ -28,7 +28,7 @@ export class AsignacionDocenteComponent implements OnInit {
   docentesACargo: any[] = [];
   rolSeleccionado: string = '';
   botonDesactivado = true;
-  
+
 
   constructor(
     private route: ActivatedRoute,
@@ -44,11 +44,23 @@ export class AsignacionDocenteComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.id = params['id'];
-      this.findDatosDocente(this.id);
-      this.findByJefe(this.id);
+      this.docId = params['docId'];
+      this.findDatosDocente(this.docId);
+      this.findByJefe(this.docId);
     });
   }
 
+
+  findDocente(id: string) {
+    this.docenteService.findById(id).subscribe(
+      (data) => {
+        this.docente = data
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
   findDatosDocente(id: string) {
     this.findDocente(id);
     this.funcionService.findDocenteFuncion(id).subscribe(
@@ -65,16 +77,7 @@ export class AsignacionDocenteComponent implements OnInit {
 
   }
 
-  findDocente(id: string) {
-    this.docenteService.findById(id).subscribe(
-      (data) => {
-        this.docente = data
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-  }
+
 
   findByJefe(id: string) {
     this.docenteService.findByJefe(id).subscribe(
@@ -89,13 +92,14 @@ export class AsignacionDocenteComponent implements OnInit {
   }
 
   cambiarRolCoordinadorDocente() {
-    this.docenteService.findByJefe(this.id).subscribe(
+    this.docenteService.findByJefe(this.docId).subscribe(
       (data) => {
         if (data && data.length > 0) {
           console.log('El coordinador tiene docentes a cargo.');
           this.router.navigate([
             'selectCoordinador',
-            this.id
+            this.id,
+            this.docId
           ]);
         } else {
           console.log('Cambiando el rol de coordinador a docente...');
@@ -109,29 +113,48 @@ export class AsignacionDocenteComponent implements OnInit {
   }
 
   cambiarRol() {
-    this.funcionService.findDocenteFuncion(this.id).subscribe(
+        this.docenteService.cambiarEstadoDocenteFuncion(this.id).subscribe(
+          (data) => {
+            console.log('Estado cambiado', data);
+            
+          },
+          (error) => {
+            console.error(error);
+          }
+        )
+        this.funcionActual.docId = this.docId;
+        this.funcionActual.funcId = 'DOC-DOC';
+        this.funcionActual.horas = '0'
+        console.log('funcion', this.funcionActual);
+        this.docenteService.crearDocentefuncion(this.funcionActual).subscribe(
+          (data) => {
+            this.funcion = data;
+            console.log('creado', data);
+            
+          },
+          (error) => {
+            console.error(error);
+          }
+        );
+
+    //this.router.navigate(['rolesAdmin']);
+  }
+
+  cambiarRolDocenteCoordinador() {
+    this.funcionActual.docId = this.docId;
+    this.funcionActual.funcId = this.rolSeleccionado;
+    this.funcionActual.horas = '0'
+    this.docenteService.crearDocentefuncion(this.funcionActual).subscribe(
       (data) => {
         this.funcion = data;
-        console.log('funcion', this.funcion);
-        this.funcionService.deleteFuncionByIdCor(this.id).subscribe;
-        this.funcion[0].funcId = 'DOC-DOC';
-        this.funcionActual.docId = this.id;
-        this.funcionActual.estado = 'ACTIVO';
-        this.funcionActual.funcId = 'DOC-DOC';
-        this.funcionActual.funcHoras = '0'
-        console.log('funcion', this.funcionActual);
-        this.funcionService.createDocenteFuncionById(this.funcionActual);
+        console.log('creado', data);
+        
       },
       (error) => {
         console.error(error);
       }
     );
-
-    this.router.navigate(['rolesAdmin']);
-  }
-
-  cambiarRolDocenteCoordinador(){
-    
+    //this.router.navigate(['rolesAdmin']);
   }
 
   successModal(message: string) {

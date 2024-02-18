@@ -45,5 +45,23 @@ export class DocenteService {
   cambiarJefeDocente(id: string,idNuevoJefe: string){
     return this.http.post<any[]>(`${this.apiUrl}/cambiarJefe/${id}/${idNuevoJefe}`,idNuevoJefe);
   }
+  
+  actualizarEstadoDocenteFuncion(docenteFuncion: any){
+    return this.http.post<any[]>(`${this.apiUrl}/cambiarEstado/Coordinador`,docenteFuncion);
+  }
+  crearDocentefuncion(docenteFuncion: any){
+    return this.http.post<any[]>(`${this.apiUrl}/funcion/registro`,docenteFuncion);
+  }
 
+  cambiarEstadoDocenteFuncion(id: number){
+    return this.http.get<any>(`${this.apiUrl}/funcion/desactivar/${id}`);
+  }
+
+  crearDocenteRelacion(docenteRelacion: any){
+    return this.http.post<any>(`${this.apiUrl}/relacion/registro`,docenteRelacion);
+  }
+
+  findDocenteRelacionById(id: string){
+    return this.http.get<any>(`${this.apiUrl}/buscarDocenteRelacion/${id}`);  
+  }
 }

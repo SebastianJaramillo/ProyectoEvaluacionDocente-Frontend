@@ -17,12 +17,14 @@ export class SeleccionarCoordinadorComponent implements OnInit {
   docente: any = {};
   id: any;
   idJefe: any;
-  evalId: any;
+  docId: any;
   funcId: any;
   funcion: any = {};
   funcionActual: any = {};
   periodo: any = {};
   eval: any = {};
+  DocentesFuncion: any[] = [];
+  DocenteFuncion: any = {};
   desactivado: any;
   docentesFiltrados: any[] = []; // Lista para los docentes filtrados
   terminoBusqueda: string = '';
@@ -38,75 +40,91 @@ export class SeleccionarCoordinadorComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.id = params['id'];
-      this.evalId = params['evalId'];
+      this.docId = params['docId'];
       this.findDocenteAll();
     });
 
-
-
   }
 
-  findAllDocentes() {
-    this.docenteService.findAllDocente().subscribe(
-      (data) => {
-        this.docentes = data;
-        console.log(this.docentes);
+
+  filtrarDocentes() {
+    this.funcionService.findAllDocentesByEstado().subscribe({
+      next: (funciones: Funcion[]) => {
+        // Obtener los nombres de las funciones (asumiendo que tienes un método para esto)
+        this.funcionService.findAllFunciones().subscribe({
+          next: (nombresFunciones: NombreFuncion[]) => {
+            // Crear un mapa de funcId a nombreRol para un acceso rápido
+            const mapFuncIdToNombreRol = nombresFunciones.reduce((acc, nombreFuncion) => {
+              acc[nombreFuncion.id] = nombreFuncion.rol;
+              return acc;
+            }, {} as { [key: string]: string });
+
+            // Agrupar las funciones por docId
+            const agrupadasPorDocId = funciones.reduce((acc, funcion) => {
+              const nombreRol = mapFuncIdToNombreRol[funcion.funcId];
+              (acc[funcion.docId] = acc[funcion.docId] || []).push({ ...funcion, nombreRol });
+              return acc;
+            }, {} as { [key: string]: any[] });
+
+            // Para cada grupo, conservar la función con el rol de coordinador si existe
+            const docentesConRolPreferido = Object.values(agrupadasPorDocId).map((funciones: any[]) => {
+              const funcionConCoordinador = funciones.find(funcion => funcion.nombreRol === 'Coordinador');
+              return funcionConCoordinador || funciones[0];
+            });
+
+            // Aquí tendrías los docentes con su función preferida
+            console.log(docentesConRolPreferido);
+            let docentesFiltradosPorNombre = docentesConRolPreferido.filter(doc =>
+              (doc.docente.nombres + " " + doc.docente.apellidos).toLowerCase().includes(this.terminoBusqueda.toLowerCase())
+            );
+            console.log('nombre', docentesFiltradosPorNombre);
+            this.DocentesFuncion = docentesFiltradosPorNombre;
+            this.DocentesFuncion = this.DocentesFuncion.filter(docenteConFuncion => docenteConFuncion.funcion.rol !== 'Director');
+          },
+          error: (error) => console.error(error)
+        });
       },
-      (error) => {
-        console.error(error);
-      }
-    );
+      error: (error) => console.error(error)
+    });
+
   }
 
-  filtrarDocentes(): void {
-    this.docenteService.findAllDocente().subscribe(
-      (data) => {
-        this.docentes = data;
-        this.docentes = this.docentes.filter(doc =>
-          (doc.nombres + " " + doc.apellidos).toLowerCase().includes(this.terminoBusqueda.toLowerCase())
-        );
-        console.log('filtro', this.docentes);
 
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-  }
+
+
 
   findDocenteAll() {
-    forkJoin({
-      docentes: this.docenteService.findAllDocente(),
-      funciones: this.funcionService.findAllDocenteFuncion(),
-      nombresFunciones: this.funcionService.findAllFunciones()
-    }).subscribe({
-      next: ({ docentes, funciones, nombresFunciones }) => {
+    this.funcionService.findAllDocentesByEstado().subscribe({
+      next: (funciones: Funcion[]) => {
+        // Obtener los nombres de las funciones (asumiendo que tienes un método para esto)
+        this.funcionService.findAllFunciones().subscribe({
+          next: (nombresFunciones: NombreFuncion[]) => {
+            // Crear un mapa de funcId a nombreRol para un acceso rápido
+            const mapFuncIdToNombreRol = nombresFunciones.reduce((acc, nombreFuncion) => {
+              acc[nombreFuncion.id] = nombreFuncion.rol;
+              return acc;
+            }, {} as { [key: string]: string });
 
+            // Agrupar las funciones por docId
+            const agrupadasPorDocId = funciones.reduce((acc, funcion) => {
+              const nombreRol = mapFuncIdToNombreRol[funcion.funcId];
+              (acc[funcion.docId] = acc[funcion.docId] || []).push({ ...funcion, nombreRol });
+              return acc;
+            }, {} as { [key: string]: any[] });
 
-        // Primero mapeas todos los docentes a sus roles
-        let docentesConRol = docentes.map((docente: Docente) => {
+            // Para cada grupo, conservar la función con el rol de coordinador si existe
+            const docentesConRolPreferido = Object.values(agrupadasPorDocId).map((funciones: any[]) => {
+              const funcionConCoordinador = funciones.find(funcion => funcion.nombreRol === 'Coordinador');
+              return funcionConCoordinador || funciones[0];
+            });
 
-          const funcionesDocente = funciones.filter((funcion: Funcion) => funcion.docId === docente.id);
-          //console.log(`Funciones filtradas para docente ID: ${docente.id}:`, funcionesDocente);
-
-          const nombresFuncionDocente = funcionesDocente.map((funcion: Funcion) => {
-            return nombresFunciones.find((nombreFuncion: NombreFuncion) => nombreFuncion.id === funcion.funcId);
-          });
-
-          //console.log(`NombresFunciones encontrados para docente ID: ${docente.id}:`, nombresFuncionDocente);
-
-          // Selecciona el primer nombre de función encontrado o un valor por defecto
-          const nombreFuncion = nombresFuncionDocente.length > 0 && nombresFuncionDocente[0] ? nombresFuncionDocente[0].rol : 'Función no encontrada';
-          //console.log(`Nombre de función asignado a docente ID: ${docente.id}: ${nombreFuncion}`);
-
-          return {
-            ...docente,
-            nombreFuncion: nombreFuncion
-          };
+            // Aquí tendrías los docentes con su función preferida
+            console.log(docentesConRolPreferido);
+            this.DocentesFuncion = docentesConRolPreferido;
+            this.DocentesFuncion = this.DocentesFuncion.filter(docenteConFuncion => docenteConFuncion.funcion.rol !== 'Director');
+          },
+          error: (error) => console.error(error)
         });
-
-        // Luego filtras aquellos docentes cuya nombreFuncion no sea 'Director'
-        this.docentes = docentesConRol.filter((docente: Docente) => docente.nombreFuncion !== 'Director');
       },
       error: (error) => console.error(error)
     });
@@ -141,8 +159,10 @@ export class SeleccionarCoordinadorComponent implements OnInit {
   }
   cambiarJefeDeDocentes(idNuevoJefe: string) {
     // Obtener la lista de docentes a cargo del jefe actual
-
-    this.docenteService.findByJefe(this.id).subscribe(
+    if (idNuevoJefe == this.docId) {
+      this.router.navigate(['rolesAdmin']);
+    }
+    this.docenteService.findByJefe(this.docId).subscribe(
       (docentesACargo) => {
         console.log('docentesACargo', docentesACargo);
 
@@ -165,23 +185,15 @@ export class SeleccionarCoordinadorComponent implements OnInit {
         console.error('Error al obtener los docentes a cargo del jefe actual', error);
       }
     );
-    this.funcionService.findDocenteFuncion(this.id).subscribe(
+    this.cambiarEstadoCoordinadorDocente();
+    this.funcionService.findDocenteFuncionById(this.id).subscribe(
       (data) => {
-        this.funcionActual = data;
-        this.funcionService.findDocenteFuncion(idNuevoJefe).subscribe(
+        this.DocenteFuncion = data;
+        this.DocenteFuncion.docId = idNuevoJefe;  
+        this.docenteService.crearDocentefuncion(this.DocenteFuncion).subscribe(
           (data) => {
             this.funcion = data;
-            console.log('funcion', this.funcion);
-            if (this.funcion[0].funcion.rol == 'Coordinador') {
-                
-              this.eliminarCoordinador(this.id);
-              
-            } else {
-              this.funcion[0].funcId = this.funcionActual[0].funcId;
-              
-              this.funcionService.deleteFuncionByIdCor(this.id);
-              this.crearNuevoCoordinador(this.funcion[0]);
-            }
+            console.log('creado', data);          
           },
           (error) => {
             console.error(error);
@@ -196,16 +208,28 @@ export class SeleccionarCoordinadorComponent implements OnInit {
     this.router.navigate(['rolesAdmin']);
   }
 
-  eliminarCoordinador(id: string) {
-    this.funcionService.deleteFuncionByIdCor(id).subscribe(
+
+  crearNuevoCoordinador(nuevo: any) {
+
+    this.funcionService.createDocenteFuncionById(nuevo).subscribe(
       (data) => {
-        //console.log('funciones', this.funciones)
-        this.funcion.docId = id;
-        this.funcion.estado = 'ACTIVO';
-        this.funcion.funcId = 'DOC-DOC';
-        this.funcion.funcHoras = '0'
-        console.log(this.funcion)
-        this.funcionService.createDocenteFuncionById(this.funcion).subscribe(
+
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+
+  }
+
+  cambiarEstadoCoordinadorDocente() {
+    this.docenteService.cambiarEstadoDocenteFuncion(this.id).subscribe(
+      (data) => {
+        console.log('Estado cambiado', data);
+        this.DocenteFuncion = data;
+        this.DocenteFuncion.funcId = 'DOC-DOC',
+        this.DocenteFuncion.estado = 'ACTIVO'
+        this.funcionService.createDocenteFuncionById(this.DocenteFuncion).subscribe(
           (data) => {
 
           },
@@ -218,21 +242,8 @@ export class SeleccionarCoordinadorComponent implements OnInit {
         console.error(error);
       }
     );
-  }
-
-  crearNuevoCoordinador(nuevo: any) {
-      
-    this.funcionService.createDocenteFuncionById(nuevo).subscribe(
-      (data) => {
-
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
 
   }
-
 
   findPeriodo(id: number): any {
     this.evaluacionService.getPeriodoById(id).subscribe(

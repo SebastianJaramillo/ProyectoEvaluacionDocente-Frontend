@@ -7,5 +7,6 @@ export interface Docente {
   escalafon: string;
   funcId : string;
   nombreFuncion: string;
+  
 
 }
