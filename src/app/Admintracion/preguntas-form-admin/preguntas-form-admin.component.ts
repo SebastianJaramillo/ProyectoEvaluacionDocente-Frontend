@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { FormularioService } from 'src/app/services/formulario/formulario.service';
 import { Pregunta } from '../formulario-admin/pregunta.model';
-
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-preguntas-form-admin',
   templateUrl: './preguntas-form-admin.component.html',
@@ -96,6 +96,7 @@ export class PreguntasFormAdminComponent {
     this.formularioService.savePregunta(pregunta).subscribe({
       next: (pregunta) => {
         console.log('Pregunta guardada:', pregunta);
+        this.mensaje("Pregunta guardada correctamente");
         // Opcional: Actualizar el ID de la pregunta en el formulario si es una nueva pregunta
         if (!pregunta.id) {
           preguntaFormGroup.patchValue({ id: pregunta.id });
@@ -118,6 +119,7 @@ export class PreguntasFormAdminComponent {
    this.formularioService.deletePregunta(pregunta.id).subscribe({
     next: (pregunta) => {
       console.log('Pregunta eliminada:', pregunta);
+      this.mensaje("Pregunta eliminada correctamente");
       // Opcional: Actualizar el ID de la pregunta en el formulario si es una nueva pregunta
     },
     error: (error) => {
@@ -131,4 +133,15 @@ export class PreguntasFormAdminComponent {
   cambioDetectado(index: number): void {
     this.cambios[index] = true; // Marca que hubo un cambio en la pregunta en el índice especificado
   }
+
+  mensaje(texto: any) {
+    Swal.fire({
+      title: 'Éxito',
+      text: texto,
+      icon: 'success',
+      confirmButtonText: 'Aceptar',
+      width: '350px',      
+    });
+  }
+
 }

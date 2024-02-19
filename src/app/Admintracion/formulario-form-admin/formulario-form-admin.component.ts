@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
-
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-formulario-form-admin',
   templateUrl: './formulario-form-admin.component.html',
@@ -34,6 +34,8 @@ export class FormularioFormAdminComponent implements OnInit {
 
   onSubmit() {
     if (this.formularioEmergente.valid) {
+      
+      this.mensaje("formulario guardada correctamente");
       this.dialogRef.close(this.formularioEmergente.value);
     }
   }
@@ -47,6 +49,16 @@ export class FormularioFormAdminComponent implements OnInit {
       descripcion: datos ? datos.descripcion : '',
       // Asegúrate de manejar todos los campos de tu formulario aquí
     });
+}
+
+mensaje(texto: any) {
+  Swal.fire({
+    title: 'Éxito',
+    text: texto,
+    icon: 'success',
+    confirmButtonText: 'Aceptar',
+    width: '350px',      
+  });
 }
 }
 

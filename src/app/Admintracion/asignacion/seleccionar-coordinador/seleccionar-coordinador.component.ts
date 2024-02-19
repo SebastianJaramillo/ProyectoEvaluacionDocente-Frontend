@@ -7,6 +7,7 @@ import { forkJoin } from 'rxjs';
 import { Docente } from '../../asignacion-roles/docente.model';
 import { Funcion } from '../../asignacion-roles/funcion.model';
 import { NombreFuncion } from '../../asignacion-roles/nombreFuncion.model';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-seleccionar-coordinador',
   templateUrl: './seleccionar-coordinador.component.html',
@@ -42,6 +43,7 @@ export class SeleccionarCoordinadorComponent implements OnInit {
       this.id = params['id'];
       this.docId = params['docId'];
       this.findDocenteAll();
+      this.findDocente(this.id)
     });
 
   }
@@ -130,7 +132,16 @@ export class SeleccionarCoordinadorComponent implements OnInit {
     });
   }
 
-
+  findDocente(id: string) {
+    this.docenteService.findById(id).subscribe(
+      (data) => {
+        this.docente = data        
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
 
   findByFuncion(id: string) {
     this.docenteService.findFuncionDirector(id).subscribe(
@@ -205,6 +216,8 @@ export class SeleccionarCoordinadorComponent implements OnInit {
       }
     );
     this.findDocenteAll();
+    
+    this.mensaje("Asignacion del docente realizada exitosamente");
     this.router.navigate(['rolesAdmin']);
   }
 
@@ -270,6 +283,15 @@ export class SeleccionarCoordinadorComponent implements OnInit {
 
   volver() {
     this.router.navigate(['rolesAdmin']);
+  }
+  mensaje(texto: any) {
+    Swal.fire({
+      title: 'Éxito',
+      text: texto,
+      icon: 'success',
+      confirmButtonText: 'Aceptar',
+      width: '350px',      
+    });
   }
 
 }

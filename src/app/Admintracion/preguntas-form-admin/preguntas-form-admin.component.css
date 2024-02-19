@@ -4,9 +4,9 @@ form {
     margin: 10px auto; /* Añade un margen automático a los lados para centrar el formulario, y 20px de margen superior e inferior */
     border-radius: 8px; /* Opcional: añade bordes redondeados al formulario */
     box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Opcional: añade una sombra ligera alrededor del formulario para un efecto elevado */
-    max-width: 500px; /* Establece un ancho máximo para el formulario */
+    max-width: 700px; /* Establece un ancho máximo para el formulario */
   }  
-  button {
+  button{
   background: linear-gradient(to top, #009742, #05ba5a);
   color: white;
   margin: 20px auto;
@@ -18,4 +18,14 @@ form {
   cursor: pointer;
   
   }
-
+  .btn-danger {
+    background: linear-gradient(to top, #bb1313, #df0b07);
+    color: white;
+    margin-left: 10px;
+    padding-left: 25px;
+    padding-right: 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  
+  }

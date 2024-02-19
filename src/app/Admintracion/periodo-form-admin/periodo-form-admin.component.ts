@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { EvaluacionService } from 'src/app/services/evaluacion/evaluacion.service'; // Ajusta según sea necesario
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-periodo-form-admin',
   templateUrl: './periodo-form-admin.component.html',
@@ -49,8 +49,9 @@ export class PeriodoFormAdminComponent {
 
   
   onSubmit() {
-    console.log("ente")
     this.dialogRef.close(this.evaluacionForm.value);
+    
+    this.mensaje("Periodo guardado correctamente");
     if (this.evaluacionForm.valid) {
       this.dialogRef.close(this.evaluacionForm.value);
     }
@@ -66,5 +67,15 @@ export class PeriodoFormAdminComponent {
       idPeriodo: datos ? datos.idPeriodo : '',
       // Asegúrate de manejar todos los campos de tu formulario aquí
     });
+}
+
+mensaje(texto: any) {
+  Swal.fire({
+    title: 'Éxito',
+    text: texto,
+    icon: 'success',
+    confirmButtonText: 'Aceptar',
+    width: '350px',      
+  });
 }
 }

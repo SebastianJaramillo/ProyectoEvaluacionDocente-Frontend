@@ -1,6 +1,10 @@
 <div class="container">
     <button class="btn btn-danger" (click)="volver()">Volver</button>
-    <h2>Seleccione al Coordinador para asignar los docentes</h2>
+<p>
+
+<b>Docente Seccionado: </b>{{ docente.apellidos + " " + docente.nombres }}<br>
+</p>
+    <h2>Seleccione al Coordinador para asignar el Docente</h2>
     <input type="text" [(ngModel)]="terminoBusqueda" placeholder="Buscar docente por nombre..." class="form-control mb-3" (change)="filtrarDocentes()">
   
     <div class="table-responsive custom-table-responsive">

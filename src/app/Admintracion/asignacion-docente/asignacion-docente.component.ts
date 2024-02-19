@@ -6,7 +6,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FuncionService } from 'src/app/services/funcion/funcion.service';
 import { SeleccionarCoordinadorComponent } from '../asignacion/seleccionar-coordinador/seleccionar-coordinador.component';
 import { MatDialog } from '@angular/material/dialog';
-
+import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup } from '@angular/forms';
 @Component({
   selector: 'app-asignacion-docente',
@@ -137,7 +137,8 @@ export class AsignacionDocenteComponent implements OnInit {
           }
         );
 
-    //this.router.navigate(['rolesAdmin']);
+    this.mensaje("Rol de coordinador a docente cambiado correctamente");
+    this.router.navigate(['rolesAdmin']);
   }
 
   cambiarRolDocenteCoordinador() {
@@ -154,7 +155,9 @@ export class AsignacionDocenteComponent implements OnInit {
         console.error(error);
       }
     );
-    //this.router.navigate(['rolesAdmin']);
+    
+    this.mensaje("Rol de docente a coordinador cambiado correctamente");
+    this.router.navigate(['rolesAdmin']);
   }
 
   successModal(message: string) {
@@ -165,4 +168,15 @@ export class AsignacionDocenteComponent implements OnInit {
   volver() {
     this.router.navigate(['rolesAdmin']);
   }
+  
+  mensaje(texto: any) {
+    Swal.fire({
+      title: 'Éxito',
+      text: texto,
+      icon: 'success',
+      confirmButtonText: 'Aceptar',
+      width: '350px',      
+    });
+  }
+
 }
