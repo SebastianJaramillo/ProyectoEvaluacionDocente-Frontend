@@ -12,22 +12,27 @@
 </div>
 
 <div *ngIf="director">
-  <p style="font-size: 18px">
-    <b>REPORTE INDIVIDUAL</b><br /><br />
-    <b>DOCENTE: </b>
-    <select [ngModel]="docId">
-      <option *ngFor="let doc of docentes" [value]="doc.id">
-        {{ doc.apellidos + " " + doc.nombres }}
+  <form (ngSubmit)="generarInforme()">
+    <p style="font-size: 18px">
+      <b>REPORTE INDIVIDUAL</b><br /><br />
+      <b>DOCENTE: </b>
+      <select name="docId" [(ngModel)]="docId">
+        <option value="" selected disabled>Seleccione...</option>
+        <option *ngFor="let doc of docentes" [value]="doc.id">
+          {{ doc.apellidos + " " + doc.nombres }}
+        </option>
+      </select>
+    </p>
+    <select name="perId" [(ngModel)]="perId">
+      <option *ngFor="let periodo of periodos" [value]="periodo.id">
+        {{ periodo.descripcion }}
       </option>
     </select>
-  </p>
-  <select [ngModel]="perId">
-    <option *ngFor="let periodo of periodos" [value]="periodo.id">
-      {{ periodo.descripcion }}
-    </option>
-  </select>
-  <button class="btn boton" (click)="generarInforme()">Generar Reporte</button>
-  <button class="btn boton" (click)="generarInformeGlobal()">
-    Generar Reporte Global
-  </button>
+    <button class="btn boton" type="submit">
+      Generar Reporte
+    </button>
+    <button class="btn boton" type="button" (click)="generarInformeGlobal()">
+      Generar Reporte Global
+    </button>
+  </form>
 </div>

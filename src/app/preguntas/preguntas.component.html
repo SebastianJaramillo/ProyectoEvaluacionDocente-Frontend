@@ -1,19 +1,28 @@
 <!-- HTML para mostrar la pregunta actual y las opciones de respuesta -->
 <button class="btn btn-danger" (click)="volver()">Volver</button>
-<p style="font-size: 18px; text-align: center;"><b style="font-size: 18px;">{{ formulario.nombre }}</b><br><br></p>
-<p>
+<p style="font-size: 18px; text-align: center;"><b style="font-size: 18px;">{{ formulario.nombre }}</b><br></p>
 
-<b>Evaluador: </b>{{ alumno.apellidos + " " + alumno.nombres }}<br>
-<b>Período: </b>{{ periodo.descripcion}}<br>
-<b>Asignatura: </b>{{ asignatura }} <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NRC: </b>{{ curso.nrc }}<br>
-<b>Docente evaluado: </b>{{ docente.apellidos + " " + docente.nombres}} <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ACTIVIDAD: </b>DOCENCIA</p>
+<table border="0">
+  <tr>
+    <td [width]="500"><b>Evaluador: </b>{{ alumno.apellidos + " " + alumno.nombres }}</td>
+  </tr>
+  <tr>
+    <td><b>Período: </b>{{ periodo.descripcion}}</td>
+  </tr>
+  <tr>
+    <td><b>Asignatura: </b>{{ asignatura }}</td>
+    <td><b>NRC: </b>{{ curso.nrc }}</td>
+  </tr>
+  <tr>
+    <td><b>Docente evaluado: </b>{{ docente.apellidos + " " + docente.nombres}}</td>
+    <td><b>ACTIVIDAD: </b>DOCENCIA</td>
+  </tr>
+</table>
+<br>
 
 <div *ngIf="preguntas && preguntas.length > 0">
   <p style="font-size: 18px; text-align: center;">Pregunta <strong>{{ preguntaActual + 1 }}</strong> de {{preguntas.length}}</p>
-  Seleccionar la opción que mejor refleje su opinión para evaluar el desempeño del docente en la actividad correspondiente, utilizando la siguiente escala:<br><br>
+  Leer y seleccionar la opción que mejor refleje su opinión para evaluar el desempeño del docente en la actividad correspondiente, utilizando la siguiente escala:<br><br>
   <div class="progressBar">
     <div class="innerBar" [style.width]="(preguntaActual + 1) / preguntas.length * 100 + '%'"></div>
   </div>
@@ -33,8 +42,7 @@
   </div>
   <br>
   <div style="text-align: center;">
-    <!--<button id="btnsiguiente" *ngIf="preguntaActual < preguntas.length - 1 " class="btn btn-secondary" (click)="siguiente()" [disabled]="botonDesactivado">Siguiente</button>-->
-    <button  *ngIf="preguntaActual < preguntas.length - 1 " class="btn btn-secondary" (click)="siguiente()" [disabled]="!isSelectAnswer()">Siguiente</button>
+    <button *ngIf="preguntaActual < preguntas.length - 1" class="btn btn-secondary" (click)="siguiente()" [disabled]="timer > 0 || !isSelectAnswer()">Siguiente</button>
     <button *ngIf="preguntaActual == preguntas.length - 1 " class="btn btn-secondary" (click)="guardar()" [disabled]="!isSelectAnswer()">Guardar</button>
   </div>    
 </div>

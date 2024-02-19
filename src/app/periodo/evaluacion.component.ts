@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EvaluacionService } from '../services/evaluacion/evaluacion.service';
 import { UserService } from '../services/user/user.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-evaluacion',
@@ -34,9 +35,10 @@ export class EvaluacionComponent implements OnInit {
       (data) => {
         this.eval = data;
         this.evalId = this.eval.id;
+        localStorage.setItem('evalId', this.evalId);
       },
-      (error) => {
-        console.error(error);
+      (error) => {        
+        this.mensaje('Evaluación no se encuentra habilitada en estas fechas.');
       }
     );
   }
@@ -60,7 +62,7 @@ export class EvaluacionComponent implements OnInit {
     this.userService.findById(atob(this.id)).subscribe({
       next: (user) => {
         if (user && user.id) {
-          localStorage.setItem('evalId', this.evalId);
+          localStorage.setItem('periodo', 'SI');      
           if (user.role == 'ESTUDIANTE') {            
             this.router.navigate(['cursos', this.id, this.evalId]);
           } else {
@@ -75,6 +77,16 @@ export class EvaluacionComponent implements OnInit {
       error: (user) => {
         console.error('Error al obtener usuario:', user);
       },
+    });
+  }
+
+  mensaje(texto: any) {
+    Swal.fire({
+      title: 'Error',
+      text: texto,
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+      width: '350px',      
     });
   }
 }

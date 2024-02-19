@@ -8,6 +8,7 @@ import { FormularioService } from '../services/formulario/formulario.service';
 import { Observable } from 'rxjs';
 import { EvaluacionService } from '../services/evaluacion/evaluacion.service';
 import * as XLSX from 'xlsx';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-reporte',
@@ -50,15 +51,13 @@ export class ReporteComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.docId = '';
     this.perId = 1;
     this.route.params.subscribe((params) => {
       this.id = params['id'];
       this.evalId = params['evalId'];
-    });
-
-    this.docId = atob(this.id);
-
-    this.findDocente(atob(this.id));
+    });   
+    
     this.findFunciones(atob(this.id));
     this.getAllPeriodos();
     this.listarDocentes();    
@@ -133,15 +132,23 @@ export class ReporteComponent implements OnInit {
   }
 
   async generarInforme() {
-    await this.findPeriodo(this.perId);
+    if(this.docId == '') {
+      this.mensaje('Seleccione un docente para genererar informe individual');
+      return;
+    }
+    await this.findDocente(this.docId);
 
     await this.sleep(100);
+
+    await this.findPeriodo(this.perId);
+
+    await this.sleep(100);    
 
     let {horasDocencia, horasInvestigacion, horasGestion, horasVinculacion,
       notaAutDoc, notaHetDoc, notaParDoc, notaDirDoc, notaAutInv, notaParInv, notaDirInv, notaAutGes, notaDirGes,
       notaAutVin, notaParVin, notaDirVin, totalDocencia, totalGestion, totalInvestigacion, totalVinculacion,
       totalDocenciaPonderacion, totalGestionPonderacion, totalInvestigacionPonderacion, totalVinculacionPonderacion,
-      totalFinal} = await this.calculos(this.docente.id);
+      totalFinal} = await this.calculos(this.docId);
 
     const pdf = new jsPDF({ orientation: 'landscape' });
 
@@ -975,5 +982,15 @@ export class ReporteComponent implements OnInit {
       notaAutVin, notaParVin, notaDirVin, totalDocencia, totalGestion, totalInvestigacion, totalVinculacion,
       totalDocenciaPonderacion, totalGestionPonderacion, totalInvestigacionPonderacion, totalVinculacionPonderacion,
       totalFinal}
+  }
+
+  mensaje(texto: any) {
+    Swal.fire({
+      title: 'Error',
+      text: texto,
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+      width: '350px',      
+    });
   }
 }

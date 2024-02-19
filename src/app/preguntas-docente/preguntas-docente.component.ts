@@ -30,6 +30,7 @@ export class PreguntasDocenteComponent implements OnInit {
   evalId: any;
   periodo: any = {};
   evaluacion: DocenteEvaluacion = {} as DocenteEvaluacion;
+  timer: number = 5;
 
   opciones = [
     { valor: 1, texto: ' (1) Totalmente en desacuerdo' },
@@ -59,9 +60,15 @@ export class PreguntasDocenteComponent implements OnInit {
       this.findFormulario(this.formularioId);
       this.findDocente(atob(this.id));
       this.findEvaluador(atob(this.idJefe));
+
+      if(this.formulario.nombre != 'COEVALUACION DIRECTIVA') {
+        this.findFuncion(atob(this.funcId));
+      }
+
       this.findEvaluacion(Number(this.evalId));
       this.cargarPreguntas(this.formularioId);
     });
+    this.iniciarTimer();
   }
 
   cargarPreguntas(id: number) {
@@ -168,9 +175,20 @@ export class PreguntasDocenteComponent implements OnInit {
     }
   }
 
+  iniciarTimer() {
+    this.timer = 5;
+    const temporizador = setInterval(() => {
+      if (this.timer > 0) {
+        this.timer--;
+      } else {
+        clearInterval(temporizador);
+      }
+    }, 1000);
+  }
+
   isSelectAnswer(): boolean {
     const pregunta = this.preguntas[this.preguntaActual];
-    return pregunta.respuestaSeleccionada !== undefined;
+    return pregunta.respuestaSeleccionada !== undefined && this.timer === 0;
   }
 
   siguiente() {
@@ -185,6 +203,8 @@ export class PreguntasDocenteComponent implements OnInit {
         evalId: this.evalId,
       });
     }
+
+    this.iniciarTimer();
   }
 
   findByFechas() {

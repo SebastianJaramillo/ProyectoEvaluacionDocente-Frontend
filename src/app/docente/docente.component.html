@@ -18,7 +18,8 @@
           <td *ngIf="f.funcion.rol == 'Docente'">AUTOEVALUACIÓN</td>
           <td *ngIf="f.funcion.rol == 'Coordinador'">COEVALUACIÓN POR PARES</td>
 
-          <td *ngIf="f.funcion.rol == 'Docente'"><button class="btn btn-secondary" (click)="evaluacion(id, f.funcId)">Evaluar</button></td>
+          <td *ngIf="f.funcion.rol == 'Docente' && findDescripcion(f.funcion.descripcion.toUpperCase()) === undefined"><button class="btn btn-secondary" (click)="evaluacion(id, f.funcId)">Evaluar</button></td>
+          <td *ngIf="f.funcion.rol == 'Docente' && findDescripcion(f.funcion.descripcion.toUpperCase()) !== undefined">TERMINADA</td>
           <td *ngIf="f.funcion.rol == 'Coordinador'"><button class="btn btn-secondary" (click)="evaluacionPares(f.funcId)">Seleccionar</button></td>          
         </tr>
         <tr scope="row" *ngFor="let act of ['DOCENCIA', 'INVESTIGACIÓN', 'GESTIÓN', 'VINCULACIÓN']">

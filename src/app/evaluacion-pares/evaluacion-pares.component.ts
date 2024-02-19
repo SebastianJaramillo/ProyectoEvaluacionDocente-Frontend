@@ -12,6 +12,7 @@ import { FuncionService } from '../services/funcion/funcion.service';
 export class EvaluacionParesComponent implements OnInit {
   docentes: any[] = [];
   docentesFuncion: any[] = [];
+  docEvaluaciones: any[] = [];
   docente: any = {};
   periodo: any = {};
   eval: any = {};
@@ -39,6 +40,7 @@ export class EvaluacionParesComponent implements OnInit {
       this.findActividad(this.funcId);
       this.findByJefe(atob(this.id));
       this.findEvaluacion(this.evalId);
+      this.findByEvaluador(atob(this.id));
     });
   }
 
@@ -71,6 +73,21 @@ export class EvaluacionParesComponent implements OnInit {
         console.error(error);
       }
     );
+  }
+
+  findByEvaluador(docEvaluador: string) {
+    this.docenteService.findByEvaluador(docEvaluador).subscribe(
+      (data) => {
+        this.docEvaluaciones = data;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  findDescripcion(docIdDocente: string): boolean | undefined {
+    return this.docEvaluaciones.find(e => e.docEvaluador === atob(this.id) && e.docEvaluado === docIdDocente);
   }
 
   findEvaluacion(id: number): any {

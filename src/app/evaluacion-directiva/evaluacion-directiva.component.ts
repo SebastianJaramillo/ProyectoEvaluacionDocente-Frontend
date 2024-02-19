@@ -11,11 +11,13 @@ import { EvaluacionService } from '../services/evaluacion/evaluacion.service';
 })
 export class EvaluacionDirectivaComponent implements OnInit {
   docentes: any[] = [];
+  docEvaluaciones: any[] = [];
   docente: any = {};
   id: any;
   idJefe: any;
   evalId: any;
   funcId: any;
+  funcIdAux: any;
   formId: any;
   funcion: any = {};
   periodo: any = {};
@@ -34,6 +36,7 @@ export class EvaluacionDirectivaComponent implements OnInit {
       this.id = params['id'];
       this.evalId = params['evalId'];
       this.funcId = atob(params['funcId']);
+      this.funcIdAux = params['funcId'];
       this.findByFuncion(this.funcId);
       
       switch (this.funcId) {
@@ -54,6 +57,7 @@ export class EvaluacionDirectivaComponent implements OnInit {
       }
 
       this.findEvaluacion(this.evalId);
+      this.findByEvaluador(atob(this.id));
     });
   }
 
@@ -88,7 +92,24 @@ export class EvaluacionDirectivaComponent implements OnInit {
         console.log('No se encontró función');
     }
 
-    this.router.navigate(['docentes-preguntas', this.id, btoa(id), this.formId, this.evalId, btoa(this.funcId)]);  
+    this.router.navigate(['docentes-preguntas', this.id, btoa(id), this.formId, this.evalId, this.funcIdAux]);  
+  }
+
+  findByEvaluador(docEvaluador: string) {
+    this.docenteService.findByEvaluador(docEvaluador).subscribe(
+      (data) => {
+        this.docEvaluaciones = data;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  findDescripcion(docIdDocente: string): boolean | undefined {
+    console.log(atob(this.id));
+    console.log(docIdDocente);
+    return this.docEvaluaciones.find(e => e.docEvaluador === atob(this.id) && e.docEvaluado === docIdDocente);
   }
 
   findPeriodo(id: number): any {

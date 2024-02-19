@@ -16,8 +16,9 @@
         <tr scope="row" *ngFor="let doc of docentes">
           <td>{{ doc.docIdDocente }}</td>
           <td>{{ doc.docente.apellidos + " " + doc.docente.nombres }}</td>
-          <td>{{ doc.area }}</td>
-          <td><button class="btn btn-secondary" (click)="evaluacion(doc.docIdDocente)">Evaluar</button></td>
+          <td>{{ doc.area }}</td>          
+          <td *ngIf="findDescripcion(doc.docIdDocente) === undefined"><button class="btn btn-secondary" (click)="evaluacion(doc.docIdDocente)">Evaluar</button></td>
+          <td *ngIf="findDescripcion(doc.docIdDocente) !== undefined">TERMINADA</td>
         </tr>
       </tbody>
     </table>

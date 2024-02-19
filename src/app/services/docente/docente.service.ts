@@ -30,6 +30,10 @@ export class DocenteService {
     return this.http.get<any>(`${this.apiUrl}/evaluacion/${docEvaluador}/${docEvaluado}/${evalId}`);
   }
 
+  findByEvaluador(docEvaluador: string) {
+    return this.http.get<any>(`${this.apiUrl}/evaluacion/evaluador/${docEvaluador}`);
+  }
+
   findAllDocente(){
     return this.http.get<any>(`${this.apiUrl}/listar`);  
   }

@@ -1,17 +1,23 @@
 <!-- HTML para mostrar la pregunta actual y las opciones de respuesta -->
 <button class="btn btn-danger" (click)="volver()">Volver</button>
-<p style="font-size: 18px; text-align: center;"><b style="font-size: 18px;">{{ formulario.nombre }}</b><br><br></p>
-<p> <b>Evaluador: </b>{{ evaluador.apellidos + " " + evaluador.nombres }}<br>
-<b>Docente evaluado: </b>{{ docente.apellidos + " " + docente.nombres }}
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-   <b>Actividad: </b>{{ formulario.descripcion }}<br>
-   <b>Período: </b>{{ periodo.descripcion }}
-</p>
+<p style="font-size: 18px; text-align: center;"><b style="font-size: 18px;">{{ formulario.nombre }}</b><br></p>
+<table border="0">
+  <tr>
+    <td [width]="500"><b>Evaluador: </b>{{ evaluador.apellidos + " " + evaluador.nombres }}</td>
+  </tr>
+  <tr>
+    <td><b>Docente evaluado: </b>{{ docente.apellidos + " " + docente.nombres }}</td>
+    <td><b>Actividad: </b>{{ formulario.descripcion }}</td>
+  </tr>
+  <tr>
+    <td><b>Período: </b>{{ periodo.descripcion }}</td>
+  </tr>
+</table>
+<br>
 
 <div *ngIf="preguntas && preguntas.length > 0">
   <p style="font-size: 18px; text-align: center;">Pregunta <strong>{{ preguntaActual + 1 }}</strong> de {{preguntas.length}}</p>
-  Seleccionar la opción que mejor refleje su opinión para evaluar el desempeño del docente en la actividad correspondiente, utilizando la siguiente escala:<br><br>
+  Leer y seleccionar la opción que mejor refleje su opinión para evaluar el desempeño del docente en la actividad correspondiente, utilizando la siguiente escala:<br><br>
   <div class="progressBar">
     <div class="innerBar" [style.width]="(preguntaActual + 1) / preguntas.length * 100 + '%'"></div>
   </div>
@@ -31,7 +37,7 @@
   </div>
   <br>
   <div style="text-align: center;">
-    <button *ngIf="preguntaActual < preguntas.length - 1 " class="btn btn-secondary" (click)="siguiente()" [disabled]="!isSelectAnswer()">Siguiente</button>
+    <button *ngIf="preguntaActual < preguntas.length - 1" class="btn btn-secondary" (click)="siguiente()" [disabled]="timer > 0 || !isSelectAnswer()">Siguiente</button>
     <button *ngIf="preguntaActual == preguntas.length - 1 " class="btn btn-secondary" (click)="guardar()" [disabled]="!isSelectAnswer()">Guardar</button>
   </div>    
 </div>

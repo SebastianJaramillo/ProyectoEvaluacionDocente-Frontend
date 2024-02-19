@@ -1,39 +1,25 @@
-import { Component, ViewChild, OnInit, Output, EventEmitter} from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { IgxNavigationDrawerComponent } from 'igniteui-angular';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { UserService } from '../services/user/user.service';
 import { DocenteService } from '../services/docente/docente.service';
 import { AlumnoService } from '../services/alumno/alumno.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css']
+  styleUrls: ['./navbar.component.css'],
 })
-export class NavbarComponent implements OnInit{
-  @Output() newItemEvent = new EventEmitter<string>();
-  
-
-
-  addNewItem(value: string) {
-    this.newItemEvent.emit(value);
-  }
-
-  @ViewChild('drawer', { static: true }) drawer!: IgxNavigationDrawerComponent;
-
-  toggleDrawer() {
-    this.drawer.toggle();
-  }
+export class NavbarComponent implements OnInit {
   id: any;
   role: any;
   evalId: any;
-  user: any ={};
+  user: any = {};
 
   constructor(
     private router: Router,
-    private userService: UserService,
     private alumnoService: AlumnoService,
-    private docenteService: DocenteService,
+    private docenteService: DocenteService
   ) {}
 
   ngOnInit(): void {
@@ -41,7 +27,7 @@ export class NavbarComponent implements OnInit{
     this.role = localStorage.getItem('role');
     this.evalId = localStorage.getItem('evalId');
 
-    if(this.id && this.role) {
+    if (this.id && this.role && this.evalId) {
       switch (this.role) {
         case 'DOCENTE':
           this.findDocente(atob(this.id));
@@ -53,9 +39,6 @@ export class NavbarComponent implements OnInit{
           console.log('No se encontró rol');
       }
     } else {
-      localStorage.removeItem('idUser');
-      localStorage.removeItem('role');
-      localStorage.removeItem('evalId');
       this.router.navigate(['iniciar-sesion']);
     }
   }
@@ -86,14 +69,20 @@ export class NavbarComponent implements OnInit{
     localStorage.removeItem('idUser');
     localStorage.removeItem('role');
     localStorage.removeItem('evalId');
+    localStorage.removeItem('periodo');
     this.router.navigate(['iniciar-sesion']);
   }
 
-  encuesta() {    
-    if(this.role == "ESTUDIANTE") {
-      this.router.navigate(['cursos', this.id, this.evalId]);
+  encuesta() {
+    if(localStorage.getItem('periodo')) {
+      if (this.role == 'ESTUDIANTE') {
+        this.router.navigate(['cursos', this.id, this.evalId]);
+      } else {
+        this.router.navigate(['docentes', this.id, this.evalId]);
+      }
     } else {
-      this.router.navigate(['docentes', this.id, this.evalId]);
+      this.mensaje('Seleccione el período');
+      this.router.navigate(['periodo', this.id]);
     }
   }
 
@@ -103,5 +92,15 @@ export class NavbarComponent implements OnInit{
 
   roles() {
     this.router.navigate(['rolesAdmin']);
+  }
+
+  mensaje(texto: any) {
+    Swal.fire({
+      title: 'Error',
+      text: texto,
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+      width: '350px',      
+    });
   }
 }

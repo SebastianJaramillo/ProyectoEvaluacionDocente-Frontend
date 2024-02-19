@@ -3,7 +3,9 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoginService } from 'src/app/services/auth/login.service';
 import { LoginRequest } from 'src/app/services/auth/loginRequest';
+import { EvaluacionService } from 'src/app/services/evaluacion/evaluacion.service';
 import { UserService } from 'src/app/services/user/user.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -30,8 +32,9 @@ export class LoginComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private loginService: LoginService,
+    private loginService: LoginService,    
     private userService: UserService,
+    private evaluacionService: EvaluacionService,
   ) {}
 
   ngOnInit(): void {
@@ -60,15 +63,14 @@ export class LoginComponent implements OnInit {
           console.log(userData);
         },
         error: (errorData) => {
-          console.error(errorData);
-          this.loginError = errorData;
+          this.mensaje('Usuario o contraseña incorrectos');
         },
         complete: () => {
           this.userService.getUser(this.loginForm.value.username).subscribe({
             next: (user) => {
               if (user && user.id) {
                 localStorage.setItem('idUser', btoa(user.id));
-                localStorage.setItem('role', user.role);
+                localStorage.setItem('role', user.role);                
                 if(user.role != 'ADMIN') {
                   this.router.navigate(['periodo', btoa(user.id.toString())]);
                 } else {
@@ -92,7 +94,17 @@ export class LoginComponent implements OnInit {
       });
     } else {
       this.loginForm.markAllAsTouched();
-      alert('Error al ingresar los datos.');
+      this.mensaje('Ingrese todos los campos');
     }
+  }
+
+  mensaje(texto: any) {
+    Swal.fire({
+      title: 'Error',
+      text: texto,
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+      width: '350px',      
+    });
   }
 }

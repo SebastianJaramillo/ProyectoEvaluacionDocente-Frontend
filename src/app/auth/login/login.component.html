@@ -22,11 +22,6 @@
             <img src="../../../assets/img/bloquear.png" alt="Icono Contraseña">
             <input formControlName="password" class="form-control" id="exampleInputPassword1" type="password"
               id="contrasena" placeholder="Ingrese su contraseña">
-            <div *ngIf="password.invalid && (password.dirty || password.touched)" class="text-danger">
-              <div *ngIf="password.errors?.['required']">
-                El Password es requerido.
-              </div>
-            </div>
           </div>
           <button type="submit" (click)="login()">Iniciar Sesión</button>
         </div>

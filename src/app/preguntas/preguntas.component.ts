@@ -33,6 +33,7 @@ export class PreguntasComponent implements OnInit {
   asignatura: any;
   docente: any = {};
   botonDesactivado = true;
+  timer: number = 5;
 
   opciones = [
     { valor: 1, texto: ' (1) Totalmente en desacuerdo' },
@@ -66,10 +67,7 @@ export class PreguntasComponent implements OnInit {
       this.findEvaluacion(Number(this.evalId))
       this.cargarPreguntas(this.formularioId);
     });
-    setTimeout(() => {
-      this.renderer.setProperty(document.getElementById('btnsiguiente'), 'disabled', false);
-      this.botonDesactivado = false;
-    }, 5000);
+    this.iniciarTimer();
   }
 
   cargarPreguntas(id: number) {
@@ -147,7 +145,6 @@ export class PreguntasComponent implements OnInit {
     this.evaluacionService.getPeriodoById(id).subscribe(
       (data) => {
         this.periodo = data;
-        console.log(data)
       },
       (error) => {
         console.error(error);
@@ -165,9 +162,20 @@ export class PreguntasComponent implements OnInit {
     }
   }
 
+  iniciarTimer() {
+    this.timer = 5;
+    const temporizador = setInterval(() => {
+      if (this.timer > 0) {
+        this.timer--;
+      } else {
+        clearInterval(temporizador);
+      }
+    }, 1000);
+  }
+
   isSelectAnswer(): boolean {
     const pregunta = this.preguntas[this.preguntaActual];
-    return pregunta.respuestaSeleccionada !== undefined;
+    return pregunta.respuestaSeleccionada !== undefined && this.timer === 0;
   }
 
   siguiente() {
@@ -182,6 +190,8 @@ export class PreguntasComponent implements OnInit {
         evalId: this.evalId
       });
     }
+    
+    this.iniciarTimer();
   }
 
   guardar() {
@@ -211,12 +221,7 @@ export class PreguntasComponent implements OnInit {
       }
     );
   }
-
-  successModal(message: string) {
-    const modalRef = this.modalService.open(AlertSuccessComponent);
-    modalRef.componentInstance.message = message;
-  }
-
+  
   volver() {
     this.router.navigate(['cursos', this.id, this.evalId]);
   }

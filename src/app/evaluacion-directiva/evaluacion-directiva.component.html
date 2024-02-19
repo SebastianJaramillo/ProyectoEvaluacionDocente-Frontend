@@ -19,8 +19,8 @@
             <td>{{ doc.docId }}</td>
             <td>{{ doc.docente.apellidos + " " + doc.docente.nombres }}</td>            
             <td>{{ doc.horas}}</td>
-            <td><button class="btn btn-secondary" (click)="evaluacion(doc.docId)">Evaluar</button>
-            </td>
+            <td *ngIf="findDescripcion(doc.docId) === undefined"><button class="btn btn-secondary" (click)="evaluacion(doc.docId)">Evaluar</button></td>
+            <td *ngIf="findDescripcion(doc.docId) !== undefined">TERMINADA</td>
           </tr>
         </tbody>
       </table>

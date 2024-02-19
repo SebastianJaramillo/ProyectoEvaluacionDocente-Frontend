@@ -76,11 +76,14 @@ export class DocenteComponent implements OnInit {
     );
   }
 
+  findDescripcion(docDescripcion: string): boolean {
+    return this.docEvaluaciones.find(e => e.actividad === docDescripcion);
+  }
+
   findFunciones(id: string) {
     this.docenteService.findFunciones(id).subscribe(
       (data) => {
         this.docFunciones = data;
-        console.log(this.docFunciones)
       },
       (error) => {
         console.error(error);
