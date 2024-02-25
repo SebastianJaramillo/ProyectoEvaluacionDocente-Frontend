@@ -97,7 +97,7 @@ export class FormularioAdminComponent implements OnInit {
 
   abrirModalFormulario() {
     const dialogRef = this.dialog.open(FormularioFormAdminComponent, {
-      width: '550px'
+      width: '800px'
       ,
       // Puedes pasar datos al diálogo así:
       data: { /* tus datos aquí */ }
@@ -206,8 +206,9 @@ export class FormularioAdminComponent implements OnInit {
           id: id
         });
         const dialogRef = this.dialog.open(PreguntasFormAdminComponent, {
-          width: '550px',
-          data: { preguntas: this.preguntasForm.value } // Asume que 'formulario.preguntas' es tu array de preguntas existentes
+          width: '800px',
+          data: { preguntas: this.preguntasForm.value }, // Asume que 'formulario.preguntas' es tu array de preguntas existentes
+          panelClass: 'mi-clase-personalizada' // Añade esta línea
         });
 
         dialogRef.afterClosed().subscribe(result => {

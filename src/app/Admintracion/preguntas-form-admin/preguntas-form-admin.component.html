@@ -2,15 +2,17 @@
 <div mat-dialog-content>
   <form [formGroup]="preguntasForm">
     <div formArrayName="preguntas">
-      <div *ngFor="let pregunta of preguntas.controls; let i = index" [formGroupName]="i">
-        <input type="text" formControlName="id">
-        <input formControlName="texto" placeholder="Texto de la Pregunta" (input)="cambioDetectado(i)">
-        <button mat-icon-button (click)="eliminarPregunta(i)" aria-label="Eliminar pregunta">
-          <mat-icon>delete</mat-icon>
-        </button>
-        <button *ngIf="cambios[i]" mat-icon-button class="btn-danger" (click)="guardarPregunta(i)" aria-label="Cambio detectado">
-          <mat-icon>check_circle</mat-icon>
-        </button>
+      <div *ngFor="let pregunta of preguntas.controls; let i = index" [formGroupName]="i" class="pregunta-container">
+        <input type="text" formControlName="id" class="input-corto">
+        <input formControlName="texto" placeholder="Texto de la Pregunta" (input)="cambioDetectado(i)" class="input-largo">
+        <div class="botones">
+          <button mat-icon-button class="btn-danger" (click)="eliminarPregunta(i)" aria-label="Eliminar pregunta">
+            <mat-icon>delete</mat-icon>
+          </button>
+          <button *ngIf="cambios[i]" mat-icon-button class="btn-save" (click)="guardarPregunta(i)" aria-label="Cambio detectado">
+            <mat-icon>check_circle</mat-icon>
+          </button>
+        </div>
       </div>
     </div>
   </form>

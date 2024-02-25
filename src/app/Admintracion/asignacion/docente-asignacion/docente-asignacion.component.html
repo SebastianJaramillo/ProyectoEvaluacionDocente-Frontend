@@ -1,6 +1,11 @@
 <div class="container">
     <button class="btn btn-danger" (click)="volver()">Volver</button>
-    <h2>Seleccione al coordinador</h2>
+    <h2>Seleccione al Coordinador para asignar el Docente</h2>
+
+    <b>Docente Seccionado: </b>{{ docente.apellidos + " " + docente.nombres }}<br>
+
+    <p> La siguiente lista muestra a todos los coordinadores activos <br> 
+      <b>Seleccione un coordinador para asignar el docente</b></p>
     <input type="text" [(ngModel)]="terminoBusqueda" placeholder="Buscar docente por nombre..." class="form-control mb-3" (change)="filtrarDocentes()">
   
     <div class="table-responsive custom-table-responsive">
@@ -23,7 +28,7 @@
             <td>{{ doc.docente.escalafon}}</td>
             <td>{{ doc.funcion.rol}}</td>
             <td>{{ doc.funcion.descripcion}}</td>
-            <td><button class="btn btn-secondary" (click)="asignarDocentes(doc.docente.id)">Asignar Docentes</button>
+            <td><button class="btn btn-secondary" (click)="asignarDocentes(doc.docente.id)">Asignar Docente</button>
             </td>
           </tr>
         </tbody>

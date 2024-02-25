@@ -3,7 +3,7 @@ form {
     padding: 20px; /* Añade un relleno dentro del formulario para separar los elementos internos de los bordes */
     margin: 10px auto; /* Añade un margen automático a los lados para centrar el formulario, y 20px de margen superior e inferior */
     border-radius: 8px; /* Opcional: añade bordes redondeados al formulario */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Opcional: añade una sombra ligera alrededor del formulario para un efecto elevado */
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1); /* Opcional: añade una sombra ligera alrededor del formulario para un efecto elevado */
     max-width: 700px; /* Establece un ancho máximo para el formulario */
   }  
   button{
@@ -29,3 +29,39 @@ form {
     cursor: pointer;
   
   }
+
+  .btn-save {
+    background: linear-gradient(to top, #008311, #059925);
+    color: white;
+    margin-left: 10px;
+    padding-left: 25px;
+    padding-right: 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  
+  }
+  .pregunta-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .input-corto {
+    width: 80px;
+    margin-right: 5px;
+  }
+  
+  .input-largo {
+    flex: 5; /* Ocupa más espacio */
+    margin-right: 5px;
+  }
+  
+  .botones {
+    display: flex;
+    justify-content: flex-end;
+    flex: 2; /* Ajusta según necesites */
+  }
+  .cdk-overlay-dark-backdrop {
+    background-color: rgba(255, 255, 255, 0.5) !important; /* Ejemplo con blanco semitransparente */
+}

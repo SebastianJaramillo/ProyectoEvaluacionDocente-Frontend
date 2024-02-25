@@ -449,3 +449,7 @@ button {
   cursor: pointer;
 
 }
+.mi-clase-personalizada .mat-dialog-container {
+  background-color: #fff; /* Cambia a tu color de fondo deseado */
+  border-radius: 8px; /* O cualquier otro estilo que desees aplicar */
+}

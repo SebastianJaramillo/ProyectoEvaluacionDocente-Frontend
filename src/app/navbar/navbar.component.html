@@ -35,7 +35,7 @@
     <div id="sidebar-accordion" class="accordion">
       <ul>
         <li>
-          <button (click)="encuesta()" style="width: 85%; margin-top: 40px;">Encuestas</button>
+          <button (click)="encuesta()" style="width: 85%; margin-top: 40px;">Evaluación</button>
         </li>
         <li>
           <button *ngIf="role == 'DOCENTE'" (click)="reportes()" style="width: 85%; margin-top: 10px;">Reportes</button>
@@ -43,6 +43,7 @@
         <li>
           <button *ngIf="role == 'DOCENTE'" (click)="roles()" style="width: 85%; margin-top: 10px;">Asignación roles</button>
         </li>
+       
       </ul>
     </div>
   </div>

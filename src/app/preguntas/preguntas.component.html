@@ -19,9 +19,17 @@
   </tr>
 </table>
 <br>
-
+<br>
 <div *ngIf="preguntas && preguntas.length > 0">
-  <p style="font-size: 18px; text-align: center;">Pregunta <strong>{{ preguntaActual + 1 }}</strong> de {{preguntas.length}}</p>
+  <div style="display: flex; justify-content: space-between; align-items: center; font-size: 18px;">
+    <div style="text-align: left; flex-grow: 1;"> </div>
+    <div style="text-align: center; flex-grow: 1;">
+      Pregunta <strong>{{ preguntaActual + 1 }}</strong> de {{preguntas.length}}
+    </div>
+    <div style="text-align: right; flex-grow: 1;">
+      Tiempo de lectura estimada: 00:{{ timer }}
+    </div>
+  </div>
   Leer y seleccionar la opción que mejor refleje su opinión para evaluar el desempeño del docente en la actividad correspondiente, utilizando la siguiente escala:<br><br>
   <div class="progressBar">
     <div class="innerBar" [style.width]="(preguntaActual + 1) / preguntas.length * 100 + '%'"></div>

@@ -7,7 +7,7 @@ import { forkJoin } from 'rxjs';
 import { Docente } from '../../asignacion-roles/docente.model';
 import { Funcion } from '../../asignacion-roles/funcion.model';
 import { NombreFuncion } from '../../asignacion-roles/nombreFuncion.model';
-
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-docente-asignacion',
   templateUrl: './docente-asignacion.component.html',
@@ -42,6 +42,7 @@ export class DocenteAsignacionComponent implements OnInit{
     this.route.params.subscribe((params) => {
       this.docId = params['docId'];
       this.findDocenteAll();
+      this.findDocente(this.docId);
     });
 
 
@@ -174,7 +175,7 @@ export class DocenteAsignacionComponent implements OnInit{
   asignarDocentes(id: any) {
     this.DocenteRelacion.docIdDocente = this.docId;
     this.DocenteRelacion.docIdJefe = id;
-    this.docenteService.findDocenteRelacionById('1').subscribe(
+    this.docenteService.findDocenteRelacionById(id).subscribe(
       (data) => {
         this.DocenteRelacion = data;
         console.log('este es mi relacion',this.DocenteRelacion)
@@ -182,6 +183,7 @@ export class DocenteAsignacionComponent implements OnInit{
       (error) => {
         console.error(error);
       }
+      
     );
 
     console.log(this.DocenteRelacion)
@@ -193,6 +195,8 @@ export class DocenteAsignacionComponent implements OnInit{
         console.error(error);
       }
     );
+    this.mensaje("Asignacion del docente realizada exitosamente");
+    this.router.navigate(['listarDocentes']);
   }
 
   cambiarJefeDeDocentes(idNuevoJefe: string) {
@@ -226,7 +230,25 @@ export class DocenteAsignacionComponent implements OnInit{
   }
 
   volver() {
-    this.router.navigate(['rolesAdmin']);
+    this.router.navigate(['listarDocentes']);
   }
-
+  findDocente(id: string) {
+    this.docenteService.findById(id).subscribe(
+      (data) => {
+        this.docente = data        
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+    }
+    mensaje(texto: any) {
+      Swal.fire({
+        title: 'Éxito',
+        text: texto,
+        icon: 'success',
+        confirmButtonText: 'Aceptar',
+        width: '350px',      
+      });
+    }
 }

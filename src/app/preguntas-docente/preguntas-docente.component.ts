@@ -33,11 +33,11 @@ export class PreguntasDocenteComponent implements OnInit {
   timer: number = 5;
 
   opciones = [
-    { valor: 1, texto: ' (1) Totalmente en desacuerdo' },
-    { valor: 2, texto: ' (2) Medianamente en desacuerdo' },
-    { valor: 3, texto: ' (3) Ni de acuerdo ni en desacuerdo' },
-    { valor: 4, texto: ' (4) Medianamente de acuerdo' },
-    { valor: 5, texto: ' (5) Totalmente de acuerdo' },  
+    { valor: 1, texto: ' (1) Nunca' },
+    { valor: 2, texto: ' (2) Casi nunca' },
+    { valor: 3, texto: ' (3) Ocasionalmente' },
+    { valor: 4, texto: ' (4) Casi siempre' },
+    { valor: 5, texto: ' (5) Siempre' }, 
   ];
   constructor(
     private route: ActivatedRoute,
