@@ -4,7 +4,6 @@ import { DocenteService } from '../../services/docente/docente.service';
 import { AlertSuccessComponent } from '../../alerts/alert-success/alert-success.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FuncionService } from 'src/app/services/funcion/funcion.service';
-import { SeleccionarCoordinadorComponent } from '../asignacion/seleccionar-coordinador/seleccionar-coordinador.component';
 import { MatDialog } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -66,7 +65,6 @@ export class AsignacionDocenteComponent implements OnInit {
     this.funcionService.findDocenteFuncion(id).subscribe(
       (data) => {
         this.funciones = data
-        console.log('funciones', this.funciones);
         this.rol = this.funciones[0].funcion.rol;
         this.rolD = this.funciones[0].funcion.descripcion;
       },
@@ -83,7 +81,6 @@ export class AsignacionDocenteComponent implements OnInit {
     this.docenteService.findByJefe(id).subscribe(
       (data) => {
         this.docentesACargo = data;
-        console.log('docentsCargo', this.docentesACargo)
       },
       (error) => {
         console.error(error);
@@ -95,14 +92,12 @@ export class AsignacionDocenteComponent implements OnInit {
     this.docenteService.findByJefe(this.docId).subscribe(
       (data) => {
         if (data && data.length > 0) {
-          console.log('El coordinador tiene docentes a cargo.');
           this.router.navigate([
             'selectCoordinador',
             this.id,
             this.docId
           ]);
         } else {
-          console.log('Cambiando el rol de coordinador a docente...');
           this.cambiarRol();
         }
       },
@@ -125,12 +120,9 @@ export class AsignacionDocenteComponent implements OnInit {
         this.funcionActual.docId = this.docId;
         this.funcionActual.funcId = 'DOC-DOC';
         this.funcionActual.horas = '0'
-        console.log('funcion', this.funcionActual);
         this.docenteService.crearDocentefuncion(this.funcionActual).subscribe(
           (data) => {
-            this.funcion = data;
-            console.log('creado', data);
-            
+            this.funcion = data;            
           },
           (error) => {
             console.error(error);
@@ -147,9 +139,7 @@ export class AsignacionDocenteComponent implements OnInit {
     this.funcionActual.horas = '0'
     this.docenteService.crearDocentefuncion(this.funcionActual).subscribe(
       (data) => {
-        this.funcion = data;
-        console.log('creado', data);
-        
+        this.funcion = data;        
       },
       (error) => {
         console.error(error);
