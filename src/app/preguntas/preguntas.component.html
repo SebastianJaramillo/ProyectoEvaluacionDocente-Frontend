@@ -1,7 +1,6 @@
 <!-- HTML para mostrar la pregunta actual y las opciones de respuesta -->
 <button class="btn btn-danger" (click)="volver()">Volver</button>
 <p style="font-size: 18px; text-align: center;"><b style="font-size: 18px;">{{ formulario.nombre }}</b><br></p>
-
 <table border="0">
   <tr>
     <td [width]="500"><b>Evaluador: </b>{{ alumno.apellidos + " " + alumno.nombres }}</td>
@@ -21,13 +20,13 @@
 <br>
 <br>
 <div *ngIf="preguntas && preguntas.length > 0">
-  <div style="display: flex; justify-content: space-between; align-items: center; font-size: 18px;">
+  <div style="justify-content: space-between; align-items: center; font-size: 18px;">
     <div style="text-align: left; flex-grow: 1;"> </div>
     <div style="text-align: center; flex-grow: 1;">
       Pregunta <strong>{{ preguntaActual + 1 }}</strong> de {{preguntas.length}}
     </div>
     <div style="text-align: right; flex-grow: 1;">
-      Tiempo de lectura estimada: 00:{{ timer }}
+      Tiempo de lectura estimado: 00:{{ timer }}
     </div>
   </div>
   Leer y seleccionar la opción que mejor refleje su opinión para evaluar el desempeño del docente en la actividad correspondiente, utilizando la siguiente escala:<br><br>

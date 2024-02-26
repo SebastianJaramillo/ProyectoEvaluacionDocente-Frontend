@@ -27,15 +27,12 @@ export class FormularioAdminComponent implements OnInit {
   modoEdicion: boolean = false;
 
   constructor(
-    private formularioService: FormularioService,
-    private router: Router,
-    private route: ActivatedRoute,
+    private formularioService: FormularioService,    
     private fb: FormBuilder,
     public dialog: MatDialog
   ) { }
 
   filtrarFormularios(): void {
-    console.log(this.filtroSeleccionado);
     switch (this.filtroSeleccionado) {
       case 'HETEROEVALUACION':
 
@@ -55,12 +52,11 @@ export class FormularioAdminComponent implements OnInit {
         break;
       default:
         this.getAllFormularios();
-
         break;
     }
   }
-  ngOnInit(): void {
 
+  ngOnInit(): void {
     this.evaluacionForm = this.fb.group({
       id: [''],
       nombre: [''],
@@ -69,9 +65,9 @@ export class FormularioAdminComponent implements OnInit {
     this.preguntasForm = this.fb.group({
       id: ['']
     });
-
-
+    this.getAllFormularios();
   }
+  
   getAllFormularios() {
     this.formularioService.getFormularioListar().subscribe(
       (data) => {

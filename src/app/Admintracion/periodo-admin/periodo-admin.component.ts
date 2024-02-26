@@ -5,13 +5,14 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EvaluacionService } from 'src/app/services/evaluacion/evaluacion.service';
 import { PeriodoFormAdminComponent } from '../periodo-form-admin/periodo-form-admin.component';
-import { Evaluacion } from '../../periodo/evaluacion.model'
+import { Evaluacion } from '../../periodo/evaluacion.model';
 import { Periodo } from 'src/app/periodo/periodo.model';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-periodo-admin',
   templateUrl: './periodo-admin.component.html',
-  styleUrls: ['./periodo-admin.component.css']
+  styleUrls: ['./periodo-admin.component.css'],
 })
 export class PeriodoAdminComponent implements OnInit {
   periodos: Periodo[] = [];
@@ -31,42 +32,37 @@ export class PeriodoAdminComponent implements OnInit {
     private route: ActivatedRoute,
     private fb: FormBuilder,
     public dialog: MatDialog
-  ) { }
+  ) {}
   ngOnInit(): void {
-
     this.periodoForm = this.fb.group({
       id: [''],
       descripcion: [''],
-      estado: ['']
+      estado: [''],
     });
     this.getAllEvaluacionesConNombreDePeriodo();
-
   }
 
   getAllEvaluacionesConNombreDePeriodo() {
     forkJoin({
       evaluaciones: this.evaluacionService.getAllEvaluaciones(),
-      periodos: this.evaluacionService.getAllPeriodos()
-
+      periodos: this.evaluacionService.getAllPeriodos(),
     }).subscribe({
       next: ({ evaluaciones, periodos }) => {
-        console.log("periodos", periodos);
-        console.log("evaluaciones", evaluaciones);
-        this.evaluaciones = evaluaciones.map(evaluacion => {
-          const periodo = periodos.find(p => {
-
-            //console.log(`Comparando:`, evaluacion);
-            //console.log(`Comparando: ${p.id} con ${evaluacion.perId}`);
+        console.log('periodos', periodos);
+        console.log('evaluaciones', evaluaciones);
+        this.evaluaciones = evaluaciones.map((evaluacion) => {
+          const periodo = periodos.find((p) => {
             return p.id === evaluacion.perId;
           });
-          //console.log("Periodo encontrado:", periodo);
           return {
             ...evaluacion,
-            nombrePeriodo: periodo ? periodo.descripcion : 'Periodo no encontrado',
+            nombrePeriodo: periodo
+              ? periodo.descripcion
+              : 'Periodo no encontrado',
           };
         });
       },
-      error: (error) => console.error(error)
+      error: (error) => console.error(error),
     });
   }
 
@@ -102,39 +98,34 @@ export class PeriodoAdminComponent implements OnInit {
 
   abrirFormulario() {
     const dialogRef = this.dialog.open(PeriodoFormAdminComponent, {
-      width: '550px'
-      ,
-      // Puedes pasar datos al diálogo así:
-      data: { /* tus datos aquí */ }
+      width: '550px',
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       console.log('El diálogo fue cerrado', result);
       if (result !== undefined) {
-        console.log("Datos del formulario:", result);
+        console.log('Datos del formulario:', result);
         if (result.fechaFin && result.fechaInicio) {
-          this.evaluacion.evalFechaFin = new Date(result.fechaFin).toISOString();
+          this.evaluacion.evalFechaFin = new Date(
+            result.fechaFin
+          ).toISOString();
           //this.evaluacion.fechaFin = result.fechaFin + "T00:00:00.000+00:00";
-          this.evaluacion.evalFechaInicio = new Date(result.fechaInicio).toISOString();
-          this.evaluacion.estado = "ACTIVO";
+          this.evaluacion.evalFechaInicio = new Date(
+            result.fechaInicio
+          ).toISOString();
+          this.evaluacion.estado = 'ACTIVO';
           this.evaluacion.perId = result.idPeriodo;
           this.evaluacionService.createEvaluacion(this.evaluacion).subscribe(
             (data) => {
-              console.log("Registro guardado", this.evaluacion);
               this.getAllEvaluacionesConNombreDePeriodo();
             },
             (error) => {
               console.error(error);
             }
           );
-
-          console.log("Datos del formulario actualizado:", this.evaluacion);
-
-
         }
       } else {
-        // Manejo de cierre sin acción (por ejemplo, cancelar)
-        console.log("El diálogo se cerró sin enviar datos");
+        console.log('El diálogo se cerró sin enviar datos');
       }
     });
   }
@@ -161,32 +152,34 @@ export class PeriodoAdminComponent implements OnInit {
   }
 
   eliminarPeriodo(id: number) {
-    this.evaluacionService.findEvaluacion(id).subscribe(
-      {
-        next: (data) => {
-          this.evaluacion = data
-          if(this.evaluacion.estado == 'ACTIVO'){
-              alert('no es posible eliminar una evaluacion activa')
-          }else {
-            this.evaluacionService.deleteEvalucion(id).subscribe({
-              next: (data) => {
-                console.log("Registro eliminado correctamente");
-                this.getAllEvaluacionesConNombreDePeriodo();
-              },
-              error: (error) => {
-                console.error("Error al eliminar el estado de la evaluación", error);
-              }
-            });
-          }
-          console.log("Estado de la evaluación actualizado", data);
-          this.getAllEvaluacionesConNombreDePeriodo();
-        },
-        error: (error) => {
-          console.error("Error al actualizar el estado de la evaluación", error);
+    this.evaluacionService.findEvaluacion(id).subscribe({
+      next: (data) => {
+        this.evaluacion = data;
+        if (this.evaluacion.estado == 'ACTIVO') {
+          this.mensaje('No es posible eliminar una evaluacion activa');
+        } else {
+          this.confirmacion('¿Desea eliminar el periodo?').then((result) => {
+            if (result.isConfirmed) {
+              this.evaluacionService.deleteEvalucion(id).subscribe({
+                next: (data) => {
+                  this.getAllEvaluacionesConNombreDePeriodo();
+                },
+                error: (error) => {
+                  console.error(
+                    'Error al eliminar el estado de la evaluación',
+                    error
+                  );
+                },
+              });
+            }
+          });
         }
-      }
-
-    );
+        this.getAllEvaluacionesConNombreDePeriodo();
+      },
+      error: (error) => {
+        console.error('Error al actualizar el estado de la evaluación', error);
+      },
+    });
     /*this.periodoService.eliminarPeriodo(id).subscribe(() => {
       this.cargarPeriodos();
     });*/
@@ -206,16 +199,13 @@ export class PeriodoAdminComponent implements OnInit {
       estadoActual = 'ACTIVO';
     }
 
-    console.log(`Cambiando estado del formulario con ID ${id} a ${estadoActual}`);
-
     this.evaluacionService.updateEstadoEvaluacion(id, estadoActual).subscribe({
       next: (data) => {
-        console.log("Estado de la evaluación actualizado", data);
         this.getAllEvaluacionesConNombreDePeriodo();
       },
       error: (error) => {
-        console.error("Error al actualizar el estado de la evaluación", error);
-      }
+        console.error('Error al actualizar el estado de la evaluación', error);
+      },
     });
   }
   getEstadoAsBoolean(estado: string): boolean {
@@ -224,6 +214,27 @@ export class PeriodoAdminComponent implements OnInit {
     } else {
       return false;
     }
+  }
 
+  mensaje(texto: any) {
+    Swal.fire({
+      title: 'Error',
+      text: texto,
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+      width: '350px',
+    });
+  }
+
+  confirmacion(texto: any) {
+    return Swal.fire({
+      title: 'Confirmar',
+      text: texto,
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      width: '380px',
+    });
   }
 }

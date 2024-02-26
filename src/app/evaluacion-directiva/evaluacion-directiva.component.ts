@@ -107,8 +107,6 @@ export class EvaluacionDirectivaComponent implements OnInit {
   }
 
   findDescripcion(docIdDocente: string): boolean | undefined {
-    console.log(atob(this.id));
-    console.log(docIdDocente);
     return this.docEvaluaciones.find(e => e.docEvaluador === atob(this.id) && e.docEvaluado === docIdDocente);
   }
 

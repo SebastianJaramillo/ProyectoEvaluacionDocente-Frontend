@@ -1,44 +1,60 @@
 <div class="container">
-    <h2 class="mb-5">Gestión de Formularios</h2>
-    <br>
-    <div class="filtro">
-      <select [(ngModel)]="filtroSeleccionado" (change)="filtrarFormularios()">
-        <option value="" selected>Seleccione la evaluación</option>
-        <option *ngFor="let opcion of opcionesDeFiltro" [value]="opcion">{{opcion}}</option>
-      </select>
-    </div>
-    <br>
-    <div *ngIf="formularios && formularios.length > 0">
-      <div class="table-responsive custom-table-responsive">
-        <table class="table custom-table" style="text-align: center;">
-          <thead>
-            <tr>
-              <th scope="col">ID</th>
-              <th scope="col">NOMBRE</th>
-              <th scope="col">DESCRIPCION</th>
-              <th scope="col">ACCIONES</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngIf="formularios.length <= 0"><td colspan="5">NO EXISTEN REGISTROS</td></tr>
-            <tr *ngFor="let formulario of formularios">
-              <td>{{ formulario.id }}</td>
-              <td>{{ formulario.nombre }}</td>
-              <td>{{ formulario.descripcion }}</td>
+  <h2 class="mb-5">Gestión de Formularios</h2>
+  <div class="filtro">
+    <table border="0">
+      <tr>
+        <td [width]="100"><b>Evaluación: </b></td>
+        <td>
+          <select
+            [(ngModel)]="filtroSeleccionado"
+            (change)="filtrarFormularios()"
+          >
+            <option value="" selected>TODAS</option>
+            <option *ngFor="let opcion of opcionesDeFiltro" [value]="opcion">
+              {{ opcion }}
+            </option>
+          </select>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <br />
+  <div *ngIf="formularios && formularios.length > 0">
+    <div class="table-responsive custom-table-responsive">
+      <table class="table custom-table" style="text-align: center">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">NOMBRE</th>
+            <th scope="col">DESCRIPCION</th>
+            <th scope="col">ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="formularios.length <= 0">
+            <td colspan="5">NO EXISTEN REGISTROS</td>
+          </tr>
+          <tr *ngFor="let formulario of formularios">
+            <td>{{ formulario.id }}</td>
+            <td>{{ formulario.nombre }}</td>
+            <td>{{ formulario.descripcion }}</td>
 
-              <td>
-                <button class="btn btn-secondary" (click)="cargarPreguntas(formulario.id)">Ver Preguntas</button>
-                <!--
-<button class="btn btn-danger" (click)="editarModalFormulario(formulario.id)">Editar</button>
+            <td>
+              <button
+                class="btn btn-secondary"
+                (click)="cargarPreguntas(formulario.id)"
+              >
+                Ver Preguntas
+              </button>
+              <!--
+                <button class="btn btn-danger" (click)="editarModalFormulario(formulario.id)">Editar</button>
               
                 -->
-                </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <br>
-   
   </div>
-  
+  <br />
+</div>

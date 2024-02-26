@@ -15,7 +15,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngIf="DocentesFuncion.length == 0"><td colspan="5">NO EXISTEN REGISTROS</td></tr>
+          <tr *ngIf="DocentesFuncion.length == 0"><td colspan="6">NO EXISTEN REGISTROS</td></tr>
           <tr scope="row" *ngFor="let doc of DocentesFuncion">
             <td>{{ doc.docente.id }}</td>
             <td>{{ doc.docente.nombres + " " + doc.docente.apellidos }}</td>            

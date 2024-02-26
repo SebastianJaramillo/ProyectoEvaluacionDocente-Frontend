@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit, Output, EventEmitter} from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { IgxNavigationDrawerComponent } from 'igniteui-angular';
 import { UserService } from '../services/user/user.service';
 import { DocenteService } from '../services/docente/docente.service';
@@ -31,7 +31,6 @@ export class NavbarComponent implements OnInit{
 
   constructor(
     private router: Router,
-    private userService: UserService,
     private alumnoService: AlumnoService,
     private docenteService: DocenteService,
   ) {}
@@ -63,9 +62,7 @@ export class NavbarComponent implements OnInit{
   findDocente(id: string): any {
     this.docenteService.findById(id).subscribe(
       (data) => {
-        this.user = data;
-        
-        console.log('docente: ',this.user);
+        this.user = data;        
       },
       (error) => {
         console.error(error);
@@ -106,6 +103,7 @@ export class NavbarComponent implements OnInit{
   roles() {
     this.router.navigate(['rolesAdmin']);
   }
+  
   listar() {
     this.router.navigate(['listarDocentes']);
   }
