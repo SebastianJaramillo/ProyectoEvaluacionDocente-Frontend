@@ -19,8 +19,8 @@ export class FormularioAdminComponent implements OnInit {
   eval: any = {};
   evalId: any;
   preguntas: any[] = [];
-  public filtroSeleccionado: string = '';
-  opcionesDeFiltro: string[] = ['HETEROEVALUACION', 'AUTOEVALUACION', 'COEVALUACION', 'COEVALUACION DIRECTOR'];
+  filtroSeleccionado: string = '';
+  opcionesDeFiltro: string[] = ['HETEROEVALUACION', 'AUTOEVALUACION', 'COEVALUACION POR PARES', 'COEVALUACION DIRECTIVA'];
 
   evaluacionForm!: FormGroup;
   preguntasForm!: FormGroup;
@@ -39,15 +39,12 @@ export class FormularioAdminComponent implements OnInit {
         this.getFormularioByNombre("Heteroevaluacion");
         break;
       case 'AUTOEVALUACION':
-        // Ejemplo para otro filtro específico
         this.getFormularioByNombre("Autoevaluacion");
         break;
-      case 'COEVALUACION':
-        // Ejemplo para otro filtro específico
+      case 'COEVALUACION POR PARES':
         this.getFormularioByNombre("Coevaluacion");
         break;
-      case 'COEVALUACION DIRECTOR':
-        // Ejemplo para otro filtro específico
+      case 'COEVALUACION DIRECTIVA':
         this.getFormularioByNombre("Coevaluacion director");
         break;
       default:
@@ -67,7 +64,7 @@ export class FormularioAdminComponent implements OnInit {
     });
     this.getAllFormularios();
   }
-  
+
   getAllFormularios() {
     this.formularioService.getFormularioListar().subscribe(
       (data) => {
@@ -94,9 +91,6 @@ export class FormularioAdminComponent implements OnInit {
   abrirModalFormulario() {
     const dialogRef = this.dialog.open(FormularioFormAdminComponent, {
       width: '800px'
-      ,
-      // Puedes pasar datos al diálogo así:
-      data: { /* tus datos aquí */ }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -108,7 +102,6 @@ export class FormularioAdminComponent implements OnInit {
           this.formulario.descripcion = result.descripcion;
           console.log("Datos del formulario actualizado:", this.formulario);
 
-          // Guarda o procesa los datos aquí
           this.formularioService.saveFormulario(this.formulario).subscribe(
             (data) => {
               console.log("Registro guardado", this.formulario);
@@ -120,7 +113,6 @@ export class FormularioAdminComponent implements OnInit {
           );
         }
       } else {
-        // Manejo de cierre sin acción (por ejemplo, cancelar)
         console.log("El diálogo se cerró sin enviar datos");
       }
     });
@@ -137,21 +129,18 @@ export class FormularioAdminComponent implements OnInit {
           descripcion: this.formulario.descripcion
         });
 
-        // Abre el diálogo y pasa el FormGroup como parte de los datos
         const dialogRef = this.dialog.open(FormularioFormAdminComponent, {
           width: '550px',
-          data: { formulario: this.evaluacionForm.value } // Asegúrate de pasar el valor más actualizado
+          data: { formulario: this.evaluacionForm.value }
         });
 
         dialogRef.afterClosed().subscribe(result => {
           if (result !== undefined) {
             console.log("Datos del formulario recibidos del diálogo:", result);
-            // Asegúrate de que los datos recibidos sean válidos antes de actualizar
             if (result.nombre && result.descripcion) {
               this.actualizarFormulario(result);
             }
           } else {
-            // Manejo de cierre sin acción (por ejemplo, cancelar)
             console.log("El diálogo se cerró sin enviar datos");
           }
         });
@@ -169,7 +158,7 @@ export class FormularioAdminComponent implements OnInit {
     this.formularioService.saveFormulario(this.formulario).subscribe(
       (data) => {
         console.log("Formulario actualizado:", data);
-        this.getAllFormularios(); // Recarga tus formularios o realiza otra acción después de guardar
+        this.getAllFormularios();
       },
       (error) => {
         console.error('Error guardando el formulario:', error);
@@ -186,10 +175,9 @@ export class FormularioAdminComponent implements OnInit {
 
   eliminarFormulario(id: number): void {
     this.formularioService.deleteFormulario(id).subscribe(() => {
-      this.getAllFormularios();// Recargar la lista después de eliminar
+      this.getAllFormularios();
     });
   }
-
 
   cargarPreguntas(id: number): void {
     this.formularioService.getPreguntaFormulario(id).subscribe(
@@ -203,15 +191,14 @@ export class FormularioAdminComponent implements OnInit {
         });
         const dialogRef = this.dialog.open(PreguntasFormAdminComponent, {
           width: '800px',
-          data: { preguntas: this.preguntasForm.value }, // Asume que 'formulario.preguntas' es tu array de preguntas existentes
-          panelClass: 'mi-clase-personalizada' // Añade esta línea
+          data: { preguntas: this.preguntasForm.value },
+          panelClass: 'mi-clase-personalizada'
         });
 
         dialogRef.afterClosed().subscribe(result => {
           console.log('El diálogo de preguntas se cerró');
           if (result) {
             console.log("Preguntas actualizadas:", result);
-            // Aquí puedes actualizar las preguntas en tu modelo 'formulario' y posiblemente guardar los cambios
           }
         });
 
@@ -225,7 +212,6 @@ export class FormularioAdminComponent implements OnInit {
   cambiarEstado(formulario: any): void {
     console.log('Nuevo estado del formulario:', formulario.estado);
 
-    // Aquí podrías llamar a tu servicio para actualizar el estado en el backend
     // this.formularioService.actualizarEstado(formulario.id, formulario.estado).subscribe(...);
   }
 }

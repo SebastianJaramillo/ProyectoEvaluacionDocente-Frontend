@@ -7,11 +7,11 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-preguntas-form-admin',
   templateUrl: './preguntas-form-admin.component.html',
-  styleUrls: ['./preguntas-form-admin.component.css']
+  styleUrls: ['./preguntas-form-admin.component.css'],
 })
 export class PreguntasFormAdminComponent {
   preguntasForm: FormGroup;
-  cambios: boolean[] = []; // Array para rastrear cambios en las preguntas
+  cambios: boolean[] = [];
   formulario: any = {};
   constructor(
     private fb: FormBuilder,
@@ -21,7 +21,7 @@ export class PreguntasFormAdminComponent {
   ) {
     this.preguntasForm = this.fb.group({
       id: [''],
-      preguntas: this.fb.array([])
+      preguntas: this.fb.array([]),
     });
   }
 
@@ -34,12 +34,14 @@ export class PreguntasFormAdminComponent {
   cargarPreguntas(id: number) {
     this.formularioService.getPreguntaFormulario(id).subscribe(
       (preguntas: Pregunta[]) => {
-        const preguntasFormArray = this.preguntasForm.get('preguntas') as FormArray;
+        const preguntasFormArray = this.preguntasForm.get(
+          'preguntas'
+        ) as FormArray;
 
-        preguntas.forEach(pregunta => {
+        preguntas.forEach((pregunta) => {
           const preguntaFormGroup = this.fb.group({
-            id: [{ value: pregunta.id, disabled: true }], // Deshabilita el campo id
-            texto: [pregunta.texto]
+            id: [{ value: pregunta.id, disabled: true }],
+            texto: [pregunta.texto],
           });
           preguntasFormArray.push(preguntaFormGroup);
         });
@@ -50,7 +52,6 @@ export class PreguntasFormAdminComponent {
     );
   }
 
-
   onSubmit(): void {
     this.dialogRef.close(this.preguntasForm.getRawValue().preguntas);
   }
@@ -58,24 +59,25 @@ export class PreguntasFormAdminComponent {
   get preguntas(): FormArray {
     return this.preguntasForm.get('preguntas') as FormArray;
   }
+
   agregarPregunta(): void {
     const preguntasFormArray = this.preguntasForm.get('preguntas') as FormArray;
-    preguntasFormArray.push(this.fb.group({
-      id: [''],
-      texto: ['']
-    }));
-    this.cambios.push(false); // Inicializa sin cambios
+    preguntasFormArray.push(
+      this.fb.group({
+        id: [''],
+        texto: [''],
+      })
+    );
+    this.cambios.push(false);
   }
-
 
   guardarPregunta(index: number): void {
     const preguntaFormGroup = this.preguntas.at(index) as FormGroup;
-    
+
     const pregunta: Pregunta = preguntaFormGroup.value;
-    console.log("this data", preguntaFormGroup);
     const preguntaId = preguntaFormGroup.get('id')?.value;
-    
-   pregunta.id = preguntaId;
+
+    pregunta.id = preguntaId;
     pregunta.formId = this.data.preguntas.id;
     this.formularioService.findById(this.data.preguntas.id).subscribe(
       (data) => {
@@ -86,18 +88,17 @@ export class PreguntasFormAdminComponent {
         console.error('Error cargando el formulario:', error);
       }
     );
-    
+
     if (!pregunta.id) {
       alert('Por favor, ingrese un ID válido para la pregunta.');
       return;
-    } 
-    
+    }
+
     console.log('Pregunta :', pregunta);
     this.formularioService.savePregunta(pregunta).subscribe({
       next: (pregunta) => {
         console.log('Pregunta guardada:', pregunta);
-        this.mensaje("Pregunta guardada correctamente");
-        // Opcional: Actualizar el ID de la pregunta en el formulario si es una nueva pregunta
+        this.mensaje('Pregunta guardada correctamente');
         if (!pregunta.id) {
           preguntaFormGroup.patchValue({ id: pregunta.id });
         }
@@ -105,33 +106,31 @@ export class PreguntasFormAdminComponent {
       },
       error: (error) => {
         console.error('Error guardando la pregunta:', error);
-      }
+      },
     });
   }
-
 
   eliminarPregunta(index: number): void {
     const preguntaFormGroup = this.preguntas.at(index) as FormGroup;
     const pregunta: Pregunta = preguntaFormGroup.value;
     const preguntaId = preguntaFormGroup.get('id')?.value;
-    
-   pregunta.id = preguntaId;
-   this.formularioService.deletePregunta(pregunta.id).subscribe({
-    next: (pregunta) => {
-      console.log('Pregunta eliminada:', pregunta);
-      this.mensaje("Pregunta eliminada correctamente");
-      // Opcional: Actualizar el ID de la pregunta en el formulario si es una nueva pregunta
-    },
-    error: (error) => {
-      console.error('Error eliminando la pregunta:', error);
-    }
-  });
-   (this.preguntasForm.get('preguntas') as FormArray).removeAt(index);
-   this.cambios.splice(index, 1); // Asegúrate de eliminar también el estado de cambio
+
+    pregunta.id = preguntaId;
+    this.formularioService.deletePregunta(pregunta.id).subscribe({
+      next: (pregunta) => {
+        console.log('Pregunta eliminada:', pregunta);
+        this.mensaje('Pregunta eliminada correctamente');
+      },
+      error: (error) => {
+        console.error('Error eliminando la pregunta:', error);
+      },
+    });
+    (this.preguntasForm.get('preguntas') as FormArray).removeAt(index);
+    this.cambios.splice(index, 1);
   }
 
   cambioDetectado(index: number): void {
-    this.cambios[index] = true; // Marca que hubo un cambio en la pregunta en el índice especificado
+    this.cambios[index] = true;
   }
 
   mensaje(texto: any) {
@@ -140,8 +139,7 @@ export class PreguntasFormAdminComponent {
       text: texto,
       icon: 'success',
       confirmButtonText: 'Aceptar',
-      width: '350px',      
+      width: '350px',
     });
   }
-
 }

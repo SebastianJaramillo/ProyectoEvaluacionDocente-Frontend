@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 import { EvaluacionService } from '../services/evaluacion/evaluacion.service';
 import * as XLSX from 'xlsx';
 import Swal from 'sweetalert2';
+import { FuncionService } from '../services/funcion/funcion.service';
 
 @Component({
   selector: 'app-reporte',
@@ -20,12 +21,24 @@ export class ReporteComponent implements OnInit {
   evalId: any;
   docId: any;
   director: any;
+  actividad: any;
   docente: any = {};
   periodo: any = {};
   periodos: any[] = [];
   perId: any;
   docentes: any[] = [];
+  docentesAux: any[] = [];
   docFunciones: any[] = [];
+  areas: any[] = [
+    'DOCENCIA',
+    'INVESTIGACION',
+    'VINCULACION',
+    'GESTION ACADEMICA',
+  ];
+  areasRelacion: any[] = [];
+  todasAreas: any[] = [];
+  funciones: any[] = [];
+  area: any;
 
   respHetDoc: any[] = [];
   respAutDoc: any[] = [];
@@ -53,14 +66,15 @@ export class ReporteComponent implements OnInit {
   ngOnInit(): void {
     this.docId = '';
     this.perId = 1;
+    this.area = 'T';
     this.route.params.subscribe((params) => {
       this.id = params['id'];
       this.evalId = params['evalId'];
-    });   
-    
+    });
+
     this.findFunciones(atob(this.id));
     this.getAllPeriodos();
-    this.listarDocentes();    
+    this.findRelacion();
   }
 
   findDocente(id: string): any {
@@ -74,11 +88,57 @@ export class ReporteComponent implements OnInit {
     );
   }
 
+  findFuncionesTodos(id: string): any {
+    this.docenteService.findFuncionTodos(id).subscribe(
+      (data) => {
+        const funcionesSet = new Set();
+        this.funciones = [];
+        data.forEach((funcion) => {
+          if (!funcionesSet.has(funcion.docId)) {
+            funcionesSet.add(funcion.docId);
+            this.funciones.push(funcion);
+          }
+        });
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  findRelacion(): any {
+    this.docenteService.listarRelacion().subscribe(
+      (data) => {
+        this.areasRelacion = data;
+        if (this.areasRelacion.length > 0) {
+          const areasRelacionValues = new Set(
+            this.areasRelacion.map((item: any) => item.area)
+          );
+          this.todasAreas = Array.from(
+            new Set([...this.areas, ...areasRelacionValues])
+          );
+        }
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
   findFunciones(id: any) {
     this.docenteService.findFunciones(id).subscribe(
       (data) => {
         this.docFunciones = data;
-        this.director = this.docFunciones.some(f => f.funcion.rol === 'Director');
+        this.director = this.docFunciones.some(
+          (f) => f.funcion.rol === 'Director'
+        );
+
+        if (this.director) {
+          this.listarDocentes();
+        } else {
+          this.docId = id;
+          this.findDocente(id);
+        }
       },
       (error) => {
         console.error(error);
@@ -132,7 +192,7 @@ export class ReporteComponent implements OnInit {
   }
 
   async generarInforme() {
-    if(this.docId == '') {
+    if (this.docId == '') {
       this.mensaje('Seleccione un docente para genererar informe individual');
       return;
     }
@@ -142,13 +202,35 @@ export class ReporteComponent implements OnInit {
 
     await this.findPeriodo(this.perId);
 
-    await this.sleep(100);    
+    await this.sleep(100);
 
-    let {horasDocencia, horasInvestigacion, horasGestion, horasVinculacion,
-      notaAutDoc, notaHetDoc, notaParDoc, notaDirDoc, notaAutInv, notaParInv, notaDirInv, notaAutGes, notaDirGes,
-      notaAutVin, notaParVin, notaDirVin, totalDocencia, totalGestion, totalInvestigacion, totalVinculacion,
-      totalDocenciaPonderacion, totalGestionPonderacion, totalInvestigacionPonderacion, totalVinculacionPonderacion,
-      totalFinal} = await this.calculos(this.docId);
+    let {
+      horasDocencia,
+      horasInvestigacion,
+      horasGestion,
+      horasVinculacion,
+      notaAutDoc,
+      notaHetDoc,
+      notaParDoc,
+      notaDirDoc,
+      notaAutInv,
+      notaParInv,
+      notaDirInv,
+      notaAutGes,
+      notaDirGes,
+      notaAutVin,
+      notaParVin,
+      notaDirVin,
+      totalDocencia,
+      totalGestion,
+      totalInvestigacion,
+      totalVinculacion,
+      totalDocenciaPonderacion,
+      totalGestionPonderacion,
+      totalInvestigacionPonderacion,
+      totalVinculacionPonderacion,
+      totalFinal,
+    } = await this.calculos(this.docId);
 
     const pdf = new jsPDF({ orientation: 'landscape' });
 
@@ -353,28 +435,55 @@ export class ReporteComponent implements OnInit {
           },
         ],
         [
-          { content: horasDocencia === 0 ? '' : horasDocencia, styles: { halign: 'center' } },
           {
-            content: Number(totalDocenciaPonderacion.toFixed(2)) === 0 ? '' : Number(totalDocenciaPonderacion.toFixed(2)),
-            styles: { halign: 'center' },
-          },
-          { content: horasInvestigacion === 0 ? '' : horasInvestigacion, styles: { halign: 'center' } },
-          {
-            content: Number(totalInvestigacionPonderacion.toFixed(2)) === 0 ? '' : Number(totalInvestigacionPonderacion.toFixed(2)),
-            styles: { halign: 'center' },
-          },
-          { content: horasGestion === 0 ? '' : horasGestion, styles: { halign: 'center' } },
-          {
-            content: Number(totalGestionPonderacion.toFixed(2)) === 0 ? '' : Number(totalGestionPonderacion.toFixed(2)),
-            styles: { halign: 'center' },
-          },
-          { content: horasVinculacion === 0 ? '' : horasVinculacion, styles: { halign: 'center' } },
-          {
-            content: Number(totalVinculacionPonderacion.toFixed(2)) === 0 ? '' : Number(totalVinculacionPonderacion.toFixed(2)),
+            content: horasDocencia === 0 ? '' : horasDocencia,
             styles: { halign: 'center' },
           },
           {
-            content: Number(totalFinal.toFixed(2)) === 0 ? '' : Number(totalFinal.toFixed(2)),
+            content:
+              Number(totalDocenciaPonderacion.toFixed(2)) === 0
+                ? ''
+                : Number(totalDocenciaPonderacion.toFixed(2)),
+            styles: { halign: 'center' },
+          },
+          {
+            content: horasInvestigacion === 0 ? '' : horasInvestigacion,
+            styles: { halign: 'center' },
+          },
+          {
+            content:
+              Number(totalInvestigacionPonderacion.toFixed(2)) === 0
+                ? ''
+                : Number(totalInvestigacionPonderacion.toFixed(2)),
+            styles: { halign: 'center' },
+          },
+          {
+            content: horasGestion === 0 ? '' : horasGestion,
+            styles: { halign: 'center' },
+          },
+          {
+            content:
+              Number(totalGestionPonderacion.toFixed(2)) === 0
+                ? ''
+                : Number(totalGestionPonderacion.toFixed(2)),
+            styles: { halign: 'center' },
+          },
+          {
+            content: horasVinculacion === 0 ? '' : horasVinculacion,
+            styles: { halign: 'center' },
+          },
+          {
+            content:
+              Number(totalVinculacionPonderacion.toFixed(2)) === 0
+                ? ''
+                : Number(totalVinculacionPonderacion.toFixed(2)),
+            styles: { halign: 'center' },
+          },
+          {
+            content:
+              Number(totalFinal.toFixed(2)) === 0
+                ? ''
+                : Number(totalFinal.toFixed(2)),
             colSpan: 2,
             styles: { fontStyle: 'bold', halign: 'center', fontSize: 10 },
           },
@@ -487,51 +596,87 @@ export class ReporteComponent implements OnInit {
         ],
         [
           {
-            content: Number(notaAutDoc.toFixed(2)) === 0 ? '' : Number(notaAutDoc.toFixed(2)),
+            content:
+              Number(notaAutDoc.toFixed(2)) === 0
+                ? ''
+                : Number(notaAutDoc.toFixed(2)),
             styles: { fontSize: 9, halign: 'center' },
           },
           {
-            content: Number(notaHetDoc.toFixed(2)) === 0 ? '' : Number(notaHetDoc.toFixed(2)),
+            content:
+              Number(notaHetDoc.toFixed(2)) === 0
+                ? ''
+                : Number(notaHetDoc.toFixed(2)),
             styles: { fontSize: 9, halign: 'center' },
           },
           {
-            content: Number(notaParDoc.toFixed(2)) === 0 ? '' : Number(notaParDoc.toFixed(2)),
+            content:
+              Number(notaParDoc.toFixed(2)) === 0
+                ? ''
+                : Number(notaParDoc.toFixed(2)),
             styles: { fontSize: 9, halign: 'center' },
           },
           {
-            content: Number(notaDirDoc.toFixed(2)) === 0 ? '' : Number(notaDirDoc.toFixed(2)),
+            content:
+              Number(notaDirDoc.toFixed(2)) === 0
+                ? ''
+                : Number(notaDirDoc.toFixed(2)),
             styles: { fontSize: 9, halign: 'center' },
           },
           {
-            content: Number(notaAutInv.toFixed(2)) === 0 ? '' : Number(notaAutInv.toFixed(2)),
+            content:
+              Number(notaAutInv.toFixed(2)) === 0
+                ? ''
+                : Number(notaAutInv.toFixed(2)),
             styles: { fontSize: 9, halign: 'center' },
           },
           {
-            content: Number(notaParInv.toFixed(2)) === 0 ? '' : Number(notaParInv.toFixed(2)),
+            content:
+              Number(notaParInv.toFixed(2)) === 0
+                ? ''
+                : Number(notaParInv.toFixed(2)),
             styles: { fontSize: 9, halign: 'center' },
           },
           {
-            content: Number(notaDirInv.toFixed(2)) === 0 ? '' : Number(notaDirInv.toFixed(2)),
+            content:
+              Number(notaDirInv.toFixed(2)) === 0
+                ? ''
+                : Number(notaDirInv.toFixed(2)),
             styles: { fontSize: 9, halign: 'center' },
           },
           {
-            content: Number(notaAutGes.toFixed(2)) === 0 ? '' : Number(notaAutGes.toFixed(2)),
+            content:
+              Number(notaAutGes.toFixed(2)) === 0
+                ? ''
+                : Number(notaAutGes.toFixed(2)),
             styles: { fontSize: 9, halign: 'center' },
           },
           {
-            content: Number(notaDirGes.toFixed(2)) === 0 ? '' : Number(notaDirGes.toFixed(2)),
+            content:
+              Number(notaDirGes.toFixed(2)) === 0
+                ? ''
+                : Number(notaDirGes.toFixed(2)),
             styles: { fontSize: 9, halign: 'center' },
           },
           {
-            content: Number(notaAutVin.toFixed(2)) === 0 ? '' : Number(notaAutVin.toFixed(2)),
+            content:
+              Number(notaAutVin.toFixed(2)) === 0
+                ? ''
+                : Number(notaAutVin.toFixed(2)),
             styles: { fontSize: 9, halign: 'center' },
           },
           {
-            content: Number(notaParVin.toFixed(2)) === 0 ? '' : Number(notaParVin.toFixed(2)),
+            content:
+              Number(notaParVin.toFixed(2)) === 0
+                ? ''
+                : Number(notaParVin.toFixed(2)),
             styles: { fontSize: 9, halign: 'center' },
           },
           {
-            content: Number(notaDirVin.toFixed(2)) === 0 ? '' : Number(notaDirVin.toFixed(2)),
+            content:
+              Number(notaDirVin.toFixed(2)) === 0
+                ? ''
+                : Number(notaDirVin.toFixed(2)),
             styles: { fontSize: 9, halign: 'center' },
           },
         ],
@@ -542,7 +687,10 @@ export class ReporteComponent implements OnInit {
             styles: { fontStyle: 'bold', halign: 'center' },
           },
           {
-            content: Number(totalDocencia.toFixed(2)) === 0 ? '' : Number(totalDocencia.toFixed(2)),
+            content:
+              Number(totalDocencia.toFixed(2)) === 0
+                ? ''
+                : Number(totalDocencia.toFixed(2)),
             colSpan: 2,
             styles: { halign: 'center', fontSize: 9 },
           },
@@ -552,7 +700,10 @@ export class ReporteComponent implements OnInit {
             styles: { halign: 'center' },
           },
           {
-            content: Number(totalInvestigacion.toFixed(2)) === 0 ? '' : Number(totalInvestigacion.toFixed(2)),
+            content:
+              Number(totalInvestigacion.toFixed(2)) === 0
+                ? ''
+                : Number(totalInvestigacion.toFixed(2)),
             styles: { halign: 'center', fontSize: 9 },
           },
           {
@@ -560,7 +711,10 @@ export class ReporteComponent implements OnInit {
             styles: { halign: 'center' },
           },
           {
-            content: Number(totalGestion.toFixed(2)) === 0 ? '' : Number(totalGestion.toFixed(2)),
+            content:
+              Number(totalGestion.toFixed(2)) === 0
+                ? ''
+                : Number(totalGestion.toFixed(2)),
             styles: { halign: 'center', fontSize: 9 },
           },
           {
@@ -569,7 +723,10 @@ export class ReporteComponent implements OnInit {
             styles: { halign: 'center' },
           },
           {
-            content: Number(totalVinculacion.toFixed(2)) === 0 ? '' : Number(totalVinculacion.toFixed(2)),
+            content:
+              Number(totalVinculacion.toFixed(2)) === 0
+                ? ''
+                : Number(totalVinculacion.toFixed(2)),
             styles: { halign: 'center', fontSize: 9 },
           },
         ],
@@ -595,7 +752,12 @@ export class ReporteComponent implements OnInit {
       },
     });
 
-    pdf.save(this.docente.id + '_' + this.docente.apellidos + '_EVALUACION_DETALLE_IND.pdf');
+    pdf.save(
+      this.docente.id +
+        '_' +
+        this.docente.apellidos +
+        '_EVALUACION_DETALLE_IND.pdf'
+    );
   }
 
   async generarInformeGlobal() {
@@ -605,35 +767,146 @@ export class ReporteComponent implements OnInit {
 
     let datos: any[] = [];
 
-    await Promise.all(this.docentes.map(async (item) => {
-      
-      let {horasDocencia, horasInvestigacion, horasGestion, horasVinculacion,
-        notaAutDoc, notaHetDoc, notaParDoc, notaDirDoc, notaAutInv, notaParInv, notaDirInv, notaAutGes, notaDirGes,
-        notaAutVin, notaParVin, notaDirVin, totalDocencia, totalGestion, totalInvestigacion, totalVinculacion,
-        totalDocenciaPonderacion, totalGestionPonderacion, totalInvestigacionPonderacion, totalVinculacionPonderacion,
-        totalFinal} = await this.calculos(item.id);
+    if (this.area == 'T') {
+      await this.sleep(100);
+
+      await Promise.all(
+        this.docentes.map(async (item) => {
+          let {
+            horasDocencia,
+            horasInvestigacion,
+            horasGestion,
+            horasVinculacion,
+            notaAutDoc,
+            notaHetDoc,
+            notaParDoc,
+            notaDirDoc,
+            notaAutInv,
+            notaParInv,
+            notaDirInv,
+            notaAutGes,
+            notaDirGes,
+            notaAutVin,
+            notaParVin,
+            notaDirVin,
+            totalDocencia,
+            totalGestion,
+            totalInvestigacion,
+            totalVinculacion,
+            totalDocenciaPonderacion,
+            totalGestionPonderacion,
+            totalInvestigacionPonderacion,
+            totalVinculacionPonderacion,
+            totalFinal,
+          } = await this.calculos(item.id);
+
+          await this.sleep(100);
+
+          const registro = {
+            DOCENTE: item.apellidos + ' ' + item.nombres,
+            'HORAS DOCENCIA': horasDocencia,
+            'NOTA DOCENCIA': Number(totalDocencia).toFixed(2),
+            'HORAS INVESTIGACION': horasInvestigacion,
+            'NOTA INVESTIGACION': Number(totalInvestigacion).toFixed(2),
+            'HORAS GESTION': horasGestion,
+            'NOTA GESTION': Number(totalGestion).toFixed(2),
+            'HORAS VINCULACION': horasVinculacion,
+            'NOTA VINCULACION': Number(totalVinculacion).toFixed(2),
+            'NOTA FINAL': Number(totalFinal).toFixed(2),
+          };
+          datos.push(registro);
+        })
+      );
+
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(datos);
+      XLSX.utils.book_append_sheet(wb, ws, 'EVALUACION DOCENTE');
+      XLSX.writeFile(
+        wb,
+        'REPORTE GLOBAL_' + this.periodo.descripcion + '.xlsx'
+      );
+    } else {
+      switch (this.area) {
+        case 'DOCENCIA':
+          this.actividad = 'DOC';
+          break;
+        case 'GESTION ACADEMICA':
+          this.actividad = 'GES';
+          break;
+        case 'INVESTIGACION':
+          this.actividad = 'INV';
+          break;
+        case 'VINCULACION':
+          this.actividad = 'VIN';
+          break;
+        default:
+          console.log('No se encontró función');
+      }
+
+      await this.findFuncionesTodos(this.actividad);
 
       await this.sleep(100);
 
-      const registro = {
-        DOCENTE: item.apellidos + ' ' + item.nombres,
-        'HORAS DOCENCIA': horasDocencia,
-        'NOTA DOCENCIA': Number(totalDocencia).toFixed(2),
-        'HORAS INVESTIGACION': horasInvestigacion,
-        'NOTA INVESTIGACION': Number(totalInvestigacion).toFixed(2),
-        'HORAS GESTION': horasGestion,
-        'NOTA GESTION': Number(totalGestion).toFixed(2),
-        'HORAS VINCULACION': horasVinculacion,
-        'NOTA VINCULACION': Number(totalVinculacion).toFixed(2),
-        'NOTA FINAL': Number(totalFinal).toFixed(2),
-      };
-      datos.push(registro);      
-    }));
+      if (this.funciones.length > 0) {
+        await Promise.all(
+          this.funciones.map(async (item) => {
+            let {
+              horasDocencia,
+              horasInvestigacion,
+              horasGestion,
+              horasVinculacion,
+              notaAutDoc,
+              notaHetDoc,
+              notaParDoc,
+              notaDirDoc,
+              notaAutInv,
+              notaParInv,
+              notaDirInv,
+              notaAutGes,
+              notaDirGes,
+              notaAutVin,
+              notaParVin,
+              notaDirVin,
+              totalDocencia,
+              totalGestion,
+              totalInvestigacion,
+              totalVinculacion,
+              totalDocenciaPonderacion,
+              totalGestionPonderacion,
+              totalInvestigacionPonderacion,
+              totalVinculacionPonderacion,
+              totalFinal,
+            } = await this.calculos(item.docId);
 
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet(datos);
-    XLSX.utils.book_append_sheet(wb, ws, 'EVALUACION DOCENTE');
-    XLSX.writeFile(wb, 'REPORTE GLOBAL_' + this.periodo.descripcion + '.xlsx');
+            await this.sleep(100);
+
+            const registro = {
+              DOCENTE: item.docente.apellidos + ' ' + item.docente.nombres,
+              'HORAS DOCENCIA': horasDocencia,
+              'NOTA DOCENCIA': Number(totalDocencia).toFixed(2),
+              'HORAS INVESTIGACION': horasInvestigacion,
+              'NOTA INVESTIGACION': Number(totalInvestigacion).toFixed(2),
+              'HORAS GESTION': horasGestion,
+              'NOTA GESTION': Number(totalGestion).toFixed(2),
+              'HORAS VINCULACION': horasVinculacion,
+              'NOTA VINCULACION': Number(totalVinculacion).toFixed(2),
+              'NOTA FINAL': Number(totalFinal).toFixed(2),
+            };
+            datos.push(registro);
+          })
+        );
+
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(datos);
+        XLSX.utils.book_append_sheet(wb, ws, this.area);
+        XLSX.writeFile(
+          wb,
+          'REPORTE GLOBAL_' + this.periodo.descripcion + '.xlsx'
+        );
+      } else {
+        this.mensaje("No existen registros para esa área");
+      }
+    }
   }
 
   async calculos(docId: string) {
@@ -977,11 +1250,33 @@ export class ReporteComponent implements OnInit {
       totalFinal = totalInvestigacion;
     }
 
-    return {horasDocencia, horasInvestigacion, horasGestion, horasVinculacion,
-      notaAutDoc, notaHetDoc, notaParDoc, notaDirDoc, notaAutInv, notaParInv, notaDirInv, notaAutGes, notaDirGes,
-      notaAutVin, notaParVin, notaDirVin, totalDocencia, totalGestion, totalInvestigacion, totalVinculacion,
-      totalDocenciaPonderacion, totalGestionPonderacion, totalInvestigacionPonderacion, totalVinculacionPonderacion,
-      totalFinal}
+    return {
+      horasDocencia,
+      horasInvestigacion,
+      horasGestion,
+      horasVinculacion,
+      notaAutDoc,
+      notaHetDoc,
+      notaParDoc,
+      notaDirDoc,
+      notaAutInv,
+      notaParInv,
+      notaDirInv,
+      notaAutGes,
+      notaDirGes,
+      notaAutVin,
+      notaParVin,
+      notaDirVin,
+      totalDocencia,
+      totalGestion,
+      totalInvestigacion,
+      totalVinculacion,
+      totalDocenciaPonderacion,
+      totalGestionPonderacion,
+      totalInvestigacionPonderacion,
+      totalVinculacionPonderacion,
+      totalFinal,
+    };
   }
 
   mensaje(texto: any) {
@@ -990,7 +1285,7 @@ export class ReporteComponent implements OnInit {
       text: texto,
       icon: 'error',
       confirmButtonText: 'Aceptar',
-      width: '350px',      
+      width: '350px',
     });
   }
 }

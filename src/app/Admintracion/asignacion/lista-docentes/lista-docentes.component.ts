@@ -26,7 +26,7 @@ export class ListaDocentesComponent implements OnInit{
   eval: any = {};
   desactivado: any;
   DocentesFuncion: any[] = [];
-  docentesFiltrados: any[] = []; // Lista para los docentes filtrados
+  docentesFiltrados: any[] = [];
   terminoBusqueda: string = '';
 
   constructor(
@@ -63,34 +63,27 @@ export class ListaDocentesComponent implements OnInit{
   filtrarDocentes() {
     this.funcionService.findAllDocentesByEstado().subscribe({
       next: (funciones: Funcion[]) => {
-        // Obtener los nombres de las funciones (asumiendo que tienes un método para esto)
         this.funcionService.findAllFunciones().subscribe({
           next: (nombresFunciones: NombreFuncion[]) => {
-            // Crear un mapa de funcId a nombreRol para un acceso rápido
             const mapFuncIdToNombreRol = nombresFunciones.reduce((acc, nombreFuncion) => {
               acc[nombreFuncion.id] = nombreFuncion.rol;
               return acc;
             }, {} as { [key: string]: string });
 
-            // Agrupar las funciones por docId
             const agrupadasPorDocId = funciones.reduce((acc, funcion) => {
               const nombreRol = mapFuncIdToNombreRol[funcion.funcId];
               (acc[funcion.docId] = acc[funcion.docId] || []).push({ ...funcion, nombreRol });
               return acc;
             }, {} as { [key: string]: any[] });
 
-            // Para cada grupo, conservar la función con el rol de coordinador si existe
             const docentesConRolPreferido = Object.values(agrupadasPorDocId).map((funciones: any[]) => {
               const funcionConCoordinador = funciones.find(funcion => funcion.nombreRol === 'Coordinador');
               return funcionConCoordinador || funciones[0];
             });
 
-            // Aquí tendrías los docentes con su función preferida
-            console.log(docentesConRolPreferido);
             let docentesFiltradosPorNombre = docentesConRolPreferido.filter(doc =>
               (doc.docente.nombres + " " + doc.docente.apellidos).toLowerCase().includes(this.terminoBusqueda.toLowerCase())
             );
-            console.log('nombre', docentesFiltradosPorNombre);
             this.DocentesFuncion = docentesFiltradosPorNombre;
             this.DocentesFuncion =this.DocentesFuncion.filter(docenteConFuncion=> {
               return docenteConFuncion.funcion.rol !== 'Director' && docenteConFuncion.funcion.rol !== 'Coordinador';
@@ -111,30 +104,24 @@ export class ListaDocentesComponent implements OnInit{
   findDocenteAll() {
     this.funcionService.findAllDocentesByEstado().subscribe({
       next: (funciones: Funcion[]) => {
-        // Obtener los nombres de las funciones (asumiendo que tienes un método para esto)
         this.funcionService.findAllFunciones().subscribe({
           next: (nombresFunciones: NombreFuncion[]) => {
-            // Crear un mapa de funcId a nombreRol para un acceso rápido
             const mapFuncIdToNombreRol = nombresFunciones.reduce((acc, nombreFuncion) => {
               acc[nombreFuncion.id] = nombreFuncion.rol;
               return acc;
             }, {} as { [key: string]: string });
 
-            // Agrupar las funciones por docId
             const agrupadasPorDocId = funciones.reduce((acc, funcion) => {
               const nombreRol = mapFuncIdToNombreRol[funcion.funcId];
               (acc[funcion.docId] = acc[funcion.docId] || []).push({ ...funcion, nombreRol });
               return acc;
             }, {} as { [key: string]: any[] });
 
-            // Para cada grupo, conservar la función con el rol de coordinador si existe
             const docentesConRolPreferido = Object.values(agrupadasPorDocId).map((funciones: any[]) => {
               const funcionConCoordinador = funciones.find(funcion => funcion.nombreRol === 'Coordinador');
               return funcionConCoordinador || funciones[0];
             });
 
-            // Aquí tendrías los docentes con su función preferida
-            console.log(docentesConRolPreferido);
             this.DocentesFuncion = docentesConRolPreferido;
             this.DocentesFuncion =this.DocentesFuncion.filter(docenteConFuncion=> {
               return docenteConFuncion.funcion.rol !== 'Director' && docenteConFuncion.funcion.rol !== 'Coordinador';
@@ -171,17 +158,10 @@ export class ListaDocentesComponent implements OnInit{
     );
   }
 
-  cambiarRol(id: any) {
-
-  }
   cambiarJefeDeDocentes(docId: string) {
-
     this.router.navigate(['asignarDocentes',
     docId]);
   }
-
-
-
 
   findPeriodo(id: number): any {
     this.evaluacionService.getPeriodoById(id).subscribe(

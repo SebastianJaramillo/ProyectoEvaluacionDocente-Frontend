@@ -47,9 +47,7 @@ export class PeriodoAdminComponent implements OnInit {
       evaluaciones: this.evaluacionService.getAllEvaluaciones(),
       periodos: this.evaluacionService.getAllPeriodos(),
     }).subscribe({
-      next: ({ evaluaciones, periodos }) => {
-        console.log('periodos', periodos);
-        console.log('evaluaciones', evaluaciones);
+      next: ({ evaluaciones, periodos }) => {        
         this.evaluaciones = evaluaciones.map((evaluacion) => {
           const periodo = periodos.find((p) => {
             return p.id === evaluacion.perId;
@@ -102,9 +100,7 @@ export class PeriodoAdminComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      console.log('El diálogo fue cerrado', result);
       if (result !== undefined) {
-        console.log('Datos del formulario:', result);
         if (result.fechaFin && result.fechaInicio) {
           this.evaluacion.evalFechaFin = new Date(
             result.fechaFin
@@ -192,7 +188,6 @@ export class PeriodoAdminComponent implements OnInit {
   }
 
   cambiarEstado(id: number, estadoActual: string): void {
-    console.log(`estado`, estadoActual);
     if (estadoActual == 'ACTIVO') {
       estadoActual = 'INACTIVO';
     } else {

@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
 import Swal from 'sweetalert2';
 import { DocenteService } from '../services/docente/docente.service';
 import { EvaluacionService } from '../services/evaluacion/evaluacion.service';
@@ -27,6 +25,10 @@ export class DocenteComponent implements OnInit {
   evalId: any;
   desactivado: any;
   formId: any;
+  director: any;
+
+  filtroSeleccionado: string = '';
+  opcionesDeFiltro: string[] = ['COEVALUACION DIRECTIVA', 'AUTOEVALUACION'];
 
   constructor(
     private docenteService: DocenteService,
@@ -41,13 +43,15 @@ export class DocenteComponent implements OnInit {
     this.route.params.subscribe((params) => {
       this.id = params['id'];
       this.evalId = params['evalId'];
-    });
-
+    });    
     this.findByFechas()
     this.findByEvaluacion(atob(this.id), atob(this.id), this.evalId);
     this.findDocente(atob(this.id));
-        
-    //this.deshabilitarBoton();
+    if(this.director) {
+      this.filtroSeleccionado = 'COEVALUACION DIRECTIVA';
+    } else {
+      this.filtroSeleccionado = 'AUTOEVALUACION';
+    }
   }
 
   findByFechas() {
@@ -56,7 +60,7 @@ export class DocenteComponent implements OnInit {
         this.eval = data;
         this.evalId = this.eval.id;
         this.findPeriodo(this.eval.perId);
-        this.findFunciones(atob(this.id));
+        this.findFunciones(atob(this.id));    
       },
       (error) => {
         this.mensaje('Evaluación no se encuentra habilitada en estas fechas.');
@@ -84,6 +88,7 @@ export class DocenteComponent implements OnInit {
     this.docenteService.findFunciones(id).subscribe(
       (data) => {
         this.docFunciones = data;
+        this.director = this.docFunciones.some(f => f.funcion.rol === 'Director');
       },
       (error) => {
         console.error(error);

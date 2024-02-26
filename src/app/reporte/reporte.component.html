@@ -1,38 +1,58 @@
 <div *ngIf="!director">
-  <p style="font-size: 18px">
-    <b>REPORTE INDIVIDUAL</b><br /><br />
-    <b>DOCENTE: </b>{{ docente.apellidos + " " + docente.nombres }}
-  </p>
-  <select [ngModel]="perId">
-    <option *ngFor="let periodo of periodos" [value]="periodo.id">
-      {{ periodo.descripcion }}
-    </option>
-  </select>
-  <button class="btn boton" (click)="generarInforme()">Generar Reporte</button>
+  <h2>
+    <b>REPORTE INDIVIDUAL</b><br>
+    <b>DOCENTE: </b>{{ docente.apellidos + " " + docente.nombres }}<br>
+    <b>PERIODO: </b>
+    <select style="width: 37%;" [ngModel]="perId">
+      <option *ngFor="let periodo of periodos" [value]="periodo.id">
+        {{ periodo.descripcion }}
+      </option>
+    </select>
+    <button class="btn boton" (click)="generarInforme()">GENERAR</button>
+  </h2>    
 </div>
 
 <div *ngIf="director">
   <form (ngSubmit)="generarInforme()">
-    <p style="font-size: 18px">
-      <b>REPORTE INDIVIDUAL</b><br /><br />
-      <b>DOCENTE: </b>
-      <select name="docId" [(ngModel)]="docId">
+    <h2>
+      <b>REPORTE INDIVIDUAL</b><br>
+      <b>DOCENTE: </b>&nbsp;&nbsp;
+      <select style="width: 30%;" name="docId" [(ngModel)]="docId">
         <option value="" selected disabled>Seleccione...</option>
         <option *ngFor="let doc of docentes" [value]="doc.id">
           {{ doc.apellidos + " " + doc.nombres }}
         </option>
       </select>
-    </p>
-    <select name="perId" [(ngModel)]="perId">
-      <option *ngFor="let periodo of periodos" [value]="periodo.id">
-        {{ periodo.descripcion }}
-      </option>
-    </select>
-    <button class="btn boton" type="submit">
-      Generar Reporte
-    </button>
-    <button class="btn boton" type="button" (click)="generarInformeGlobal()">
-      Generar Reporte Global
-    </button>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <b>PERIODO: </b>&nbsp;&nbsp;
+      <select style="width: 30%;" name="perId" [(ngModel)]="perId">
+        <option *ngFor="let periodo of periodos" [value]="periodo.id">
+          {{ periodo.descripcion }}
+        </option>
+      </select>
+      <button class="btn boton" type="submit">
+        GENERAR
+      </button>
+    </h2>
+    <h2>
+      <b>REPORTE GLOBAL</b><br>
+      <b>ÁREA DE CONOCIMIENTO: </b>&nbsp;&nbsp;
+      <select style="width: 20%;" name="area" [(ngModel)]="area">
+        <option value="T">TODAS</option>
+        <option *ngFor="let area of areas" [value]="area">
+          {{ area }}
+        </option>
+      </select>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <b>PERIODO: </b>&nbsp;&nbsp;
+      <select style="width: 30%;" name="perId" [(ngModel)]="perId">
+        <option *ngFor="let periodo of periodos" [value]="periodo.id">
+          {{ periodo.descripcion }}
+        </option>
+      </select>
+      <button class="btn boton" type="button" (click)="generarInformeGlobal()">
+        GENERAR
+      </button>
+    </h2>
   </form>
 </div>

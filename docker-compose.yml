@@ -1,0 +1,16 @@
+version: '3'
+
+name: contenedor-interfaz
+
+services:
+  interfaz:
+    image: interfaz:1.1
+    container_name: interfaz
+    ports:
+      - "4200:80"
+    networks:
+      - proyecto-docente-network
+
+networks:
+  proyecto-docente-network:
+    driver: bridge

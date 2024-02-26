@@ -18,6 +18,10 @@ export class DocenteService {
     return this.http.get<any[]>(`${this.apiUrl}/funciones/director/${id}`);
   }
 
+  findFuncionTodos(id: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/funciones/todos/${id}`);
+  }
+
   findById(id: string) {
     return this.http.get<any>(`${this.apiUrl}/buscar/${id}`);
   }
@@ -42,10 +46,6 @@ export class DocenteService {
     return this.http.post<any>(`${this.apiUrl}/evaluacion/registro`, evaluacion);
   }
   
-  cambiarRolCoodinador(id: string, rol: string){
-    return this.http.get<any>(`${this.apiUrl}/listar`);  
-  }
-
   cambiarJefeDocente(id: string,idNuevoJefe: string){
     return this.http.post<any[]>(`${this.apiUrl}/cambiarJefe/${id}/${idNuevoJefe}`,idNuevoJefe);
   }
@@ -67,5 +67,9 @@ export class DocenteService {
 
   findDocenteRelacionById(id: string){
     return this.http.get<any>(`${this.apiUrl}/buscarDocenteRelacion/${id}`);  
+  }
+
+  listarRelacion(){
+    return this.http.get<any[]>(`${this.apiUrl}/relacion/listar`);  
   }
 }
