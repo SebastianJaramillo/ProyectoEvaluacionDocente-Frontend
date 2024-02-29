@@ -35,6 +35,15 @@ export class CursoComponent implements OnInit {
     });
 
     this.findByFechas();
+
+    const role = localStorage.getItem('role');
+    if (role && role === 'ESTUDIANTE') {   
+
+    } else {
+      this.mensaje('Acceso denegado. Vuelva a iniciar sesión.')
+      localStorage.clear();
+      this.router.navigate(['']);
+    }
   }
 
   findByFechas() {
@@ -78,7 +87,7 @@ export class CursoComponent implements OnInit {
     this.docenteService.findById(id).subscribe(
       (data) => {
         this.docente = data;
-        return this.docente
+        return this.docente;
       },
       (error) => {
         console.error(error);
@@ -98,7 +107,14 @@ export class CursoComponent implements OnInit {
   }
 
   evaluacion(alumnoId: any, cursoId: any, id: any) {
-    this.router.navigate(['preguntas', alumnoId, btoa(cursoId), 1, id, this.evalId]);
+    this.router.navigate([
+      'preguntas',
+      alumnoId,
+      btoa(cursoId),
+      1,
+      id,
+      this.evalId,
+    ]);
   }
 
   mensaje(texto: any) {
@@ -107,7 +123,7 @@ export class CursoComponent implements OnInit {
       text: texto,
       icon: 'error',
       confirmButtonText: 'Aceptar',
-      width: '350px',      
+      width: '350px',
     });
   }
 }

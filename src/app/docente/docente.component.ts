@@ -40,6 +40,15 @@ export class DocenteComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    const role = localStorage.getItem('role');
+    if (role && role === 'DOCENTE') {   
+
+    } else {
+      this.mensaje('Acceso denegado. Vuelva a iniciar sesión.')
+      localStorage.clear();
+      this.router.navigate(['']);
+    }
+
     this.route.params.subscribe((params) => {
       this.id = params['id'];
       this.evalId = params['evalId'];

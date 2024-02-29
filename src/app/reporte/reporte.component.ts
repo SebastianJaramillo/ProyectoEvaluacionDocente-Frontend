@@ -9,7 +9,6 @@ import { Observable } from 'rxjs';
 import { EvaluacionService } from '../services/evaluacion/evaluacion.service';
 import * as XLSX from 'xlsx';
 import Swal from 'sweetalert2';
-import { FuncionService } from '../services/funcion/funcion.service';
 
 @Component({
   selector: 'app-reporte',
@@ -58,12 +57,21 @@ export class ReporteComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private formularioService: FormularioService,
     private evaluacionService: EvaluacionService,
     private docenteService: DocenteService
   ) {}
 
   ngOnInit(): void {
+    const role = localStorage.getItem('role');
+    if (role && role === 'DOCENTE') {
+    } else {
+      this.mensaje('Acceso denegado. Vuelva a iniciar sesión.');
+      localStorage.clear();
+      this.router.navigate(['']);
+    }
+
     this.docId = '';
     this.perId = 1;
     this.area = 'T';

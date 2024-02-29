@@ -34,6 +34,15 @@ export class PeriodoAdminComponent implements OnInit {
     public dialog: MatDialog
   ) {}
   ngOnInit(): void {
+    const role = localStorage.getItem('role');
+    if (role && role === 'ADMIN') {   
+
+    } else {
+      this.mensaje('Acceso denegado. Vuelva a iniciar sesión.')
+      localStorage.clear();
+      this.router.navigate(['']);
+    }
+
     this.periodoForm = this.fb.group({
       id: [''],
       descripcion: [''],
@@ -104,11 +113,10 @@ export class PeriodoAdminComponent implements OnInit {
         if (result.fechaFin && result.fechaInicio) {
           this.evaluacion.evalFechaFin = new Date(
             result.fechaFin
-          ).toISOString();
-          //this.evaluacion.fechaFin = result.fechaFin + "T00:00:00.000+00:00";
+          );
           this.evaluacion.evalFechaInicio = new Date(
             result.fechaInicio
-          ).toISOString();
+          );
           this.evaluacion.estado = 'ACTIVO';
           this.evaluacion.perId = result.idPeriodo;
           this.evaluacionService.createEvaluacion(this.evaluacion).subscribe(

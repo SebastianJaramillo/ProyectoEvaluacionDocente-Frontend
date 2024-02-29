@@ -49,6 +49,14 @@ export class PreguntasDocenteComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    const role = localStorage.getItem('role');
+    if (role && role === 'DOCENTE') {
+    } else {
+      this.mensajeError('Acceso denegado. Vuelva a iniciar sesión.');
+      localStorage.clear();
+      this.router.navigate(['']);
+    }
+
     this.findByFechas();
 
     this.route.params.subscribe((params) => {
@@ -288,6 +296,16 @@ export class PreguntasDocenteComponent implements OnInit {
       title: 'Éxito',
       text: texto,
       icon: 'success',
+      confirmButtonText: 'Aceptar',
+      width: '350px',      
+    });
+  }
+
+  mensajeError(texto: any) {
+    Swal.fire({
+      title: 'Error',
+      text: texto,
+      icon: 'error',
       confirmButtonText: 'Aceptar',
       width: '350px',      
     });

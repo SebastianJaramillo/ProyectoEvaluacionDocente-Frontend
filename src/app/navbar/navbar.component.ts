@@ -1,9 +1,6 @@
 import {
   Component,
-  ViewChild,
   OnInit,
-  Output,
-  EventEmitter,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { DocenteService } from '../services/docente/docente.service';
@@ -33,7 +30,7 @@ export class NavbarComponent implements OnInit {
     this.role = localStorage.getItem('role');
     this.evalId = localStorage.getItem('evalId');
 
-    if (this.id && this.role) {
+    if (this.id && this.role && this.evalId) {
       switch (this.role) {
         case 'DOCENTE':
           this.findDocente(atob(this.id));
@@ -46,10 +43,8 @@ export class NavbarComponent implements OnInit {
           console.log('No se encontró rol');
       }
     } else {
-      localStorage.removeItem('idUser');
-      localStorage.removeItem('role');
-      localStorage.removeItem('evalId');
-      this.router.navigate(['iniciar-sesion']);
+      localStorage.clear();
+      this.router.navigate(['']);
     }
   }
 
@@ -90,10 +85,8 @@ export class NavbarComponent implements OnInit {
   }
 
   salir() {
-    localStorage.removeItem('idUser');
-    localStorage.removeItem('role');
-    //localStorage.removeItem('evalId');
-    this.router.navigate(['iniciar-sesion']);
+    localStorage.clear();
+    this.router.navigate(['']);
   }
 
   encuesta() {

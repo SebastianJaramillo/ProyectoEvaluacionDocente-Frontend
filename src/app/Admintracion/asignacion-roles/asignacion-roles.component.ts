@@ -11,12 +11,12 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-asignacion-roles',
   templateUrl: './asignacion-roles.component.html',
-  styleUrls: ['./asignacion-roles.component.css']
+  styleUrls: ['./asignacion-roles.component.css'],
 })
 export class AsignacionRolesComponent implements OnInit {
   docentes: Docente[] = [];
   docente: any = {};
-  DocentesFuncion: any [] = [];
+  DocentesFuncion: any[] = [];
   id: any;
   idJefe: any;
   evalId: any;
@@ -34,86 +34,121 @@ export class AsignacionRolesComponent implements OnInit {
     private evaluacionService: EvaluacionService,
     private router: Router,
     private route: ActivatedRoute
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    this.findDocenteAll()
+    const role = localStorage.getItem('role');
+    if (role && role === 'DOCENTE') {
+    } else {
+      this.mensajeError('Acceso denegado. Vuelva a iniciar sesión.');
+      this.router.navigate(['']);
+    }
+
+    this.findDocenteAll();
   }
 
-
-  
   filtrarDocentes() {
     this.funcionService.findAllDocentesByEstado().subscribe({
       next: (funciones: Funcion[]) => {
         this.funcionService.findAllFunciones().subscribe({
           next: (nombresFunciones: NombreFuncion[]) => {
-            const mapFuncIdToNombreRol = nombresFunciones.reduce((acc, nombreFuncion) => {
-              acc[nombreFuncion.id] = nombreFuncion.rol;
-              return acc;
-            }, {} as {[key: string]: string});
+            const mapFuncIdToNombreRol = nombresFunciones.reduce(
+              (acc, nombreFuncion) => {
+                acc[nombreFuncion.id] = nombreFuncion.rol;
+                return acc;
+              },
+              {} as { [key: string]: string }
+            );
             const agrupadasPorDocId = funciones.reduce((acc, funcion) => {
               const nombreRol = mapFuncIdToNombreRol[funcion.funcId];
-              (acc[funcion.docId] = acc[funcion.docId] || []).push({ ...funcion, nombreRol });
+              (acc[funcion.docId] = acc[funcion.docId] || []).push({
+                ...funcion,
+                nombreRol,
+              });
               return acc;
-            }, {} as {[key: string]: any[]});
-  
-            const docentesConRolPreferido = Object.values(agrupadasPorDocId).map((funciones: any[]) => {
-              const funcionConCoordinador = funciones.find(funcion => funcion.nombreRol === 'Coordinador');
+            }, {} as { [key: string]: any[] });
+
+            const docentesConRolPreferido = Object.values(
+              agrupadasPorDocId
+            ).map((funciones: any[]) => {
+              const funcionConCoordinador = funciones.find(
+                (funcion) => funcion.nombreRol === 'Coordinador'
+              );
               return funcionConCoordinador || funciones[0];
             });
-  
-            let docentesFiltradosPorNombre = docentesConRolPreferido.filter(doc=>
-            (doc.docente.nombres + " " + doc.docente.apellidos).toLowerCase().includes(this.terminoBusqueda.toLowerCase())
-          );
+
+            let docentesFiltradosPorNombre = docentesConRolPreferido.filter(
+              (doc) =>
+                (doc.docente.nombres + ' ' + doc.docente.apellidos)
+                  .toLowerCase()
+                  .includes(this.terminoBusqueda.toLowerCase())
+            );
             this.DocentesFuncion = docentesFiltradosPorNombre;
-            this.DocentesFuncion = this.DocentesFuncion.filter(docenteConFuncion => docenteConFuncion.funcion.rol !== 'Director');
+            this.DocentesFuncion = this.DocentesFuncion.filter(
+              (docenteConFuncion) =>
+                docenteConFuncion.funcion.rol !== 'Director'
+            );
           },
-          error: (error) => console.error(error)
+          error: (error) => console.error(error),
         });
       },
-      error: (error) => console.error(error)
+      error: (error) => console.error(error),
     });
-    
   }
-    
+
   findDocenteAll() {
     this.funcionService.findAllDocentesByEstado().subscribe({
       next: (funciones: Funcion[]) => {
         this.funcionService.findAllFunciones().subscribe({
           next: (nombresFunciones: NombreFuncion[]) => {
-            const mapFuncIdToNombreRol = nombresFunciones.reduce((acc, nombreFuncion) => {
-              acc[nombreFuncion.id] = nombreFuncion.rol;
-              return acc;
-            }, {} as {[key: string]: string});
-  
+            const mapFuncIdToNombreRol = nombresFunciones.reduce(
+              (acc, nombreFuncion) => {
+                acc[nombreFuncion.id] = nombreFuncion.rol;
+                return acc;
+              },
+              {} as { [key: string]: string }
+            );
+
             const agrupadasPorDocId = funciones.reduce((acc, funcion) => {
               const nombreRol = mapFuncIdToNombreRol[funcion.funcId];
-              (acc[funcion.docId] = acc[funcion.docId] || []).push({ ...funcion, nombreRol });
+              (acc[funcion.docId] = acc[funcion.docId] || []).push({
+                ...funcion,
+                nombreRol,
+              });
               return acc;
-            }, {} as {[key: string]: any[]});
-  
-            const docentesConRolPreferido = Object.values(agrupadasPorDocId).map((funciones: any[]) => {
-              const funcionConCoordinador = funciones.find(funcion => funcion.nombreRol === 'Coordinador');
+            }, {} as { [key: string]: any[] });
+
+            const docentesConRolPreferido = Object.values(
+              agrupadasPorDocId
+            ).map((funciones: any[]) => {
+              const funcionConCoordinador = funciones.find(
+                (funcion) => funcion.nombreRol === 'Coordinador'
+              );
               return funcionConCoordinador || funciones[0];
             });
-  
+
             this.DocentesFuncion = docentesConRolPreferido;
-            this.DocentesFuncion = this.DocentesFuncion.filter(docenteConFuncion => docenteConFuncion.funcion.rol !== 'Director');
+            this.DocentesFuncion = this.DocentesFuncion.filter(
+              (docenteConFuncion) =>
+                docenteConFuncion.funcion.rol !== 'Director'
+            );
           },
-          error: (error) => console.error(error)
+          error: (error) => console.error(error),
         });
       },
-      error: (error) => console.error(error)
+      error: (error) => console.error(error),
     });
   }
-  
-    
-  
 
   findByFuncion(id: string) {
     this.docenteService.findFuncionDirector(id).subscribe(
       (data) => {
-        this.docentes = data.filter((docente) => docente.docId !== atob(this.id));
+        this.docentes = data.filter((docente) => docente.docId !== this.id);        
+        if (this.docentes.length <= 0) {
+          this.mensajeError('Acceso denegado. Vuelva a iniciar sesión.');
+          localStorage.clear();
+          this.router.navigate(['']);
+        }
       },
       (error) => {
         console.error(error);
@@ -132,11 +167,8 @@ export class AsignacionRolesComponent implements OnInit {
     );
   }
 
-  cambiarRol(id: any,docId:any) {
-    this.router.navigate([
-      'asignarRol',
-      id,docId
-    ]);
+  cambiarRol(id: any, docId: any) {
+    this.router.navigate(['asignarRol', btoa(id), btoa(docId)]);
   }
 
   findPeriodo(id: number): any {
@@ -167,7 +199,17 @@ export class AsignacionRolesComponent implements OnInit {
       text: texto,
       icon: 'success',
       confirmButtonText: 'Aceptar',
-      width: '350px',      
+      width: '350px',
+    });
+  }
+
+  mensajeError(texto: any) {
+    Swal.fire({
+      title: 'Error',
+      text: texto,
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+      width: '350px',
     });
   }
 }

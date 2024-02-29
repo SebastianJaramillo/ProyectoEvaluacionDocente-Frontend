@@ -38,7 +38,7 @@ export class EvaluacionService {
   }
   
   createEvaluacion(evaluacion: any){
-    return this.http.get<any[]>(`${this.apiUrl}/evaluacion/registro`,evaluacion);
+    return this.http.post<any>(`${this.apiUrl}/evaluacion/registro`, evaluacion);
   }
 
   

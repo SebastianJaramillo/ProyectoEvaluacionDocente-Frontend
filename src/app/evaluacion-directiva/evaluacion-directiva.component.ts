@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { DocenteService } from '../services/docente/docente.service';
 import { FuncionService } from '../services/funcion/funcion.service';
 import { EvaluacionService } from '../services/evaluacion/evaluacion.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-evaluacion-directiva',
@@ -34,6 +35,16 @@ export class EvaluacionDirectivaComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.id = params['id'];
+
+      const role = localStorage.getItem('role');
+      if (role && role === 'DOCENTE') {
+        this.findDirector(atob(this.id));
+      } else {
+        this.mensaje('Acceso denegado. Vuelva a iniciar sesión.');
+        localStorage.clear();
+        this.router.navigate(['']);
+      }
+
       this.evalId = params['evalId'];
       this.funcId = atob(params['funcId']);
       this.funcIdAux = params['funcId'];
@@ -67,6 +78,22 @@ export class EvaluacionDirectivaComponent implements OnInit {
         this.docentes = data.filter((docente, index, self) => 
           docente.docId !== atob(this.id) && self.findIndex(d => d.docId === docente.docId) === index
         );
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  findDirector(id: string) {
+    this.docenteService.findDirector(id).subscribe(
+      (data) => {
+        this.docentes = data;
+        if (this.docentes.length <= 0) {
+          this.mensaje('Acceso denegado. Vuelva a iniciar sesión.');
+          localStorage.clear();
+          this.router.navigate(['']);
+        }
       },
       (error) => {
         console.error(error);
@@ -131,5 +158,15 @@ export class EvaluacionDirectivaComponent implements OnInit {
         console.error(error);
       }
     );
-  }  
+  }
+
+  mensaje(texto: any) {
+    Swal.fire({
+      title: 'Error',
+      text: texto,
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+      width: '350px',
+    });
+  }
 }

@@ -61,8 +61,7 @@ export class EvaluacionComponent implements OnInit {
 
     this.userService.findById(atob(this.id)).subscribe({
       next: (user) => {
-        if (user && user.id) {
-          localStorage.setItem('periodo', 'SI');      
+        if (user && user.id) { 
           if (user.role == 'ESTUDIANTE') {            
             this.router.navigate(['cursos', this.id, this.evalId]);
           } else {

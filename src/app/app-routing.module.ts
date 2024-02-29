@@ -19,8 +19,7 @@ import { SeleccionarCoordinadorComponent } from './Admintracion/asignacion/selec
 import { DocenteAsignacionComponent } from './Admintracion/asignacion/docente-asignacion/docente-asignacion.component';
 import { ListaDocentesComponent } from './Admintracion/asignacion/lista-docentes/lista-docentes.component';
 const routes: Routes = [
-  {path:'iniciar-sesion',component:LoginComponent},
-
+  { path: '', component: LoginComponent },
   {
     path: '',
     component: NavbarAdminComponent,

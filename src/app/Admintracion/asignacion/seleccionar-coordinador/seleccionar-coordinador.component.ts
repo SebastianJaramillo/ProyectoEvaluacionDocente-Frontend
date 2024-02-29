@@ -43,7 +43,7 @@ export class SeleccionarCoordinadorComponent implements OnInit {
       this.id = params['id'];
       this.docId = params['docId'];
       this.findDocenteAll();
-      this.findDocente(this.id)
+      this.findDocente(atob(this.id))
     });
 
   }
@@ -171,7 +171,7 @@ export class SeleccionarCoordinadorComponent implements OnInit {
       }
     );
     this.cambiarEstadoCoordinadorDocente();
-    this.funcionService.findDocenteFuncionById(this.id).subscribe(
+    this.funcionService.findDocenteFuncionById(atob(this.id)).subscribe(
       (data) => {
         this.DocenteFuncion = data;
         this.DocenteFuncion.docId = idNuevoJefe;  
@@ -209,7 +209,7 @@ export class SeleccionarCoordinadorComponent implements OnInit {
   }
 
   cambiarEstadoCoordinadorDocente() {
-    this.docenteService.cambiarEstadoDocenteFuncion(this.id).subscribe(
+    this.docenteService.cambiarEstadoDocenteFuncion(Number(atob(this.id))).subscribe(
       (data) => {
         this.DocenteFuncion = data;
         this.DocenteFuncion.funcId = 'DOC-DOC',

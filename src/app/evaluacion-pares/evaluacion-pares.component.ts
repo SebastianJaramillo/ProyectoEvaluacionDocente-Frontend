@@ -3,6 +3,7 @@ import { DocenteService } from '../services/docente/docente.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EvaluacionService } from '../services/evaluacion/evaluacion.service';
 import { FuncionService } from '../services/funcion/funcion.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-evaluacion-pares',
@@ -33,6 +34,14 @@ export class EvaluacionParesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    const role = localStorage.getItem('role');
+    if (role && role === 'DOCENTE') {
+    } else {
+      this.mensaje('Acceso denegado. Vuelva a iniciar sesión.');
+      localStorage.clear();
+      this.router.navigate(['']);
+    }
+
     this.route.params.subscribe((params) => {
       this.id = params['id'];
       this.evalId = params['evalId'];
@@ -133,5 +142,15 @@ export class EvaluacionParesComponent implements OnInit {
     }
 
     this.router.navigate(['docentes-preguntas', this.id, btoa(id), this.formId, this.evalId, btoa(this.funcId)]);  
+  }
+
+  mensaje(texto: any) {
+    Swal.fire({
+      title: 'Error',
+      text: texto,
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+      width: '350px',
+    });
   }
 }

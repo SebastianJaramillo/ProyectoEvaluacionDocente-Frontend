@@ -70,7 +70,7 @@ export class LoginComponent implements OnInit {
             next: (user) => {
               if (user && user.id) {
                 localStorage.setItem('idUser', btoa(user.id));
-                localStorage.setItem('role', user.role);                
+                localStorage.setItem('role', user.role);
                 if(user.role != 'ADMIN') {
                   this.router.navigate(['periodo', btoa(user.id.toString())]);
                 } else {

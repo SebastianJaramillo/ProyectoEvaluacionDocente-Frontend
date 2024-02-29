@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer2 } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DocenteService } from '../../services/docente/docente.service';
 import { AlertSuccessComponent } from '../../alerts/alert-success/alert-success.component';
@@ -21,6 +21,7 @@ export class AsignacionDocenteComponent implements OnInit {
   funcion: any = {};
   funcionActual: any = {};
   funciones: any[] = [];
+  docentes: any[] = [];
   docId: any;
   evalId: number | undefined;
   docente: any = {};
@@ -32,7 +33,6 @@ export class AsignacionDocenteComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private renderer: Renderer2,
     private docenteService: DocenteService,
     private funcionService: FuncionService,
     private modalService: NgbModal,
@@ -44,8 +44,9 @@ export class AsignacionDocenteComponent implements OnInit {
     this.route.params.subscribe((params) => {
       this.id = params['id'];
       this.docId = params['docId'];
-      this.findDatosDocente(this.docId);
-      this.findByJefe(this.docId);
+
+      this.findDatosDocente(atob(this.docId));
+      this.findByJefe(atob(this.docId));
     });
   }
 
@@ -60,6 +61,23 @@ export class AsignacionDocenteComponent implements OnInit {
       }
     );
   }
+
+  findDirector(id: string) {
+    this.docenteService.findDirector(id).subscribe(
+      (data) => {
+        this.docentes = data;
+        if (this.docentes.length <= 0) {
+          this.mensajeError('Acceso denegado. Vuelva a iniciar sesión.');
+          localStorage.clear();
+          this.router.navigate(['']);
+        }
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
   findDatosDocente(id: string) {
     this.findDocente(id);
     this.funcionService.findDocenteFuncion(id).subscribe(
@@ -89,7 +107,7 @@ export class AsignacionDocenteComponent implements OnInit {
   }
 
   cambiarRolCoordinadorDocente() {
-    this.docenteService.findByJefe(this.docId).subscribe(
+    this.docenteService.findByJefe(atob(this.docId)).subscribe(
       (data) => {
         if (data && data.length > 0) {
           this.router.navigate([
@@ -108,7 +126,7 @@ export class AsignacionDocenteComponent implements OnInit {
   }
 
   cambiarRol() {
-        this.docenteService.cambiarEstadoDocenteFuncion(this.id).subscribe(
+        this.docenteService.cambiarEstadoDocenteFuncion(Number(atob(this.id))).subscribe(
           (data) => {
             console.log('Estado cambiado', data);
             
@@ -117,7 +135,7 @@ export class AsignacionDocenteComponent implements OnInit {
             console.error(error);
           }
         )
-        this.funcionActual.docId = this.docId;
+        this.funcionActual.docId = atob(this.docId);
         this.funcionActual.funcId = 'DOC-DOC';
         this.funcionActual.horas = '0'
         this.docenteService.crearDocentefuncion(this.funcionActual).subscribe(
@@ -134,7 +152,7 @@ export class AsignacionDocenteComponent implements OnInit {
   }
 
   cambiarRolDocenteCoordinador() {
-    this.funcionActual.docId = this.docId;
+    this.funcionActual.docId = atob(this.docId);
     this.funcionActual.funcId = this.rolSeleccionado;
     this.funcionActual.horas = '0'
     this.docenteService.crearDocentefuncion(this.funcionActual).subscribe(
@@ -169,4 +187,13 @@ export class AsignacionDocenteComponent implements OnInit {
     });
   }
 
+  mensajeError(texto: any) {
+    Swal.fire({
+      title: 'Error',
+      text: texto,
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+      width: '350px',      
+    });
+  }
 }

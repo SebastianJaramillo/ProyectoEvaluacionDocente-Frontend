@@ -7,6 +7,7 @@ import { FormularioService } from 'src/app/services/formulario/formulario.servic
 import { FormularioFormAdminComponent } from '../formulario-form-admin/formulario-form-admin.component';
 import { Formulario } from './formulario.model';
 import { PreguntasFormAdminComponent } from '../preguntas-form-admin/preguntas-form-admin.component';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-formulario-admin',
   templateUrl: './formulario-admin.component.html',
@@ -29,8 +30,30 @@ export class FormularioAdminComponent implements OnInit {
   constructor(
     private formularioService: FormularioService,    
     private fb: FormBuilder,
+    private router: Router,
     public dialog: MatDialog
   ) { }
+
+  ngOnInit(): void {
+    const role = localStorage.getItem('role');
+    if (role && role === 'ADMIN') {   
+
+    } else {
+      this.mensaje('Acceso denegado. Vuelva a iniciar sesión.')
+      localStorage.clear();
+      this.router.navigate(['']);
+    }
+
+    this.evaluacionForm = this.fb.group({
+      id: [''],
+      nombre: [''],
+      descripcion: ['']
+    });
+    this.preguntasForm = this.fb.group({
+      id: ['']
+    });
+    this.getAllFormularios();
+  }
 
   filtrarFormularios(): void {
     switch (this.filtroSeleccionado) {
@@ -51,18 +74,6 @@ export class FormularioAdminComponent implements OnInit {
         this.getAllFormularios();
         break;
     }
-  }
-
-  ngOnInit(): void {
-    this.evaluacionForm = this.fb.group({
-      id: [''],
-      nombre: [''],
-      descripcion: ['']
-    });
-    this.preguntasForm = this.fb.group({
-      id: ['']
-    });
-    this.getAllFormularios();
   }
 
   getAllFormularios() {
@@ -94,17 +105,13 @@ export class FormularioAdminComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('El diálogo fue cerrado', result);
       if (result !== undefined) {
-        console.log("Datos del formulario:", result);
         if (result.nombre && result.descripcion) {
           this.formulario.nombre = result.nombre;
           this.formulario.descripcion = result.descripcion;
-          console.log("Datos del formulario actualizado:", this.formulario);
 
           this.formularioService.saveFormulario(this.formulario).subscribe(
             (data) => {
-              console.log("Registro guardado", this.formulario);
               this.getAllFormularios();
             },
             (error) => {
@@ -136,7 +143,6 @@ export class FormularioAdminComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
           if (result !== undefined) {
-            console.log("Datos del formulario recibidos del diálogo:", result);
             if (result.nombre && result.descripcion) {
               this.actualizarFormulario(result);
             }
@@ -157,20 +163,12 @@ export class FormularioAdminComponent implements OnInit {
 
     this.formularioService.saveFormulario(this.formulario).subscribe(
       (data) => {
-        console.log("Formulario actualizado:", data);
         this.getAllFormularios();
       },
       (error) => {
         console.error('Error guardando el formulario:', error);
       }
     );
-  }
-
-  cargarFormularios(): void {
-    /*
-    this.formularioService.obtenerFormularios().subscribe(data => {
-      this.formularios = data;
-    });*/
   }
 
   eliminarFormulario(id: number): void {
@@ -183,9 +181,6 @@ export class FormularioAdminComponent implements OnInit {
     this.formularioService.getPreguntaFormulario(id).subscribe(
       (data) => {
         this.preguntas = data;
-        //this.preguntas.push(this.fb.control(this.preguntas))
-
-        console.log("Preguntas obtenidas:", this.preguntas);
         this.preguntasForm.patchValue({
           id: id
         });
@@ -194,14 +189,6 @@ export class FormularioAdminComponent implements OnInit {
           data: { preguntas: this.preguntasForm.value },
           panelClass: 'mi-clase-personalizada'
         });
-
-        dialogRef.afterClosed().subscribe(result => {
-          console.log('El diálogo de preguntas se cerró');
-          if (result) {
-            console.log("Preguntas actualizadas:", result);
-          }
-        });
-
       },
       (error) => {
         console.error(error);
@@ -209,9 +196,13 @@ export class FormularioAdminComponent implements OnInit {
     );
   }
 
-  cambiarEstado(formulario: any): void {
-    console.log('Nuevo estado del formulario:', formulario.estado);
-
-    // this.formularioService.actualizarEstado(formulario.id, formulario.estado).subscribe(...);
+  mensaje(texto: any) {
+    Swal.fire({
+      title: 'Error',
+      text: texto,
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+      width: '350px',
+    });
   }
 }
