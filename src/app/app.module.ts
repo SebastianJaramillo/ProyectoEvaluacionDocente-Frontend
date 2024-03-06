@@ -47,6 +47,7 @@ import { AsignacionDocenteComponent } from './Admintracion/asignacion-docente/as
 import { SeleccionarCoordinadorComponent } from './Admintracion/asignacion/seleccionar-coordinador/seleccionar-coordinador.component';
 import { DocenteAsignacionComponent } from './Admintracion/asignacion/docente-asignacion/docente-asignacion.component';
 import { ListaDocentesComponent } from './Admintracion/asignacion/lista-docentes/lista-docentes.component';
+import { PeriodoFormAdminEditarComponent } from './Admintracion/periodo-form-admin-editar/periodo-form-admin-editar.component';
 const routes: Routes = [
   { path: 'cursos', component: CursoComponent },  
   { path: '', redirectTo: '/inicio', pathMatch: 'full' },
@@ -79,7 +80,8 @@ const routes: Routes = [
     AsignacionDocenteComponent,
     SeleccionarCoordinadorComponent,
     DocenteAsignacionComponent,
-    ListaDocentesComponent
+    ListaDocentesComponent,
+    PeriodoFormAdminEditarComponent
   ],
   imports: [
     BrowserModule,

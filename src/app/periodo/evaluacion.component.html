@@ -1,12 +1,13 @@
 <div class="container">
   <h2><b>PERIODO</b></h2>
 
-  <select>
+  <select [(ngModel)]="idPeriodo">
+    <option value="0">SELECCIONE...</option>
     <option *ngFor="let periodo of periodos" [value]="periodo.id">
       {{ periodo.descripcion }}
     </option>
   </select>
 
-  <button (click)="selectPeriodo()">Seleccionar</button>
+  <button (click)="findByFechas(idPeriodo)">Aceptar</button>
   </div> 
 

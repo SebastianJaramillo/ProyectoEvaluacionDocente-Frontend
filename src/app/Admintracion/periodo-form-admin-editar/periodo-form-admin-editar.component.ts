@@ -1,20 +1,21 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { EvaluacionService } from 'src/app/services/evaluacion/evaluacion.service'; // Ajusta según sea necesario
+import { Component, Inject } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { EvaluacionService } from 'src/app/services/evaluacion/evaluacion.service';
 import Swal from 'sweetalert2';
+
 @Component({
-  selector: 'app-periodo-form-admin',
-  templateUrl: './periodo-form-admin.component.html',
-  styleUrls: ['./periodo-form-admin.component.css'],
+  selector: 'app-periodo-form-admin-editar',
+  templateUrl: './periodo-form-admin-editar.component.html',
+  styleUrls: ['./periodo-form-admin-editar.component.css'],
 })
-export class PeriodoFormAdminComponent {
+export class PeriodoFormAdminEditarComponent {
   evaluacionForm: FormGroup;
   periodos: any[] = [];
   evaluacion: any = {};
 
   constructor(
-    public dialogRef: MatDialogRef<PeriodoFormAdminComponent>,
+    public dialogRef: MatDialogRef<PeriodoFormAdminEditarComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private evaluacionService: EvaluacionService,
     private fb: FormBuilder
@@ -28,13 +29,28 @@ export class PeriodoFormAdminComponent {
   }
 
   ngOnInit(): void {
-    if (this.data && this.data.formulario) {
-      this.inicializarFormulario(this.data.formulario);
-    } else {
-      this.inicializarFormulario();
-    }
+    this.initForm();
+    this.setFormData(this.data);
 
     this.cargarPeriodos();
+  }
+
+  initForm(): void {
+    this.evaluacionForm = this.fb.group({
+      id: [''],
+      fechaInicio: ['', Validators.required],
+      fechaFin: ['', Validators.required],
+      idPeriodo: ['', Validators.required],
+    });
+  }
+
+  setFormData(evaluacion: any): void {
+    this.evaluacionForm.patchValue({
+      id: evaluacion.id,
+      fechaInicio: evaluacion.evalFechaInicio,
+      fechaFin: evaluacion.evalFechaFin,
+      idPeriodo: evaluacion.periodo.id,
+    });
   }
 
   cargarPeriodos() {
@@ -47,17 +63,25 @@ export class PeriodoFormAdminComponent {
   findByPeriodo(id: number) {
     this.evaluacionService.findEvaluacionByPeriodo(id).subscribe(
       (data) => {
-        this.mensajeError(
-          'Ya existe una evaluación en ese periodo. Si desea habilitar nuevamente, edite las fechas'
+        this.evaluacionService.getAllEvaluaciones().subscribe(
+          (data) => {        
+            const periodoExiste = data.find(evaluacion => evaluacion.perId === id);
+            if(periodoExiste) {
+              this.mensaje('Evaluación actualizada correctamente');
+              if (this.evaluacionForm.valid) {
+                this.dialogRef.close(this.evaluacionForm.value);
+              }
+            } else {
+              this.mensajeError('Periodo ya se encuentra asignado a otra evaluacion');
+            }
+          },
+          (error) => {
+            console.log(error)
+          }
         );
       },
       (error) => {
-        this.dialogRef.close(this.evaluacionForm.value);
-
-        this.mensaje('Periodo guardado correctamente');
-        if (this.evaluacionForm.valid) {
-          this.dialogRef.close(this.evaluacionForm.value);
-        }
+        console.log(error)
       }
     );
   }
@@ -70,9 +94,7 @@ export class PeriodoFormAdminComponent {
       !evaluacion.fechaFin ||
       !evaluacion.idPeriodo
     ) {
-      this.mensajeError(
-        'Llenar todos los campos'
-      );
+      this.mensajeError('Llenar todos los campos');
       return;
     }
 

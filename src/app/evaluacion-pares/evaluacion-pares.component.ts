@@ -50,6 +50,7 @@ export class EvaluacionParesComponent implements OnInit {
       this.findByJefe(atob(this.id));
       this.findEvaluacion(this.evalId);
       this.findByEvaluador(atob(this.id));
+      this.findPeriodo(this.evalId);
     });
   }
 

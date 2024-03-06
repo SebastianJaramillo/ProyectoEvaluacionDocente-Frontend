@@ -8,6 +8,7 @@ import { PeriodoFormAdminComponent } from '../periodo-form-admin/periodo-form-ad
 import { Evaluacion } from '../../periodo/evaluacion.model';
 import { Periodo } from 'src/app/periodo/periodo.model';
 import Swal from 'sweetalert2';
+import { PeriodoFormAdminEditarComponent } from '../periodo-form-admin-editar/periodo-form-admin-editar.component';
 
 @Component({
   selector: 'app-periodo-admin',
@@ -16,7 +17,7 @@ import Swal from 'sweetalert2';
 })
 export class PeriodoAdminComponent implements OnInit {
   periodos: Periodo[] = [];
-  evaluaciones: Evaluacion[] = [];
+  evaluaciones: any[] = [];
   evaluacion: any = {};
   periodo: any = {};
   id: any;
@@ -35,10 +36,9 @@ export class PeriodoAdminComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     const role = localStorage.getItem('role');
-    if (role && role === 'ADMIN') {   
-
+    if (role && role === 'ADMIN') {
     } else {
-      this.mensaje('Acceso denegado. Vuelva a iniciar sesión.')
+      this.mensaje('Acceso denegado. Vuelva a iniciar sesión.');
       localStorage.clear();
       this.router.navigate(['']);
     }
@@ -48,40 +48,7 @@ export class PeriodoAdminComponent implements OnInit {
       descripcion: [''],
       estado: [''],
     });
-    this.getAllEvaluacionesConNombreDePeriodo();
-  }
-
-  getAllEvaluacionesConNombreDePeriodo() {
-    forkJoin({
-      evaluaciones: this.evaluacionService.getAllEvaluaciones(),
-      periodos: this.evaluacionService.getAllPeriodos(),
-    }).subscribe({
-      next: ({ evaluaciones, periodos }) => {        
-        this.evaluaciones = evaluaciones.map((evaluacion) => {
-          const periodo = periodos.find((p) => {
-            return p.id === evaluacion.perId;
-          });
-          return {
-            ...evaluacion,
-            nombrePeriodo: periodo
-              ? periodo.descripcion
-              : 'Periodo no encontrado',
-          };
-        });
-      },
-      error: (error) => console.error(error),
-    });
-  }
-
-  getAllPeriodos() {
-    this.evaluacionService.getAllPeriodos().subscribe(
-      (data) => {
-        this.periodos = data;
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
+    this.getAllEvaluaciones();
   }
 
   getAllEvaluaciones() {
@@ -95,12 +62,15 @@ export class PeriodoAdminComponent implements OnInit {
     );
   }
 
-  guardarPeriodo() {
-    if (this.modoEdicion) {
-      this.actualizarPeriodo();
-    } else {
-      this.crearPeriodo();
-    }
+  getAllPeriodos() {
+    this.evaluacionService.getAllPeriodos().subscribe(
+      (data) => {
+        this.periodos = data;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
   }
 
   abrirFormulario() {
@@ -111,17 +81,13 @@ export class PeriodoAdminComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result !== undefined) {
         if (result.fechaFin && result.fechaInicio) {
-          this.evaluacion.evalFechaFin = new Date(
-            result.fechaFin
-          );
-          this.evaluacion.evalFechaInicio = new Date(
-            result.fechaInicio
-          );
+          this.evaluacion.evalFechaFin = new Date(result.fechaFin);
+          this.evaluacion.evalFechaInicio = new Date(result.fechaInicio);
           this.evaluacion.estado = 'ACTIVO';
           this.evaluacion.perId = result.idPeriodo;
           this.evaluacionService.createEvaluacion(this.evaluacion).subscribe(
             (data) => {
-              this.getAllEvaluacionesConNombreDePeriodo();
+              this.getAllEvaluaciones();
             },
             (error) => {
               console.error(error);
@@ -133,26 +99,34 @@ export class PeriodoAdminComponent implements OnInit {
       }
     });
   }
-  crearPeriodo() {
-    /* this.periodoService.crearPeriodo(this.periodoForm.value).subscribe(() => {
-       this.cargarPeriodos();
-       this.periodoForm.reset();
-     });*/
-  }
 
-  editarPeriodo(id: number) {
-    /*
-    this.periodoForm.setValue(periodo);
-    this.modoEdicion = true;
-    */
-  }
+  actualizarPeriodo(evaluacion: any) {
+    const dialogRef = this.dialog.open(PeriodoFormAdminEditarComponent, {
+      width: '550px',
+      data: evaluacion
+    });
 
-  actualizarPeriodo() {
-    /*this.periodoService.actualizarPeriodo(this.periodoForm.value).subscribe(() => {
-      this.cargarPeriodos();
-      this.periodoForm.reset();
-      this.modoEdicion = false;
-    });*/
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result !== undefined) {
+        if (result.fechaFin && result.fechaInicio) {
+          this.evaluacion.evalFechaFin = new Date(result.fechaFin);
+          this.evaluacion.evalFechaInicio = new Date(result.fechaInicio);
+          this.evaluacion.estado = 'ACTIVO';
+          this.evaluacion.perId = result.idPeriodo;
+          this.evaluacion.id = result.id;
+          this.evaluacionService.updateEvaluacion(this.evaluacion).subscribe(
+            (data) => {
+              this.getAllEvaluaciones();
+            },
+            (error) => {
+              console.error(error);
+            }
+          );
+        }
+      } else {
+        console.log('El diálogo se cerró sin enviar datos');
+      }
+    });
   }
 
   eliminarPeriodo(id: number) {
@@ -162,11 +136,12 @@ export class PeriodoAdminComponent implements OnInit {
         if (this.evaluacion.estado == 'ACTIVO') {
           this.mensaje('No es posible eliminar una evaluacion activa');
         } else {
-          this.confirmacion('¿Desea eliminar el periodo?').then((result) => {
+          this.confirmacion('¿Desea eliminar la evaluación?').then((result) => {
             if (result.isConfirmed) {
               this.evaluacionService.deleteEvalucion(id).subscribe({
                 next: (data) => {
-                  this.getAllEvaluacionesConNombreDePeriodo();
+                  this.exito('Se eliminó la evaluación correctamente');
+                  this.getAllEvaluaciones();
                 },
                 error: (error) => {
                   console.error(
@@ -178,24 +153,15 @@ export class PeriodoAdminComponent implements OnInit {
             }
           });
         }
-        this.getAllEvaluacionesConNombreDePeriodo();
+        this.getAllEvaluaciones();
       },
       error: (error) => {
         console.error('Error al actualizar el estado de la evaluación', error);
       },
     });
-    /*this.periodoService.eliminarPeriodo(id).subscribe(() => {
-      this.cargarPeriodos();
-    });*/
   }
 
-  cancelarEdicion() {
-    /*this.periodoForm.reset();
-    this.modoEdicion = false;
-  */
-  }
-
-  cambiarEstado(id: number, estadoActual: string): void {
+  cambiarEstado(id: number, perId: number, estadoActual: string): void {
     if (estadoActual == 'ACTIVO') {
       estadoActual = 'INACTIVO';
     } else {
@@ -204,13 +170,24 @@ export class PeriodoAdminComponent implements OnInit {
 
     this.evaluacionService.updateEstadoEvaluacion(id, estadoActual).subscribe({
       next: (data) => {
-        this.getAllEvaluacionesConNombreDePeriodo();
+        this.evaluacionService
+          .updateEstadoPeriodo(perId, estadoActual)
+          .subscribe({
+            next: (data) => {
+              this.exito('Estado cambiado correctamente');
+              this.getAllEvaluaciones();
+            },
+            error: (error) => {
+              console.error('Error al actualizar el estado del periodo', error);
+            },
+          });
       },
       error: (error) => {
         console.error('Error al actualizar el estado de la evaluación', error);
       },
     });
   }
+
   getEstadoAsBoolean(estado: string): boolean {
     if (estado == 'ACTIVO') {
       return true;
@@ -224,6 +201,16 @@ export class PeriodoAdminComponent implements OnInit {
       title: 'Error',
       text: texto,
       icon: 'error',
+      confirmButtonText: 'Aceptar',
+      width: '350px',
+    });
+  }
+
+  exito(texto: any) {
+    Swal.fire({
+      title: 'Éxito',
+      text: texto,
+      icon: 'success',
       confirmButtonText: 'Aceptar',
       width: '350px',
     });

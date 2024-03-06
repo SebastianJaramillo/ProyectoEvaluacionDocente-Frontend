@@ -1,5 +1,5 @@
 <div class="container">
-    <h2 class="mb-5">PERIODOS ACADEMICOS</h2>
+    <h2 class="mb-5">EVALUACIONES</h2>
     <button (click)="abrirFormulario()">Crear</button>
 <br>
 <br>
@@ -18,17 +18,17 @@
         <tbody>
           <tr scope="row" *ngFor="let evaluacion of evaluaciones">
             <td>{{ evaluacion.id }}</td>
-            <td>{{ evaluacion.evalFechaInicio | date:'dd/MM/yyyy' }}</td>
-            <td>{{ evaluacion.evalFechaFin | date:'dd/MM/yyyy'}}</td>       
-            <td>{{ evaluacion.nombrePeriodo}}</td>
+            <td>{{ evaluacion.evalFechaInicio | date:'dd/MM/yyyy' : '+0000'}}</td>
+            <td>{{ evaluacion.evalFechaFin | date:'dd/MM/yyyy' : '+0000'}}</td>
+            <td>{{ evaluacion.periodo.descripcion}}</td>
             <td>
               <label class="switch">
-                <input type="checkbox" [id]="'switch'+evaluacion.id"   [checked]="getEstadoAsBoolean(evaluacion.estado)" (change)="cambiarEstado(evaluacion.id,evaluacion.estado)">
+                <input type="checkbox" [id]="'switch'+evaluacion.id"   [checked]="getEstadoAsBoolean(evaluacion.estado)" (change)="cambiarEstado(evaluacion.id, evaluacion.perId, evaluacion.estado)">
                 <span class="slider round"></span>
               </label>
             </td>
             <td>
-              <button class="btn btn-secondary" (click)="editarPeriodo(evaluacion.id)">Editar</button>
+              <button class="btn btn-secondary" (click)="actualizarPeriodo(evaluacion)">Editar</button>
               <button class="btn btn-danger" (click)="eliminarPeriodo(evaluacion.id)">Eliminar</button>
             </td>
           </tr>

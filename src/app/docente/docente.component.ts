@@ -53,7 +53,9 @@ export class DocenteComponent implements OnInit {
       this.id = params['id'];
       this.evalId = params['evalId'];
     });    
-    this.findByFechas()
+    
+    this.findPeriodo(this.evalId);
+    this.findFunciones(atob(this.id));
     this.findByEvaluacion(atob(this.id), atob(this.id), this.evalId);
     this.findDocente(atob(this.id));
     if(this.director) {
@@ -61,21 +63,6 @@ export class DocenteComponent implements OnInit {
     } else {
       this.filtroSeleccionado = 'AUTOEVALUACION';
     }
-  }
-
-  findByFechas() {
-    this.evaluacionService.findByFechas().subscribe(
-      (data) => {
-        this.eval = data;
-        this.evalId = this.eval.id;
-        this.findPeriodo(this.eval.perId);
-        this.findFunciones(atob(this.id));    
-      },
-      (error) => {
-        this.mensaje('Evaluación no se encuentra habilitada en estas fechas.');
-        this.router.navigate(['periodo', this.id]);
-      }
-    );
   }
 
   findByEvaluacion(docEvaluado: string, docEvaluador: string, evalId: number) {

@@ -3,7 +3,8 @@
     <b>REPORTE INDIVIDUAL</b><br>
     <b>DOCENTE: </b>{{ docente.apellidos + " " + docente.nombres }}<br>
     <b>PERIODO: </b>
-    <select style="width: 37%;" [ngModel]="perId">
+    <select style="width: 37%;" [(ngModel)]="evalId">
+      <option value="0" selected disabled>SELECCIONE...</option>
       <option *ngFor="let periodo of periodos" [value]="periodo.id">
         {{ periodo.descripcion }}
       </option>
@@ -18,14 +19,15 @@
       <b>REPORTE INDIVIDUAL</b><br>
       <b>DOCENTE: </b>&nbsp;&nbsp;
       <select style="width: 30%;" name="docId" [(ngModel)]="docId">
-        <option value="" selected disabled>Seleccione...</option>
+        <option value="" selected disabled>SELECCIONE...</option>
         <option *ngFor="let doc of docentes" [value]="doc.id">
           {{ doc.apellidos + " " + doc.nombres }}
         </option>
       </select>
       &nbsp;&nbsp;&nbsp;&nbsp;
       <b>PERIODO: </b>&nbsp;&nbsp;
-      <select style="width: 30%;" name="perId" [(ngModel)]="perId">
+      <select style="width: 30%;" name="perId" [(ngModel)]="evalId">
+        <option value="0" selected disabled>SELECCIONE...</option>
         <option *ngFor="let periodo of periodos" [value]="periodo.id">
           {{ periodo.descripcion }}
         </option>
@@ -45,7 +47,8 @@
       </select>
       &nbsp;&nbsp;&nbsp;&nbsp;
       <b>PERIODO: </b>&nbsp;&nbsp;
-      <select style="width: 30%;" name="perId" [(ngModel)]="perId">
+      <select style="width: 30%;" name="perId" [(ngModel)]="evalId">
+        <option value="0" selected disabled>SELECCIONE...</option>
         <option *ngFor="let periodo of periodos" [value]="periodo.id">
           {{ periodo.descripcion }}
         </option>

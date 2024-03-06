@@ -25,8 +25,16 @@ export class EvaluacionService {
     return this.http.post<any>(`${this.apiUrl}/periodo/registro`, periodoData);
   }
 
-  findByFechas() {
-    return this.http.get<any>(`${this.apiUrl}/evaluacion/buscar/fechas`);
+  updateEstadoPeriodo(id: number, estado: string){
+    return this.http.put<any[]>(`${this.apiUrl}/periodo/estado/${id}`,estado);
+  }
+
+  findByFechas(id: number) {
+    return this.http.get<any>(`${this.apiUrl}/evaluacion/buscar/fechas/${id}`);
+  }
+
+  findEvaluacionByPeriodo(id: number) {
+    return this.http.get<any>(`${this.apiUrl}/evaluacion/periodo/${id}`);
   }
 
   getAllEvaluaciones(){
@@ -41,11 +49,9 @@ export class EvaluacionService {
     return this.http.post<any>(`${this.apiUrl}/evaluacion/registro`, evaluacion);
   }
 
-  
   updateEstadoEvaluacion(id: number, estado: string){
     return this.http.put<any[]>(`${this.apiUrl}/evaluacion/estado/${id}`,estado);
   }
-
 
   updateEvaluacion(evaluacion:any){
     return this.http.put<any[]>(`${this.apiUrl}/evaluacion/actualizar/${evaluacion.id}`,evaluacion);

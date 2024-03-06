@@ -57,8 +57,6 @@ export class PreguntasDocenteComponent implements OnInit {
       this.router.navigate(['']);
     }
 
-    this.findByFechas();
-
     this.route.params.subscribe((params) => {
       this.idJefe = params['idJefe'];
       this.id = params['idDoc'];
@@ -68,6 +66,7 @@ export class PreguntasDocenteComponent implements OnInit {
       this.findFormulario(this.formularioId);
       this.findDocente(atob(this.id));
       this.findEvaluador(atob(this.idJefe));
+      this.findPeriodo(this.evalId);
 
       if(this.formulario.nombre != 'COEVALUACION DIRECTIVA') {
         this.findFuncion(atob(this.funcId));
@@ -154,7 +153,6 @@ export class PreguntasDocenteComponent implements OnInit {
     this.evaluacionService.findEvaluacion(id).subscribe(
       (data) => {
         this.eval = data;
-        this.findPeriodo(this.eval.perId);
       },
       (error) => {
         console.error(error);
@@ -213,19 +211,6 @@ export class PreguntasDocenteComponent implements OnInit {
     }
 
     this.iniciarTimer();
-  }
-
-  findByFechas() {
-    this.evaluacionService.findByFechas().subscribe(
-      (data) => {
-        this.eval = data;
-        this.evalId = this.eval.id;
-      },
-      (error) => {
-        alert('Evaluación no se encuentra habilitada en estas fechas.');
-        this.router.navigate(['periodo', this.idJefe]);
-      }
-    );
   }
 
   guardar() {

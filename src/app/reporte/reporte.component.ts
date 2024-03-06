@@ -73,11 +73,10 @@ export class ReporteComponent implements OnInit {
     }
 
     this.docId = '';
-    this.perId = 1;
     this.area = 'T';
+    this.evalId = 0;
     this.route.params.subscribe((params) => {
       this.id = params['id'];
-      this.evalId = params['evalId'];
     });
 
     this.findFunciones(atob(this.id));
@@ -200,664 +199,611 @@ export class ReporteComponent implements OnInit {
   }
 
   async generarInforme() {
-    if (this.docId == '') {
-      this.mensaje('Seleccione un docente para genererar informe individual');
-      return;
-    }
-    await this.findDocente(this.docId);
+    if (this.evalId > 0) {
+      if (this.docId == '') {
+        this.mensaje('Seleccione un docente para genererar informe individual');
+        return;
+      }
+      await this.findDocente(this.docId);
 
-    await this.sleep(100);
+      await this.sleep(100);
 
-    await this.findPeriodo(this.perId);
+      await this.findPeriodo(this.evalId);
 
-    await this.sleep(100);
+      await this.sleep(100);
 
-    let {
-      horasDocencia,
-      horasInvestigacion,
-      horasGestion,
-      horasVinculacion,
-      notaAutDoc,
-      notaHetDoc,
-      notaParDoc,
-      notaDirDoc,
-      notaAutInv,
-      notaParInv,
-      notaDirInv,
-      notaAutGes,
-      notaDirGes,
-      notaAutVin,
-      notaParVin,
-      notaDirVin,
-      totalDocencia,
-      totalGestion,
-      totalInvestigacion,
-      totalVinculacion,
-      totalDocenciaPonderacion,
-      totalGestionPonderacion,
-      totalInvestigacionPonderacion,
-      totalVinculacionPonderacion,
-      totalFinal,
-    } = await this.calculos(this.docId);
+      let {
+        horasDocencia,
+        horasInvestigacion,
+        horasGestion,
+        horasVinculacion,
+        notaAutDoc,
+        notaHetDoc,
+        notaParDoc,
+        notaDirDoc,
+        notaAutInv,
+        notaParInv,
+        notaDirInv,
+        notaAutGes,
+        notaDirGes,
+        notaAutVin,
+        notaParVin,
+        notaDirVin,
+        totalDocencia,
+        totalGestion,
+        totalInvestigacion,
+        totalVinculacion,
+        totalDocenciaPonderacion,
+        totalGestionPonderacion,
+        totalInvestigacionPonderacion,
+        totalVinculacionPonderacion,
+        totalFinal,
+      } = await this.calculos(this.docId);
 
-    const pdf = new jsPDF({ orientation: 'landscape' });
+      const pdf = new jsPDF({ orientation: 'landscape' });
 
-    const logoUrl = '../../../assets/img/logo.png';
+      const logoUrl = '../../../assets/img/logo.png';
 
-    pdf.addImage(logoUrl, 'PNG', 10, 1, 45, 35);
+      pdf.addImage(logoUrl, 'PNG', 10, 1, 45, 35);
 
-    const titulo = 'UNIVERSIDAD DE LAS FUERZAS ARMADAS "ESPE"';
-    const subtitulo = 'UNIDAD DE DESARROLLO EDUCATIVO';
-    const fontSize = 16;
-    const textWidth =
-      (pdf.getStringUnitWidth(titulo) * fontSize) / pdf.internal.scaleFactor;
-    const pageWidth = pdf.internal.pageSize.getWidth();
+      const titulo = 'UNIVERSIDAD DE LAS FUERZAS ARMADAS "ESPE"';
+      const subtitulo = 'UNIDAD DE DESARROLLO EDUCATIVO';
+      const fontSize = 16;
+      const textWidth =
+        (pdf.getStringUnitWidth(titulo) * fontSize) / pdf.internal.scaleFactor;
+      const pageWidth = pdf.internal.pageSize.getWidth();
 
-    pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(fontSize);
-    pdf.text(titulo, (pageWidth - textWidth) / 2, 20);
-    const subtituloFontSize = 14;
-    const subtituloTextWidth =
-      (pdf.getStringUnitWidth(subtitulo) * subtituloFontSize) /
-      pdf.internal.scaleFactor;
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(fontSize);
+      pdf.text(titulo, (pageWidth - textWidth) / 2, 20);
+      const subtituloFontSize = 14;
+      const subtituloTextWidth =
+        (pdf.getStringUnitWidth(subtitulo) * subtituloFontSize) /
+        pdf.internal.scaleFactor;
 
-    pdf.setFontSize(subtituloFontSize);
-    pdf.text(subtitulo, (pageWidth - subtituloTextWidth) / 2, 30);
+      pdf.setFontSize(subtituloFontSize);
+      pdf.text(subtitulo, (pageWidth - subtituloTextWidth) / 2, 30);
 
-    const parrafo = `El siguiente informe sobre la evaluación del desempeño docente, contiene la nota promedio de su evaluación, tomando en cuenta los cuatro componentes de la evaluación docente que son: Heteroevaluación, Evaluación por parte del Directivo, Coevaluación, y Autoevaluación; estratificadas por período académico, departamento y modalidad de estudios.`;
-    const xPosition = 20;
-    const yPosition = 40;
-    const maxWidth = pageWidth - 2 * xPosition;
+      const parrafo = `El siguiente informe sobre la evaluación del desempeño docente, contiene la nota promedio de su evaluación, tomando en cuenta los cuatro componentes de la evaluación docente que son: Heteroevaluación, Evaluación por parte del Directivo, Coevaluación, y Autoevaluación; estratificadas por período académico, departamento y modalidad de estudios.`;
+      const xPosition = 20;
+      const yPosition = 40;
+      const maxWidth = pageWidth - 2 * xPosition;
 
-    pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(12);
-    pdf.text(parrafo, xPosition, yPosition, { maxWidth, align: 'justify' });
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(12);
+      pdf.text(parrafo, xPosition, yPosition, { maxWidth, align: 'justify' });
 
-    const anchoPagina = pdf.internal.pageSize.getWidth();
+      const anchoPagina = pdf.internal.pageSize.getWidth();
 
-    autoTable(pdf, {
-      startY: 60,
-      head: [],
-      body: [
-        [
-          { content: 'CÉDULA:', styles: { fontStyle: 'bold' } },
-          this.docente.cedula,
-          { content: 'CAMPUS:', styles: { fontStyle: 'bold' } },
-          this.docente.campus,
+      autoTable(pdf, {
+        startY: 60,
+        head: [],
+        body: [
+          [
+            { content: 'CÉDULA:', styles: { fontStyle: 'bold' } },
+            this.docente.cedula,
+            { content: 'CAMPUS:', styles: { fontStyle: 'bold' } },
+            this.docente.campus,
+          ],
+          [
+            { content: 'ID:', styles: { fontStyle: 'bold' } },
+            this.docente.id,
+            { content: 'DEPARTAMENTO:', styles: { fontStyle: 'bold' } },
+            this.docente.departamento,
+          ],
+          [
+            { content: 'NOMBRES:', styles: { fontStyle: 'bold' } },
+            this.docente.apellidos + ' ' + this.docente.nombres,
+            { content: 'ESCALAFÓN:', styles: { fontStyle: 'bold' } },
+            this.docente.escalafon,
+          ],
         ],
-        [
-          { content: 'ID:', styles: { fontStyle: 'bold' } },
-          this.docente.id,
-          { content: 'DEPARTAMENTO:', styles: { fontStyle: 'bold' } },
-          this.docente.departamento,
-        ],
-        [
-          { content: 'NOMBRES:', styles: { fontStyle: 'bold' } },
-          this.docente.apellidos + ' ' + this.docente.nombres,
-          { content: 'ESCALAFÓN:', styles: { fontStyle: 'bold' } },
-          this.docente.escalafon,
-        ],
-      ],
-      theme: 'plain',
-      styles: { fontSize: 10 },
-      margin: { top: 5 },
-      tableWidth: 'auto',
-      columnStyles: {
-        0: { cellWidth: 30 },
-        1: { halign: 'left', cellWidth: 70 },
-        2: { cellWidth: 40 },
-        3: { halign: 'left', cellWidth: 60 },
-      },
+        theme: 'plain',
+        styles: { fontSize: 10 },
+        margin: { top: 5 },
+        tableWidth: 'auto',
+        columnStyles: {
+          0: { cellWidth: 30 },
+          1: { halign: 'left', cellWidth: 70 },
+          2: { cellWidth: 40 },
+          3: { halign: 'left', cellWidth: 60 },
+        },
 
-      didDrawPage: (data) => {
-        const columnWidths = data.table?.columns.map((col) => col.width) || [];
-        const tableWidth = columnWidths.reduce(
-          (total, width) => total + (width || 0),
-          0
-        );
+        didDrawPage: (data) => {
+          const columnWidths =
+            data.table?.columns.map((col) => col.width) || [];
+          const tableWidth = columnWidths.reduce(
+            (total, width) => total + (width || 0),
+            0
+          );
 
-        if (tableWidth > anchoPagina && data.settings && data.settings.margin) {
-          data.settings.margin.top += 10;
+          if (
+            tableWidth > anchoPagina &&
+            data.settings &&
+            data.settings.margin
+          ) {
+            data.settings.margin.top += 10;
 
-          if (data.cursor && data.settings.margin) {
-            data.cursor.y = data.settings.margin.top;
+            if (data.cursor && data.settings.margin) {
+              data.cursor.y = data.settings.margin.top;
 
-            data.table.body.forEach((row) => {
-              row.cells[1].styles.halign = 'left';
-              row.cells[3].styles.halign = 'left';
-            });
+              data.table.body.forEach((row) => {
+                row.cells[1].styles.halign = 'left';
+                row.cells[3].styles.halign = 'left';
+              });
+            }
           }
-        }
-      },
-    });
+        },
+      });
 
-    const textoCalificaciones = `Calificaciones por período académico y promedio integral por componente:`;
+      const textoCalificaciones = `Calificaciones por período académico y promedio integral por componente:`;
 
-    pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(10);
-    pdf.text(textoCalificaciones, 20, 90, { maxWidth, align: 'justify' });
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(10);
+      pdf.text(textoCalificaciones, 20, 90, { maxWidth, align: 'justify' });
 
-    const tituloIntermedio = 'EVALUACIÓN DOCENTE - PONDERACIÓN POR ACTIVIDAD';
-    pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(14);
-    const tituloIntermedioTextWidth =
-      (pdf.getStringUnitWidth(tituloIntermedio) * 14) /
-      pdf.internal.scaleFactor;
+      const tituloIntermedio = 'EVALUACIÓN DOCENTE - PONDERACIÓN POR ACTIVIDAD';
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(14);
+      const tituloIntermedioTextWidth =
+        (pdf.getStringUnitWidth(tituloIntermedio) * 14) /
+        pdf.internal.scaleFactor;
 
-    pdf.text(
-      tituloIntermedio,
-      (pageWidth - tituloIntermedioTextWidth) / 2,
-      100
-    );
+      pdf.text(
+        tituloIntermedio,
+        (pageWidth - tituloIntermedioTextWidth) / 2,
+        100
+      );
 
-    pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(10);
-    pdf.text('PERIODO: ' + this.periodo.descripcion, 20, 107, {
-      maxWidth,
-      align: 'justify',
-    });
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(10);
+      pdf.text('PERIODO: ' + this.periodo.descripcion, 20, 107, {
+        maxWidth,
+        align: 'justify',
+      });
 
-    autoTable(pdf, {
-      startY: 110,
-      margin: { left: 15 },
-      head: [
-        [
-          {
-            content: 'DOCENCIA',
-            colSpan: 2,
-            styles: {
-              fillColor: [0, 130, 90],
-              fontStyle: 'bold',
-              textColor: [255, 255, 255],
-              halign: 'center',
+      autoTable(pdf, {
+        startY: 110,
+        margin: { left: 15 },
+        head: [
+          [
+            {
+              content: 'DOCENCIA',
+              colSpan: 2,
+              styles: {
+                fillColor: [0, 130, 90],
+                fontStyle: 'bold',
+                textColor: [255, 255, 255],
+                halign: 'center',
+              },
             },
-          },
-          {
-            content: 'INVESTIGACIÓN',
-            colSpan: 2,
-            styles: {
-              fillColor: [0, 130, 90],
-              fontStyle: 'bold',
-              textColor: [255, 255, 255],
-              halign: 'center',
+            {
+              content: 'INVESTIGACIÓN',
+              colSpan: 2,
+              styles: {
+                fillColor: [0, 130, 90],
+                fontStyle: 'bold',
+                textColor: [255, 255, 255],
+                halign: 'center',
+              },
             },
-          },
-          {
-            content: 'GESTIÓN',
-            colSpan: 2,
-            styles: {
-              fillColor: [0, 130, 90],
-              fontStyle: 'bold',
-              textColor: [255, 255, 255],
-              halign: 'center',
+            {
+              content: 'GESTIÓN',
+              colSpan: 2,
+              styles: {
+                fillColor: [0, 130, 90],
+                fontStyle: 'bold',
+                textColor: [255, 255, 255],
+                halign: 'center',
+              },
             },
-          },
-          {
-            content: 'VINCULACIÓN',
-            colSpan: 2,
-            styles: {
-              fillColor: [0, 130, 90],
-              fontStyle: 'bold',
-              textColor: [255, 255, 255],
-              halign: 'center',
+            {
+              content: 'VINCULACIÓN',
+              colSpan: 2,
+              styles: {
+                fillColor: [0, 130, 90],
+                fontStyle: 'bold',
+                textColor: [255, 255, 255],
+                halign: 'center',
+              },
             },
-          },
-          {
-            content: 'EVALUACIÓN INTEGRAL DOCENTE',
-            colSpan: 2,
-            styles: {
-              fillColor: [0, 130, 90],
-              fontStyle: 'bold',
-              textColor: [255, 255, 255],
-              halign: 'center',
+            {
+              content: 'EVALUACIÓN INTEGRAL DOCENTE',
+              colSpan: 2,
+              styles: {
+                fillColor: [0, 130, 90],
+                fontStyle: 'bold',
+                textColor: [255, 255, 255],
+                halign: 'center',
+              },
             },
-          },
+          ],
         ],
-      ],
-      body: [
-        [
-          { content: 'Horas', styles: { fontStyle: 'bold', halign: 'center' } },
-          {
-            content: 'Ponderación',
-            styles: { fontStyle: 'bold', halign: 'center' },
-          },
-          { content: 'Horas', styles: { fontStyle: 'bold', halign: 'center' } },
-          {
-            content: 'Ponderación',
-            styles: { fontStyle: 'bold', halign: 'center' },
-          },
-          { content: 'Horas', styles: { fontStyle: 'bold', halign: 'center' } },
-          {
-            content: 'Ponderación',
-            styles: { fontStyle: 'bold', halign: 'center' },
-          },
-          { content: 'Horas', styles: { fontStyle: 'bold', halign: 'center' } },
-          {
-            content: 'Ponderación',
-            styles: { fontStyle: 'bold', halign: 'center' },
-          },
-          {
-            content: 'Total',
-            colSpan: 2,
-            styles: { fontStyle: 'bold', halign: 'center' },
-          },
+        body: [
+          [
+            {
+              content: 'Horas',
+              styles: { fontStyle: 'bold', halign: 'center' },
+            },
+            {
+              content: 'Ponderación',
+              styles: { fontStyle: 'bold', halign: 'center' },
+            },
+            {
+              content: 'Horas',
+              styles: { fontStyle: 'bold', halign: 'center' },
+            },
+            {
+              content: 'Ponderación',
+              styles: { fontStyle: 'bold', halign: 'center' },
+            },
+            {
+              content: 'Horas',
+              styles: { fontStyle: 'bold', halign: 'center' },
+            },
+            {
+              content: 'Ponderación',
+              styles: { fontStyle: 'bold', halign: 'center' },
+            },
+            {
+              content: 'Horas',
+              styles: { fontStyle: 'bold', halign: 'center' },
+            },
+            {
+              content: 'Ponderación',
+              styles: { fontStyle: 'bold', halign: 'center' },
+            },
+            {
+              content: 'Total',
+              colSpan: 2,
+              styles: { fontStyle: 'bold', halign: 'center' },
+            },
+          ],
+          [
+            {
+              content: horasDocencia === 0 ? '' : horasDocencia,
+              styles: { halign: 'center' },
+            },
+            {
+              content:
+                Number(totalDocenciaPonderacion.toFixed(2)) === 0
+                  ? ''
+                  : Number(totalDocenciaPonderacion.toFixed(2)),
+              styles: { halign: 'center' },
+            },
+            {
+              content: horasInvestigacion === 0 ? '' : horasInvestigacion,
+              styles: { halign: 'center' },
+            },
+            {
+              content:
+                Number(totalInvestigacionPonderacion.toFixed(2)) === 0
+                  ? ''
+                  : Number(totalInvestigacionPonderacion.toFixed(2)),
+              styles: { halign: 'center' },
+            },
+            {
+              content: horasGestion === 0 ? '' : horasGestion,
+              styles: { halign: 'center' },
+            },
+            {
+              content:
+                Number(totalGestionPonderacion.toFixed(2)) === 0
+                  ? ''
+                  : Number(totalGestionPonderacion.toFixed(2)),
+              styles: { halign: 'center' },
+            },
+            {
+              content: horasVinculacion === 0 ? '' : horasVinculacion,
+              styles: { halign: 'center' },
+            },
+            {
+              content:
+                Number(totalVinculacionPonderacion.toFixed(2)) === 0
+                  ? ''
+                  : Number(totalVinculacionPonderacion.toFixed(2)),
+              styles: { halign: 'center' },
+            },
+            {
+              content:
+                Number(totalFinal.toFixed(2)) === 0
+                  ? ''
+                  : Number(totalFinal.toFixed(2)),
+              colSpan: 2,
+              styles: { fontStyle: 'bold', halign: 'center', fontSize: 10 },
+            },
+          ],
         ],
-        [
-          {
-            content: horasDocencia === 0 ? '' : horasDocencia,
-            styles: { halign: 'center' },
-          },
-          {
-            content:
-              Number(totalDocenciaPonderacion.toFixed(2)) === 0
-                ? ''
-                : Number(totalDocenciaPonderacion.toFixed(2)),
-            styles: { halign: 'center' },
-          },
-          {
-            content: horasInvestigacion === 0 ? '' : horasInvestigacion,
-            styles: { halign: 'center' },
-          },
-          {
-            content:
-              Number(totalInvestigacionPonderacion.toFixed(2)) === 0
-                ? ''
-                : Number(totalInvestigacionPonderacion.toFixed(2)),
-            styles: { halign: 'center' },
-          },
-          {
-            content: horasGestion === 0 ? '' : horasGestion,
-            styles: { halign: 'center' },
-          },
-          {
-            content:
-              Number(totalGestionPonderacion.toFixed(2)) === 0
-                ? ''
-                : Number(totalGestionPonderacion.toFixed(2)),
-            styles: { halign: 'center' },
-          },
-          {
-            content: horasVinculacion === 0 ? '' : horasVinculacion,
-            styles: { halign: 'center' },
-          },
-          {
-            content:
-              Number(totalVinculacionPonderacion.toFixed(2)) === 0
-                ? ''
-                : Number(totalVinculacionPonderacion.toFixed(2)),
-            styles: { halign: 'center' },
-          },
-          {
-            content:
-              Number(totalFinal.toFixed(2)) === 0
-                ? ''
-                : Number(totalFinal.toFixed(2)),
-            colSpan: 2,
-            styles: { fontStyle: 'bold', halign: 'center', fontSize: 10 },
-          },
-        ],
-      ],
-      theme: 'grid',
-      styles: { fontSize: 9 },
-      tableWidth: 'auto',
-      pageBreak: 'auto',
-      columnStyles: {
-        0: { cellWidth: 25 },
-        1: { cellWidth: 25 },
-        2: { cellWidth: 25 },
-        3: { cellWidth: 25 },
-        4: { cellWidth: 25 },
-        5: { cellWidth: 25 },
-        6: { cellWidth: 25 },
-        7: { cellWidth: 25 },
-        8: { cellWidth: 25 },
-        9: { cellWidth: 25 },
-      },
-    });
+        theme: 'grid',
+        styles: { fontSize: 9 },
+        tableWidth: 'auto',
+        pageBreak: 'auto',
+        columnStyles: {
+          0: { cellWidth: 25 },
+          1: { cellWidth: 25 },
+          2: { cellWidth: 25 },
+          3: { cellWidth: 25 },
+          4: { cellWidth: 25 },
+          5: { cellWidth: 25 },
+          6: { cellWidth: 25 },
+          7: { cellWidth: 25 },
+          8: { cellWidth: 25 },
+          9: { cellWidth: 25 },
+        },
+      });
 
-    autoTable(pdf, {
-      startY: 140,
-      margin: { left: 5 },
-      head: [
-        [
-          {
-            content: 'EVALUACIÓN ACTIVIDAD DOCENCIA',
-            colSpan: 4,
-            styles: {
-              fillColor: [0, 130, 90],
-              fontStyle: 'bold',
-              textColor: [255, 255, 255],
-              halign: 'center',
-              fontSize: 8,
+      autoTable(pdf, {
+        startY: 140,
+        margin: { left: 5 },
+        head: [
+          [
+            {
+              content: 'EVALUACIÓN ACTIVIDAD DOCENCIA',
+              colSpan: 4,
+              styles: {
+                fillColor: [0, 130, 90],
+                fontStyle: 'bold',
+                textColor: [255, 255, 255],
+                halign: 'center',
+                fontSize: 8,
+              },
             },
-          },
-          {
-            content: 'EVALUACIÓN ACTIVIDAD INVESTIGACIÓN',
-            colSpan: 3,
-            styles: {
-              fillColor: [0, 130, 90],
-              fontStyle: 'bold',
-              textColor: [255, 255, 255],
-              halign: 'center',
-              fontSize: 8,
+            {
+              content: 'EVALUACIÓN ACTIVIDAD INVESTIGACIÓN',
+              colSpan: 3,
+              styles: {
+                fillColor: [0, 130, 90],
+                fontStyle: 'bold',
+                textColor: [255, 255, 255],
+                halign: 'center',
+                fontSize: 8,
+              },
             },
-          },
-          {
-            content: 'EVALUACIÓN ACTIVIDAD GESTIÓN',
-            colSpan: 2,
-            styles: {
-              fillColor: [0, 130, 90],
-              fontStyle: 'bold',
-              textColor: [255, 255, 255],
-              halign: 'center',
-              fontSize: 8,
+            {
+              content: 'EVALUACIÓN ACTIVIDAD GESTIÓN',
+              colSpan: 2,
+              styles: {
+                fillColor: [0, 130, 90],
+                fontStyle: 'bold',
+                textColor: [255, 255, 255],
+                halign: 'center',
+                fontSize: 8,
+              },
             },
-          },
-          {
-            content: 'EVALUACIÓN ACTIVIDAD VINCULACIÓN',
-            colSpan: 3,
-            styles: {
-              fillColor: [0, 130, 90],
-              fontStyle: 'bold',
-              textColor: [255, 255, 255],
-              halign: 'center',
-              fontSize: 8,
+            {
+              content: 'EVALUACIÓN ACTIVIDAD VINCULACIÓN',
+              colSpan: 3,
+              styles: {
+                fillColor: [0, 130, 90],
+                fontStyle: 'bold',
+                textColor: [255, 255, 255],
+                halign: 'center',
+                fontSize: 8,
+              },
             },
-          },
+          ],
         ],
-      ],
-      body: [
-        [
-          { content: 'AUTO\nEVALUACIÓN\n10 %', styles: { halign: 'center' } },
-          { content: 'HETERO\nEVALUACIÓN\n35 %', styles: { halign: 'center' } },
-          {
-            content: 'COEVALUACION\nPARES\n30 %',
-            styles: { halign: 'center' },
-          },
-          {
-            content: 'COEVALUACION\nDIRECTIVA\n25 %',
-            styles: { halign: 'center' },
-          },
-          { content: 'AUTO\nEVALUACIÓN\n10 %', styles: { halign: 'center' } },
-          {
-            content: 'COEVALUACION\nPARES\n40 %',
-            styles: { halign: 'center' },
-          },
-          {
-            content: 'COEVALUACION\nDIRECTIVA\n50 %',
-            styles: { halign: 'center' },
-          },
-          { content: 'AUTO\nEVALUACIÓN\n40 %', styles: { halign: 'center' } },
-          {
-            content: 'COEVALUACION\nDIRECTIVA\n60 %',
-            styles: { halign: 'center' },
-          },
-          { content: 'AUTO\nEVALUACIÓN\n10 %', styles: { halign: 'center' } },
-          {
-            content: 'COEVALUACION\nPARES\n40 %',
-            styles: { halign: 'center' },
-          },
-          {
-            content: 'COEVALUACION\nDIRECTIVA\n50 %',
-            styles: { halign: 'center' },
-          },
+        body: [
+          [
+            { content: 'AUTO\nEVALUACIÓN\n10 %', styles: { halign: 'center' } },
+            {
+              content: 'HETERO\nEVALUACIÓN\n35 %',
+              styles: { halign: 'center' },
+            },
+            {
+              content: 'COEVALUACION\nPARES\n30 %',
+              styles: { halign: 'center' },
+            },
+            {
+              content: 'COEVALUACION\nDIRECTIVA\n25 %',
+              styles: { halign: 'center' },
+            },
+            { content: 'AUTO\nEVALUACIÓN\n10 %', styles: { halign: 'center' } },
+            {
+              content: 'COEVALUACION\nPARES\n40 %',
+              styles: { halign: 'center' },
+            },
+            {
+              content: 'COEVALUACION\nDIRECTIVA\n50 %',
+              styles: { halign: 'center' },
+            },
+            { content: 'AUTO\nEVALUACIÓN\n40 %', styles: { halign: 'center' } },
+            {
+              content: 'COEVALUACION\nDIRECTIVA\n60 %',
+              styles: { halign: 'center' },
+            },
+            { content: 'AUTO\nEVALUACIÓN\n10 %', styles: { halign: 'center' } },
+            {
+              content: 'COEVALUACION\nPARES\n40 %',
+              styles: { halign: 'center' },
+            },
+            {
+              content: 'COEVALUACION\nDIRECTIVA\n50 %',
+              styles: { halign: 'center' },
+            },
+          ],
+          [
+            {
+              content:
+                Number(notaAutDoc.toFixed(2)) === 0
+                  ? ''
+                  : Number(notaAutDoc.toFixed(2)),
+              styles: { fontSize: 9, halign: 'center' },
+            },
+            {
+              content:
+                Number(notaHetDoc.toFixed(2)) === 0
+                  ? ''
+                  : Number(notaHetDoc.toFixed(2)),
+              styles: { fontSize: 9, halign: 'center' },
+            },
+            {
+              content:
+                Number(notaParDoc.toFixed(2)) === 0
+                  ? ''
+                  : Number(notaParDoc.toFixed(2)),
+              styles: { fontSize: 9, halign: 'center' },
+            },
+            {
+              content:
+                Number(notaDirDoc.toFixed(2)) === 0
+                  ? ''
+                  : Number(notaDirDoc.toFixed(2)),
+              styles: { fontSize: 9, halign: 'center' },
+            },
+            {
+              content:
+                Number(notaAutInv.toFixed(2)) === 0
+                  ? ''
+                  : Number(notaAutInv.toFixed(2)),
+              styles: { fontSize: 9, halign: 'center' },
+            },
+            {
+              content:
+                Number(notaParInv.toFixed(2)) === 0
+                  ? ''
+                  : Number(notaParInv.toFixed(2)),
+              styles: { fontSize: 9, halign: 'center' },
+            },
+            {
+              content:
+                Number(notaDirInv.toFixed(2)) === 0
+                  ? ''
+                  : Number(notaDirInv.toFixed(2)),
+              styles: { fontSize: 9, halign: 'center' },
+            },
+            {
+              content:
+                Number(notaAutGes.toFixed(2)) === 0
+                  ? ''
+                  : Number(notaAutGes.toFixed(2)),
+              styles: { fontSize: 9, halign: 'center' },
+            },
+            {
+              content:
+                Number(notaDirGes.toFixed(2)) === 0
+                  ? ''
+                  : Number(notaDirGes.toFixed(2)),
+              styles: { fontSize: 9, halign: 'center' },
+            },
+            {
+              content:
+                Number(notaAutVin.toFixed(2)) === 0
+                  ? ''
+                  : Number(notaAutVin.toFixed(2)),
+              styles: { fontSize: 9, halign: 'center' },
+            },
+            {
+              content:
+                Number(notaParVin.toFixed(2)) === 0
+                  ? ''
+                  : Number(notaParVin.toFixed(2)),
+              styles: { fontSize: 9, halign: 'center' },
+            },
+            {
+              content:
+                Number(notaDirVin.toFixed(2)) === 0
+                  ? ''
+                  : Number(notaDirVin.toFixed(2)),
+              styles: { fontSize: 9, halign: 'center' },
+            },
+          ],
+          [
+            {
+              content: 'PORCENTAJE\n100%',
+              colSpan: 2,
+              styles: { fontStyle: 'bold', halign: 'center' },
+            },
+            {
+              content:
+                Number(totalDocencia.toFixed(2)) === 0
+                  ? ''
+                  : Number(totalDocencia.toFixed(2)),
+              colSpan: 2,
+              styles: { halign: 'center', fontSize: 9 },
+            },
+            {
+              content: 'PORCENTAJE\n100%',
+              colSpan: 2,
+              styles: { halign: 'center' },
+            },
+            {
+              content:
+                Number(totalInvestigacion.toFixed(2)) === 0
+                  ? ''
+                  : Number(totalInvestigacion.toFixed(2)),
+              styles: { halign: 'center', fontSize: 9 },
+            },
+            {
+              content: 'PORCENTAJE\n100%',
+              styles: { halign: 'center' },
+            },
+            {
+              content:
+                Number(totalGestion.toFixed(2)) === 0
+                  ? ''
+                  : Number(totalGestion.toFixed(2)),
+              styles: { halign: 'center', fontSize: 9 },
+            },
+            {
+              content: 'PORCENTAJE\n100%',
+              colSpan: 2,
+              styles: { halign: 'center' },
+            },
+            {
+              content:
+                Number(totalVinculacion.toFixed(2)) === 0
+                  ? ''
+                  : Number(totalVinculacion.toFixed(2)),
+              styles: { halign: 'center', fontSize: 9 },
+            },
+          ],
         ],
-        [
-          {
-            content:
-              Number(notaAutDoc.toFixed(2)) === 0
-                ? ''
-                : Number(notaAutDoc.toFixed(2)),
-            styles: { fontSize: 9, halign: 'center' },
-          },
-          {
-            content:
-              Number(notaHetDoc.toFixed(2)) === 0
-                ? ''
-                : Number(notaHetDoc.toFixed(2)),
-            styles: { fontSize: 9, halign: 'center' },
-          },
-          {
-            content:
-              Number(notaParDoc.toFixed(2)) === 0
-                ? ''
-                : Number(notaParDoc.toFixed(2)),
-            styles: { fontSize: 9, halign: 'center' },
-          },
-          {
-            content:
-              Number(notaDirDoc.toFixed(2)) === 0
-                ? ''
-                : Number(notaDirDoc.toFixed(2)),
-            styles: { fontSize: 9, halign: 'center' },
-          },
-          {
-            content:
-              Number(notaAutInv.toFixed(2)) === 0
-                ? ''
-                : Number(notaAutInv.toFixed(2)),
-            styles: { fontSize: 9, halign: 'center' },
-          },
-          {
-            content:
-              Number(notaParInv.toFixed(2)) === 0
-                ? ''
-                : Number(notaParInv.toFixed(2)),
-            styles: { fontSize: 9, halign: 'center' },
-          },
-          {
-            content:
-              Number(notaDirInv.toFixed(2)) === 0
-                ? ''
-                : Number(notaDirInv.toFixed(2)),
-            styles: { fontSize: 9, halign: 'center' },
-          },
-          {
-            content:
-              Number(notaAutGes.toFixed(2)) === 0
-                ? ''
-                : Number(notaAutGes.toFixed(2)),
-            styles: { fontSize: 9, halign: 'center' },
-          },
-          {
-            content:
-              Number(notaDirGes.toFixed(2)) === 0
-                ? ''
-                : Number(notaDirGes.toFixed(2)),
-            styles: { fontSize: 9, halign: 'center' },
-          },
-          {
-            content:
-              Number(notaAutVin.toFixed(2)) === 0
-                ? ''
-                : Number(notaAutVin.toFixed(2)),
-            styles: { fontSize: 9, halign: 'center' },
-          },
-          {
-            content:
-              Number(notaParVin.toFixed(2)) === 0
-                ? ''
-                : Number(notaParVin.toFixed(2)),
-            styles: { fontSize: 9, halign: 'center' },
-          },
-          {
-            content:
-              Number(notaDirVin.toFixed(2)) === 0
-                ? ''
-                : Number(notaDirVin.toFixed(2)),
-            styles: { fontSize: 9, halign: 'center' },
-          },
-        ],
-        [
-          {
-            content: 'PORCENTAJE\n100%',
-            colSpan: 2,
-            styles: { fontStyle: 'bold', halign: 'center' },
-          },
-          {
-            content:
-              Number(totalDocencia.toFixed(2)) === 0
-                ? ''
-                : Number(totalDocencia.toFixed(2)),
-            colSpan: 2,
-            styles: { halign: 'center', fontSize: 9 },
-          },
-          {
-            content: 'PORCENTAJE\n100%',
-            colSpan: 2,
-            styles: { halign: 'center' },
-          },
-          {
-            content:
-              Number(totalInvestigacion.toFixed(2)) === 0
-                ? ''
-                : Number(totalInvestigacion.toFixed(2)),
-            styles: { halign: 'center', fontSize: 9 },
-          },
-          {
-            content: 'PORCENTAJE\n100%',
-            styles: { halign: 'center' },
-          },
-          {
-            content:
-              Number(totalGestion.toFixed(2)) === 0
-                ? ''
-                : Number(totalGestion.toFixed(2)),
-            styles: { halign: 'center', fontSize: 9 },
-          },
-          {
-            content: 'PORCENTAJE\n100%',
-            colSpan: 2,
-            styles: { halign: 'center' },
-          },
-          {
-            content:
-              Number(totalVinculacion.toFixed(2)) === 0
-                ? ''
-                : Number(totalVinculacion.toFixed(2)),
-            styles: { halign: 'center', fontSize: 9 },
-          },
-        ],
-      ],
-      theme: 'grid',
-      styles: { fontSize: 7 },
-      tableWidth: 'auto',
-      pageBreak: 'auto',
-      columnStyles: {
-        0: { cellWidth: 24 },
-        1: { cellWidth: 24 },
-        2: { cellWidth: 24 },
-        3: { cellWidth: 24 },
-        4: { cellWidth: 24 },
-        5: { cellWidth: 24 },
-        6: { cellWidth: 24 },
-        7: { cellWidth: 24 },
-        8: { cellWidth: 24 },
-        9: { cellWidth: 24 },
-        10: { cellWidth: 24 },
-        11: { cellWidth: 24 },
-        12: { cellWidth: 24 },
-      },
-    });
+        theme: 'grid',
+        styles: { fontSize: 7 },
+        tableWidth: 'auto',
+        pageBreak: 'auto',
+        columnStyles: {
+          0: { cellWidth: 24 },
+          1: { cellWidth: 24 },
+          2: { cellWidth: 24 },
+          3: { cellWidth: 24 },
+          4: { cellWidth: 24 },
+          5: { cellWidth: 24 },
+          6: { cellWidth: 24 },
+          7: { cellWidth: 24 },
+          8: { cellWidth: 24 },
+          9: { cellWidth: 24 },
+          10: { cellWidth: 24 },
+          11: { cellWidth: 24 },
+          12: { cellWidth: 24 },
+        },
+      });
 
-    pdf.save(
-      this.docente.id +
-        '_' +
-        this.docente.apellidos +
-        '_EVALUACION_DETALLE_IND.pdf'
-    );
+      pdf.save(
+        this.docente.id +
+          '_' +
+          this.docente.apellidos +
+          '_EVALUACION_DETALLE_IND.pdf'
+      );
+    } else {
+      this.mensaje('Seleccione un periodo');
+    }
   }
 
   async generarInformeGlobal() {
-    await this.findPeriodo(this.perId);
-
-    await this.sleep(100);
-
-    let datos: any[] = [];
-
-    if (this.area == 'T') {
-      await this.sleep(100);
-
-      await Promise.all(
-        this.docentes.map(async (item) => {
-          let {
-            horasDocencia,
-            horasInvestigacion,
-            horasGestion,
-            horasVinculacion,
-            notaAutDoc,
-            notaHetDoc,
-            notaParDoc,
-            notaDirDoc,
-            notaAutInv,
-            notaParInv,
-            notaDirInv,
-            notaAutGes,
-            notaDirGes,
-            notaAutVin,
-            notaParVin,
-            notaDirVin,
-            totalDocencia,
-            totalGestion,
-            totalInvestigacion,
-            totalVinculacion,
-            totalDocenciaPonderacion,
-            totalGestionPonderacion,
-            totalInvestigacionPonderacion,
-            totalVinculacionPonderacion,
-            totalFinal,
-          } = await this.calculos(item.id);
-
-          await this.sleep(100);
-
-          const registro = {
-            DOCENTE: item.apellidos + ' ' + item.nombres,
-            'HORAS DOCENCIA': horasDocencia,
-            'NOTA DOCENCIA': Number(totalDocencia).toFixed(2),
-            'HORAS INVESTIGACION': horasInvestigacion,
-            'NOTA INVESTIGACION': Number(totalInvestigacion).toFixed(2),
-            'HORAS GESTION': horasGestion,
-            'NOTA GESTION': Number(totalGestion).toFixed(2),
-            'HORAS VINCULACION': horasVinculacion,
-            'NOTA VINCULACION': Number(totalVinculacion).toFixed(2),
-            'NOTA FINAL': Number(totalFinal).toFixed(2),
-          };
-          datos.push(registro);
-        })
-      );
-
-      const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.json_to_sheet(datos);
-      XLSX.utils.book_append_sheet(wb, ws, 'EVALUACION DOCENTE');
-      XLSX.writeFile(
-        wb,
-        'REPORTE GLOBAL_' + this.periodo.descripcion + '.xlsx'
-      );
-    } else {
-      switch (this.area) {
-        case 'DOCENCIA':
-          this.actividad = 'DOC';
-          break;
-        case 'GESTION ACADEMICA':
-          this.actividad = 'GES';
-          break;
-        case 'INVESTIGACION':
-          this.actividad = 'INV';
-          break;
-        case 'VINCULACION':
-          this.actividad = 'VIN';
-          break;
-        default:
-          console.log('No se encontró función');
-      }
-
-      await this.findFuncionesTodos(this.actividad);
+    if (this.evalId > 0) {
+      await this.findPeriodo(this.evalId);
 
       await this.sleep(100);
 
-      if (this.funciones.length > 0) {
+      let datos: any[] = [];
+
+      if (this.area == 'T') {
+        await this.sleep(100);
+
         await Promise.all(
-          this.funciones.map(async (item) => {
+          this.docentes.map(async (item) => {
             let {
               horasDocencia,
               horasInvestigacion,
@@ -884,12 +830,12 @@ export class ReporteComponent implements OnInit {
               totalInvestigacionPonderacion,
               totalVinculacionPonderacion,
               totalFinal,
-            } = await this.calculos(item.docId);
+            } = await this.calculos(item.id);
 
             await this.sleep(100);
 
             const registro = {
-              DOCENTE: item.docente.apellidos + ' ' + item.docente.nombres,
+              DOCENTE: item.apellidos + ' ' + item.nombres,
               'HORAS DOCENCIA': horasDocencia,
               'NOTA DOCENCIA': Number(totalDocencia).toFixed(2),
               'HORAS INVESTIGACION': horasInvestigacion,
@@ -906,14 +852,95 @@ export class ReporteComponent implements OnInit {
 
         const wb = XLSX.utils.book_new();
         const ws = XLSX.utils.json_to_sheet(datos);
-        XLSX.utils.book_append_sheet(wb, ws, this.area);
+        XLSX.utils.book_append_sheet(wb, ws, 'EVALUACION DOCENTE');
         XLSX.writeFile(
           wb,
           'REPORTE GLOBAL_' + this.periodo.descripcion + '.xlsx'
         );
       } else {
-        this.mensaje("No existen registros para esa área");
+        switch (this.area) {
+          case 'DOCENCIA':
+            this.actividad = 'DOC';
+            break;
+          case 'GESTION ACADEMICA':
+            this.actividad = 'GES';
+            break;
+          case 'INVESTIGACION':
+            this.actividad = 'INV';
+            break;
+          case 'VINCULACION':
+            this.actividad = 'VIN';
+            break;
+          default:
+            console.log('No se encontró función');
+        }
+
+        await this.findFuncionesTodos(this.actividad);
+
+        await this.sleep(100);
+
+        if (this.funciones.length > 0) {
+          await Promise.all(
+            this.funciones.map(async (item) => {
+              let {
+                horasDocencia,
+                horasInvestigacion,
+                horasGestion,
+                horasVinculacion,
+                notaAutDoc,
+                notaHetDoc,
+                notaParDoc,
+                notaDirDoc,
+                notaAutInv,
+                notaParInv,
+                notaDirInv,
+                notaAutGes,
+                notaDirGes,
+                notaAutVin,
+                notaParVin,
+                notaDirVin,
+                totalDocencia,
+                totalGestion,
+                totalInvestigacion,
+                totalVinculacion,
+                totalDocenciaPonderacion,
+                totalGestionPonderacion,
+                totalInvestigacionPonderacion,
+                totalVinculacionPonderacion,
+                totalFinal,
+              } = await this.calculos(item.docId);
+
+              await this.sleep(100);
+
+              const registro = {
+                DOCENTE: item.docente.apellidos + ' ' + item.docente.nombres,
+                'HORAS DOCENCIA': horasDocencia,
+                'NOTA DOCENCIA': Number(totalDocencia).toFixed(2),
+                'HORAS INVESTIGACION': horasInvestigacion,
+                'NOTA INVESTIGACION': Number(totalInvestigacion).toFixed(2),
+                'HORAS GESTION': horasGestion,
+                'NOTA GESTION': Number(totalGestion).toFixed(2),
+                'HORAS VINCULACION': horasVinculacion,
+                'NOTA VINCULACION': Number(totalVinculacion).toFixed(2),
+                'NOTA FINAL': Number(totalFinal).toFixed(2),
+              };
+              datos.push(registro);
+            })
+          );
+
+          const wb = XLSX.utils.book_new();
+          const ws = XLSX.utils.json_to_sheet(datos);
+          XLSX.utils.book_append_sheet(wb, ws, this.area);
+          XLSX.writeFile(
+            wb,
+            'REPORTE GLOBAL_' + this.periodo.descripcion + '.xlsx'
+          );
+        } else {
+          this.mensaje('No existen registros para esa área');
+        }
       }
+    } else {
+      this.mensaje('Seleccione un periodo');
     }
   }
 

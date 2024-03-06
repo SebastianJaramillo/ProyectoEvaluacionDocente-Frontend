@@ -69,6 +69,7 @@ export class EvaluacionDirectivaComponent implements OnInit {
 
       this.findEvaluacion(this.evalId);
       this.findByEvaluador(atob(this.id));
+      this.findPeriodo(this.evalId);
     });
   }
 

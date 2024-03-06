@@ -32,9 +32,11 @@ export class CursoComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.id = params['id'];
+      this.evalId = params['evalId'];
     });
 
-    this.findByFechas();
+    this.findPeriodo(this.evalId);
+    this.cargarCursosEstudiante(atob(this.id), this.evalId);
 
     const role = localStorage.getItem('role');
     if (role && role === 'ESTUDIANTE') {   
@@ -44,21 +46,6 @@ export class CursoComponent implements OnInit {
       localStorage.clear();
       this.router.navigate(['']);
     }
-  }
-
-  findByFechas() {
-    this.evaluacionService.findByFechas().subscribe(
-      (data) => {
-        this.eval = data;
-        this.evalId = this.eval.id;
-        this.findPeriodo(this.eval.perId);
-        this.cargarCursosEstudiante(atob(this.id), this.evalId);
-      },
-      (error) => {
-        this.mensaje('Evaluación no se encuentra habilitada en estas fechas.');
-        this.router.navigate(['periodo', this.id]);
-      }
-    );
   }
 
   getAllCursos() {

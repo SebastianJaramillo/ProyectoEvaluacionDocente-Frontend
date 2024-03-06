@@ -5,6 +5,7 @@ import {
 import { Router } from '@angular/router';
 import { DocenteService } from '../services/docente/docente.service';
 import { AlumnoService } from '../services/alumno/alumno.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-navbar',
@@ -28,9 +29,14 @@ export class NavbarComponent implements OnInit {
   ngOnInit(): void {
     this.id = localStorage.getItem('idUser');
     this.role = localStorage.getItem('role');
-    this.evalId = localStorage.getItem('evalId');
 
-    if (this.id && this.role && this.evalId) {
+    if(localStorage.getItem('evalId') == null) {
+      this.evalId = 0;
+    } else {
+      this.evalId = localStorage.getItem('evalId');  
+    }
+
+    if (this.id && this.role) {
       switch (this.role) {
         case 'DOCENTE':
           this.findDocente(atob(this.id));
@@ -90,10 +96,21 @@ export class NavbarComponent implements OnInit {
   }
 
   encuesta() {
-    if (this.role == 'ESTUDIANTE') {
-      this.router.navigate(['cursos', this.id, this.evalId]);
+    if(localStorage.getItem('evalId') == null) {
+      this.evalId = 0;
     } else {
-      this.router.navigate(['docentes', this.id, this.evalId]);
+      this.evalId = localStorage.getItem('evalId');  
+    }
+
+    if(this.evalId > 0) {
+      if (this.role == 'ESTUDIANTE') {
+        this.router.navigate(['cursos', this.id, this.evalId]);
+      } else {
+        this.router.navigate(['docentes', this.id, this.evalId]);
+      }
+    } else {
+      this.mensaje('Seleccione un periodo');
+      this.router.navigate(['periodo', this.id]);
     }
   }
 
@@ -111,5 +128,15 @@ export class NavbarComponent implements OnInit {
 
   sleep(ms: any) {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  mensaje(texto: any) {
+    Swal.fire({
+      title: 'Error',
+      text: texto,
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+      width: '350px',
+    });
   }
 }

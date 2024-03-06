@@ -16,7 +16,7 @@ export class EvaluacionComponent implements OnInit {
   id: any;
   eval: any = {};
   evalId: any;
-  idPeriodo: any;
+  idPeriodo: number = 0;
 
   constructor(
     private evaluacionService: EvaluacionService,
@@ -26,21 +26,27 @@ export class EvaluacionComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.idPeriodo = 0;
     this.getAllPeriodos();
-    this.findByFechas();
   }
 
-  findByFechas() {
-    this.evaluacionService.findByFechas().subscribe(  
-      (data) => {
-        this.eval = data;
-        this.evalId = this.eval.id;
-        localStorage.setItem('evalId', this.evalId);
-      },
-      (error) => {        
-        this.mensaje('Evaluación no se encuentra habilitada en estas fechas.');
-      }
-    );
+  findByFechas(id: number) {
+    if (id > 0) {
+      this.evaluacionService.findByFechas(id).subscribe(
+        (data) => {
+          this.selectPeriodo();
+        },
+        (error) => {
+          this.mensaje(
+            'Evaluación no se encuentra habilitada en estas fechas.'
+          );
+          localStorage.removeItem('evalId');
+          this.router.navigate(['periodo', this.id]);
+        }
+      );
+    } else {
+      this.mensaje('Seleccione un periodo');
+    }
   }
 
   getAllPeriodos() {
@@ -58,19 +64,18 @@ export class EvaluacionComponent implements OnInit {
     this.route.params.subscribe((params) => {
       this.id = params['id'];
     });
-
     this.userService.findById(atob(this.id)).subscribe({
       next: (user) => {
-        if (user && user.id) { 
-          if (user.role == 'ESTUDIANTE') {            
+        if (user && user.id) {
+          this.evalId = this.idPeriodo;
+          localStorage.setItem('evalId', this.evalId);
+          if (user.role == 'ESTUDIANTE') {
             this.router.navigate(['cursos', this.id, this.evalId]);
           } else {
             this.router.navigate(['docentes', this.id, this.evalId]);
           }
         } else {
-          console.error(
-            'No se encontró usuario'
-          );
+          console.error('No se encontró usuario');
         }
       },
       error: (user) => {
@@ -85,7 +90,7 @@ export class EvaluacionComponent implements OnInit {
       text: texto,
       icon: 'error',
       confirmButtonText: 'Aceptar',
-      width: '350px',      
+      width: '350px',
     });
   }
 }
