@@ -6,7 +6,7 @@ Diseño e Implementación de una Plataforma Innovadora de Evaluación Docente Ba
 - Sebastián Jaramillo
 
 # Arquitectura del proyecto
-![47f81e6e-f764-498a-98a7-3e4d217c04a8](https://github.com/SebastianJaramillo/ProyectoEvaluacionDocente/assets/65546834/faf3f1db-b1f9-41f5-933a-b4195ccc0d53)
+![Arquiectura_FINAL](https://github.com/SebastianJaramillo/ProyectoEvaluacionDocente-Backend/assets/75260165/6cc6d47d-69aa-441b-a6f2-5b322fed9427)
 
 # Arquitectura interna microservicio
-![Base_Final (1)](https://github.com/SebastianJaramillo/ProyectoEvaluacionDocente/assets/65546834/93f94112-c184-43dd-8279-c6dcfab739a7)
+![BD_FINAL](https://github.com/SebastianJaramillo/ProyectoEvaluacionDocente-Backend/assets/75260165/256489ec-733a-4222-8108-26ce3d0573cc)
