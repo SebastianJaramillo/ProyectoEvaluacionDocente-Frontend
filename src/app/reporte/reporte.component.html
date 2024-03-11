@@ -1,3 +1,7 @@
+<br>
+<button class="btn boton" (click)="reporteIndividual()">Reporte Individual</button>
+<button class="btn boton" (click)="reporteGlobal()">Reporte Global</button>
+
 <div *ngIf="!director">
   <h2>
     <b>REPORTE INDIVIDUAL</b><br>
@@ -13,8 +17,8 @@
   </h2>    
 </div>
 
-<div *ngIf="director">
-  <form (ngSubmit)="generarInforme()">
+<div *ngIf="director">  
+  <form *ngIf="reporte === 'Individual'" (ngSubmit)="generarInforme()">
     <h2>
       <b>REPORTE INDIVIDUAL</b><br>
       <b>DOCENTE: </b>&nbsp;&nbsp;
@@ -36,6 +40,9 @@
         GENERAR
       </button>
     </h2>
+  </form>
+  
+  <form *ngIf="reporte === 'Global'" (ngSubmit)="generarInformeGlobal()">
     <h2>
       <b>REPORTE GLOBAL</b><br>
       <b>ÁREA DE CONOCIMIENTO: </b>&nbsp;&nbsp;
@@ -53,9 +60,13 @@
           {{ periodo.descripcion }}
         </option>
       </select>
-      <button class="btn boton" type="button" (click)="generarInformeGlobal()">
+      <button class="btn boton" type="submit">
         GENERAR
       </button>
     </h2>
   </form>
+
+  <div *ngIf="reporte === 'Global'" style="width: 75%; height: 400px; display: flex; justify-content: center; align-items: center;">
+    <canvas #barChart></canvas>
+  </div>
 </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
 import jsPDF from 'jspdf';
@@ -9,6 +9,24 @@ import { Observable } from 'rxjs';
 import { EvaluacionService } from '../services/evaluacion/evaluacion.service';
 import * as XLSX from 'xlsx';
 import Swal from 'sweetalert2';
+import { Chart } from 'chart.js';
+import {
+  BarController,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+
+Chart.register(
+  BarController,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Tooltip,
+  Legend
+);
 
 @Component({
   selector: 'app-reporte',
@@ -20,6 +38,7 @@ export class ReporteComponent implements OnInit {
   evalId: any;
   docId: any;
   director: any;
+  reporte: any;
   actividad: any;
   docente: any = {};
   periodo: any = {};
@@ -55,6 +74,9 @@ export class ReporteComponent implements OnInit {
   respParVin: any[] = [];
   respDirVin: any[] = [];
 
+  @ViewChild('barChart') barChart!: ElementRef;
+  chart: Chart | null = null;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -72,6 +94,7 @@ export class ReporteComponent implements OnInit {
       this.router.navigate(['']);
     }
 
+    this.reporte = '';
     this.docId = '';
     this.area = 'T';
     this.evalId = 0;
@@ -82,6 +105,8 @@ export class ReporteComponent implements OnInit {
     this.findFunciones(atob(this.id));
     this.getAllPeriodos();
     this.findRelacion();
+
+    this.crearGrafico([]);
   }
 
   findDocente(id: string): any {
@@ -196,6 +221,14 @@ export class ReporteComponent implements OnInit {
 
   sleep(ms: any) {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  reporteIndividual() {
+    this.reporte = 'Individual';
+  }
+
+  reporteGlobal() {
+    this.reporte = 'Global';
   }
 
   async generarInforme() {
@@ -939,6 +972,7 @@ export class ReporteComponent implements OnInit {
           this.mensaje('No existen registros para esa área');
         }
       }
+      this.crearGrafico(datos);
     } else {
       this.mensaje('Seleccione un periodo');
     }
@@ -1312,6 +1346,50 @@ export class ReporteComponent implements OnInit {
       totalVinculacionPonderacion,
       totalFinal,
     };
+  }
+
+  crearGrafico(datos: any[]): void {
+    if (datos.length > 0) {
+      if (this.barChart) {
+        const ctx = this.barChart.nativeElement.getContext('2d');
+        const sortedData = datos
+          .slice()
+          .sort((a, b) => a['NOTA FINAL'] - b['NOTA FINAL']);
+        const labels = sortedData.map((registro) => registro.DOCENTE);
+        const data = sortedData.map((registro) => registro['NOTA FINAL']);
+
+        if (this.chart) {
+          this.chart.destroy();
+        }
+
+        this.chart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: 'CALIFICACION FINAL',
+                data: data,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            scales: {
+              y: {
+                type: 'linear',
+              },
+            },
+          },
+        });
+      } else {
+        console.log('No existen datos seleccionados');
+      }
+    } else {
+      console.log('No hay datos para mostrar');
+    }
   }
 
   mensaje(texto: any) {
