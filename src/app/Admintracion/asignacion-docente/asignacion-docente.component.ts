@@ -109,7 +109,8 @@ export class AsignacionDocenteComponent implements OnInit {
   cambiarRolCoordinadorDocente() {
     this.docenteService.findByJefe(atob(this.docId)).subscribe(
       (data) => {
-        if (data && data.length > 0) {
+        console.log(data);
+        if (data && data.length < 0) {
           this.router.navigate([
             'selectCoordinador',
             this.id,
@@ -128,8 +129,7 @@ export class AsignacionDocenteComponent implements OnInit {
   cambiarRol() {
         this.docenteService.cambiarEstadoDocenteFuncion(Number(atob(this.id))).subscribe(
           (data) => {
-            console.log('Estado cambiado', data);
-            
+            console.log('Estado cambiado');
           },
           (error) => {
             console.error(error);

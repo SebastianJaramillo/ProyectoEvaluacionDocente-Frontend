@@ -43,7 +43,7 @@ export class SeleccionarCoordinadorComponent implements OnInit {
       this.id = params['id'];
       this.docId = params['docId'];
       this.findDocenteAll();
-      this.findDocente(atob(this.id))
+      this.findDocente(atob(this.docId))
     });
 
   }
