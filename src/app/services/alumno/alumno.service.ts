@@ -5,7 +5,8 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class AlumnoService {
-  private apiUrl = 'http://localhost:8080/estudiante';
+  
+  private apiUrl = window.location.protocol + '//' + window.location.hostname + ':8080/estudiante';
 
   constructor(private http: HttpClient) {}
   getAllAlumnos() {

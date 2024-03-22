@@ -7,7 +7,7 @@ body, html {
 .d-flex {
   min-height: 100vh;
   display: flex;
-  flex-direction: row; /* Cambiado de column a row */
+  flex-direction: row;
 }
 
 nav {
@@ -27,21 +27,21 @@ nav .navbar-logo {
   width: 150px;
   height: auto;
   margin-left: 0;
-  position: relative; /* Cambiado de fixed a relative */
+  position: relative;
 }
 
 
 .content {
-  margin-left: 20%; /* Igual al ancho del sidebar */
-  margin-top: 60px; /* Ajustar en base a la altura del navbar */
+  margin-left: 20%;
+  margin-top: 60px;
   flex-grow: 1;
 }
 
 
 nav .navbar-logo {
-  width: 150px; /* Ajusta el ancho según tus necesidades */
-  height: auto; /* Esto mantiene la proporción original */
-  margin-left: 0; /* Elimina el margen derecho */
+  width: 150px;
+  height: auto;
+  margin-left: 0;
   left: 5%;
   position: fixed;
   margin-top: 0;
@@ -51,7 +51,7 @@ nav .navbar-logo {
 nav {
   background-color: #0b5000;
   display: flex;
-  justify-content: space-between; /* Distribuye los elementos en los extremos */
+  justify-content: space-between;
   align-items: center;
   padding: 12px 12px;
   margin: 0;
@@ -76,20 +76,19 @@ nav a.active {
   color: white;
 }
 
-/* Media query para hacer la barra de navegación responsive */
 @media (max-width: 768px) {
   nav {
-    flex-direction: column; /* Apila los elementos en columnas */
-    align-items: flex-start; /* Alinea los elementos a la izquierda */
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   nav .navbar-logo {
-    width: 100%; /* Ancho del 100% en dispositivos pequeños */
+    width: 100%;
   }
 
   nav a {
-    display: block; /* Asegura que los enlaces ocupen todo el ancho */
-    margin-bottom: 5px; /* Añade espacio entre los enlaces */
+    display: block;
+    margin-bottom: 5px;
   }
 }
 
@@ -111,13 +110,13 @@ cursor: pointer;
 
 #sidebar {
   width: 20%;
-  height: calc(100vh - 60px); /* Ajustar altura en base a la del navbar */
+  height: calc(100vh - 60px);
   background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)),
     url("https://srvcas.espe.edu.ec/authenticationendpoint/images/sidebar-4.jpg");
   background-size: cover;
   background-position: center;
   position: fixed;
   left: 0;
-  top: 60px; /* Ajustar en base a la altura del navbar */
+  top: 60px;
   z-index: 100;
 }

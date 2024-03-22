@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DocenteService } from '../../services/docente/docente.service';
-import { AlertSuccessComponent } from '../../alerts/alert-success/alert-success.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FuncionService } from 'src/app/services/funcion/funcion.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -166,11 +165,6 @@ export class AsignacionDocenteComponent implements OnInit {
     
     this.mensaje("Rol de docente a coordinador cambiado correctamente");
     this.router.navigate(['rolesAdmin']);
-  }
-
-  successModal(message: string) {
-    const modalRef = this.modalService.open(AlertSuccessComponent);
-    modalRef.componentInstance.message = message;
   }
 
   volver() {

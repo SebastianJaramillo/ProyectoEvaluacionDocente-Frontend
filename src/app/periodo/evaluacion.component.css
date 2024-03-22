@@ -172,3 +172,41 @@ button {
   border-radius: 5px;
   cursor: pointer;
 }
+
+@media (max-width: 767px) {
+  .content {
+    padding: 3rem 0; /* Reducimos el padding en pantallas pequeñas */
+  }
+
+  h2 {
+    font-size: 18px; /* Reducimos el tamaño del título en pantallas pequeñas */
+  }
+
+  .cont_select_center {
+    margin-left: -140px; /* Ajustamos el margen para centrar en pantallas pequeñas */
+  }
+
+  .cont_select_int {
+    height: auto;
+  }
+
+  .select_mate,
+  .select_mate .select {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .select_mate .select {
+    opacity: 1;
+    height: auto;
+  }
+
+  .cont_list_select_mate ul li {
+    width: 100%;
+    padding: 10px 0;
+  }
+
+  .selecionado_opcion {
+    width: 100%;
+  }
+}

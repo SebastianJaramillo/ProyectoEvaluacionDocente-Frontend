@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 })
 export class FormularioService {
 
-  private apiUrl = 'http://localhost:8083';
+  private apiUrl = window.location.protocol + '//' + window.location.hostname + ':8083';  
 
   constructor(private http: HttpClient) { }
   

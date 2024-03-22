@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  urlHost:'http://localhost:8081/',
-  urlApi: 'http://localhost:8081/api/v1/'
+  urlHost: window.location.protocol + '//' + window.location.hostname + ':8081/',
+  urlApi: window.location.protocol + '//' + window.location.hostname + ':8081/api/v1/'
 };
 
 /*

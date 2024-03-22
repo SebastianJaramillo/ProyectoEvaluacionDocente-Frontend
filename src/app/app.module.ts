@@ -8,10 +8,7 @@ import { CursoComponent } from './curso/curso.component';
 import { RouterModule, Routes } from '@angular/router';
 import { PreguntasComponent } from './preguntas/preguntas.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HeaderComponent } from './shared/header/header.component';
-import { FooterComponent } from './shared/footer/footer.component';
 import { LoginComponent } from './auth/login/login.component';
-import { NavComponent } from './shared/nav/nav.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { JwtInterceptorService } from './services/auth/jwt-interceptor.service';
@@ -31,10 +28,8 @@ import {
 import { ReporteComponent } from './reporte/reporte.component';
 import { PreguntasDocenteComponent } from './preguntas-docente/preguntas-docente.component';
 import { EvaluacionParesComponent } from './evaluacion-pares/evaluacion-pares.component';
-import { AlertSuccessComponent } from './alerts/alert-success/alert-success.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { EvaluacionDirectivaComponent } from './evaluacion-directiva/evaluacion-directiva.component';
-import { AlertWarningComponent } from './alerts/alert-warning/alert-warning.component';
 import { NavbarAdminComponent } from './navbar-admin/navbar-admin.component';
 import { PeriodoAdminComponent } from './Admintracion/periodo-admin/periodo-admin.component';
 import { PeriodoFormAdminComponent } from './Admintracion/periodo-form-admin/periodo-form-admin.component';
@@ -59,17 +54,12 @@ const routes: Routes = [
     CursoComponent,
     EvaluacionComponent,
     PreguntasComponent,
-    HeaderComponent,
-    FooterComponent,
     LoginComponent,
-    NavComponent,
     DocenteComponent,
     ReporteComponent,
     PreguntasDocenteComponent,
     EvaluacionParesComponent,
-    AlertSuccessComponent,
     EvaluacionDirectivaComponent,
-    AlertWarningComponent,
     NavbarAdminComponent,
     PeriodoAdminComponent,
     PeriodoFormAdminComponent,

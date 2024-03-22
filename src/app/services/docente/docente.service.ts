@@ -6,7 +6,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class DocenteService {
-  private apiUrl = 'http://localhost:8084/docente';
+  
+  private apiUrl = window.location.protocol + '//' + window.location.hostname + ':8084/docente';
 
   constructor(private http: HttpClient) {}
 

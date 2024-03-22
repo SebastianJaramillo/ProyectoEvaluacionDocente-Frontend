@@ -4,7 +4,6 @@ import { CursosService } from '../services/curso/cursos.service';
 import { AlumnoService } from '../services/alumno/alumno.service';
 import { FormularioService } from '../services/formulario/formulario.service';
 import { DocenteService } from '../services/docente/docente.service';
-import { AlertSuccessComponent } from '../alerts/alert-success/alert-success.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EvaluacionService } from '../services/evaluacion/evaluacion.service';
 import Swal from 'sweetalert2';

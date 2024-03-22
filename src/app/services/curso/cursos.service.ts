@@ -6,7 +6,8 @@ import { Cursos } from '../../curso/cursos.model';
   providedIn: 'root',
 })
 export class CursosService {
-  private apiUrl = 'http://localhost:8080/curso';
+  
+  private apiUrl = window.location.protocol + '//' + window.location.hostname + ':8080/curso';
 
   constructor(private http: HttpClient) {}
 

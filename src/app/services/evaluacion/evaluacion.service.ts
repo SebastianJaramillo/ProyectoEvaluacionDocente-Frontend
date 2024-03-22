@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class EvaluacionService {
 
-  private apiUrl = 'http://localhost:8082';
+  private apiUrl = window.location.protocol + '//' + window.location.hostname + ':8082';
 
   constructor(private http: HttpClient) { }
 
